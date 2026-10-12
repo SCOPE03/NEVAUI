@@ -2,7 +2,7 @@ name: Comment PR build result
 
 on:
     workflow_run:
-        workflows: ["Build WindUI (Pull Request)"]
+        workflows: ["Build NevaUI (Pull Request)"]
         types: [completed]
 
 permissions:

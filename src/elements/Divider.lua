@@ -20,7 +20,7 @@ function Element:New(Config)
     }, {
         Divider
     })
-    
+
     return "Divider", { __type = "Divider", ElementFrame = MainDivider }
 end
 

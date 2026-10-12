@@ -3,7 +3,7 @@
 --[[
 
     Platoboost API   |   https://platoboost.com/
-    
+
 ]]
 
 -------------------------------------------------------------------------------
@@ -26,18 +26,18 @@ function Platoboost.New(Service, Secret)
     local service = Service;  -- your service id, this is used to identify your service.
     local secret = Secret;  -- make sure to obfuscate this if you want to ensure security.
     local useNonce = true;  -- use a nonce to prevent replay attacks and request tampering.
-    
+
     --! callbacks
     local onMessage = function(message) end;
-    
+
     --! wait for game to load
     repeat task.wait(1) until game:IsLoaded();
-    
+
     --! functions
     local requestSending = false;
     local fSetClipboard, fRequest, fStringChar, fToString, fStringSub, fOsTime, fMathRandom, fMathFloor, fGetHwid = setclipboard or toclipboard, request or http_request or syn_request, string.char, tostring, string.sub, os.time, math.random, math.floor, gethwid or function() return cloneref(game:GetService("Players")).LocalPlayer.UserId end
     local cachedLink, cachedTime = "", 0;
-    
+
     --! pick host
     local host = "https://api.platoboost.app";
     local hostResponse = fRequest({
@@ -47,7 +47,7 @@ function Platoboost.New(Service, Secret)
     if hostResponse.StatusCode ~= 200 and hostResponse.StatusCode ~= 429 then
         host = "https://api.platoboost.net";
     end
-    
+
     --!optimize 2
     function cacheLink()
         if cachedTime + (10*60) < fOsTime() then
@@ -63,10 +63,10 @@ function Platoboost.New(Service, Secret)
                     ["User-Agent"] = "Roblox/Exploit"
                 }
             });
-    
+
             if response.StatusCode == 200 then
                 local decoded = lDecode(response.Body);
-    
+
                 if decoded.success == true then
                     cachedLink = decoded.data.url;
                     cachedTime = fOsTime();
@@ -80,7 +80,7 @@ function Platoboost.New(Service, Secret)
                 onMessage(msg);
                 return false, msg;
             end
-    
+
             local msg = "Failed to cache link.";
             onMessage(msg);
             return false, msg;
@@ -88,9 +88,9 @@ function Platoboost.New(Service, Secret)
             return true, cachedLink;
         end
     end
-    
+
     cacheLink();
-    
+
     --!optimize 2
     local generateNonce = function()
         local str = ""
@@ -99,7 +99,7 @@ function Platoboost.New(Service, Secret)
         end
         return str
     end
-    
+
     --!optimize 1
     for _ = 1, 5 do
         local oNonce = generateNonce();
@@ -110,30 +110,30 @@ function Platoboost.New(Service, Secret)
             error(msg);
         end
     end
-    
+
     --!optimize 2
     local copyLink = function()
         local success, link = cacheLink();
-        
+
         if success then
             fSetClipboard(link);
         end
     end
-    
+
     --!optimize 2
     local redeemKey = function(key)
         local nonce = generateNonce();
         local endpoint = host .. "/public/redeem/" .. fToString(service);
-    
+
         local body = {
             identifier = lDigest(fGetHwid()),
             key = key
         }
-    
+
         if useNonce then
             body.nonce = nonce;
         end
-    
+
         local response = fRequest({
             Url = endpoint,
             Method = "POST",
@@ -142,10 +142,10 @@ function Platoboost.New(Service, Secret)
                 ["Content-Type"] = "application/json"
             }
         });
-    
+
         if response.StatusCode == 200 then
             local decoded = lDecode(response.Body);
-    
+
             if decoded.success == true then
                 if decoded.data.valid == true then
                     if useNonce then
@@ -154,7 +154,7 @@ function Platoboost.New(Service, Secret)
                         else
                             onMessage("failed to verify integrity.");
                             return false;
-                        end    
+                        end
                     else
                         return true;
                     end
@@ -176,10 +176,10 @@ function Platoboost.New(Service, Secret)
             return false;
         else
             onMessage("server returned an invalid status code, please try again later.");
-            return false; 
+            return false;
         end
     end
-    
+
     --!optimize 2
     local verifyKey = function(key)
         if requestSending == true then
@@ -187,24 +187,24 @@ function Platoboost.New(Service, Secret)
         else
             requestSending = true;
         end
-    
+
         local nonce = generateNonce();
         local endpoint = host .. "/public/whitelist/" .. fToString(service) .. "?identifier=" .. lDigest(fGetHwid()) .. "&key=" .. key;
-    
+
         if useNonce then
             endpoint = endpoint .. "&nonce=" .. nonce;
         end
-    
+
         local response = fRequest({
             Url = endpoint,
             Method = "GET",
         });
-    
+
         requestSending = false;
-    
+
         if response.StatusCode == 200 then
             local decoded = lDecode(response.Body);
-    
+
             if decoded.success == true then
                 if decoded.data.valid == true then
                     if useNonce then
@@ -232,24 +232,24 @@ function Platoboost.New(Service, Secret)
             return false, ("Server returned an invalid status code, please try again later.");
         end
     end
-    
+
     --!optimize 2
     local getFlag = function(name)
         local nonce = generateNonce();
         local endpoint = host .. "/public/flag/" .. fToString(service) .. "?name=" .. name;
-    
+
         if useNonce then
             endpoint = endpoint .. "&nonce=" .. nonce;
         end
-    
+
         local response = fRequest({
             Url = endpoint,
             Method = "GET",
         });
-    
+
         if response.StatusCode == 200 then
             local decoded = lDecode(response.Body);
-    
+
             if decoded.success == true then
                 if useNonce then
                     if decoded.data.hash == lDigest(fToString(decoded.data.value) .. "-" .. nonce .. "-" .. secret) then
@@ -269,8 +269,8 @@ function Platoboost.New(Service, Secret)
             return nil;
         end
     end
-    
-    
+
+
     return {
         Verify = verifyKey,
         GetFlag = getFlag,

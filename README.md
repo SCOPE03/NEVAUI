@@ -1,39 +1,24 @@
-<!--<h1 align="center">WindUI</h1> -->
+# NevaUI
 
-<!--
-<picture>
-    <source srcset="docs/banner-dark.webp" media="(prefers-color-scheme: dark)">
-    <source srcset="docs/banner-light.webp" media="(prefers-color-scheme: light)">
-    <img src="docs/banner-light.webp" alt="WindUI Banner">
-</picture>-->
+NevaUI is a Roblox UI library for script interfaces. This repository contains its source, build files, examples, and distribution bundle.
 
-<img src="docs/WindUI – Themes.png" alt="WindUI Banner">
+## Quick start
 
-I might rewrite this project from scratch later.
+```lua
+local NevaUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/dist/main.lua"))()
+local Window = NevaUI:CreateWindow({ Title = "NevaUI" })
+```
 
-> [!WARNING]
-> This WindUI was not inspired by, and the name has nothing to do with UI Frameworks
+See [`main_example.lua`](main_example.lua) for a fuller example.
 
-> [!WARNING]
-> WindUI is currently in Beta.
-> This project is still under active development. Bugs, issues, and unstable features may occur. We’re constantly working on improvements, so please be patient and report any problems you encounter.
+## Project
 
-## Credits
+Maintained by **NEVA**. Report issues and follow development in [SCOPE03/NEVAUI](https://github.com/SCOPE03/NEVAUI).
 
-#### Icons (https://github.com/Footagesus/Icons)
+## Third-party acknowledgements
 
-- [Lucide-Icons](https://github.com/lucide-icons/lucide)
-- [Craft Icons](https://www.figma.com/community/file/1415718327120418204)
-- [Geist Icons](https://vercel.com/geist/icons)
-- [Solar Icons](https://icones.js.org/collection/solar)
-- [SF Symbols](https://sf-symbols-one.vercel.app/)
+The bundled icon module supports icon sets including [Lucide](https://github.com/lucide-icons/lucide), [Solar](https://icones.js.org/collection/solar), [Craft Icons](https://www.figma.com/community/file/1415718327120418204), [Geist](https://vercel.com/geist/icons), and [SF Symbols](https://sf-symbols-one.vercel.app/). Their respective names and notices remain their own.
 
-### Links
+## License
 
-- [Discord Server](https://discord.gg/ftgs-development-hub-1300692552005189632)
-- [Documentation](https://footagesus.github.io/treehub-web/docs/windui)
-- [Installation](https://footagesus.github.io/WindUI-Docs/docs/installation)
-- [Example](/main_example.lua) (wip)
-    ```luau
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/main_example.lua'))()
-    ```
+See [`LICENSE`](LICENSE). Required upstream copyright and permission notices are retained there.

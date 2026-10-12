@@ -7,11 +7,11 @@ local Tween = Creator.Tween
 
 function Checkbox.New(Value, Icon, IconSize, Parent, Callback, Config)
     local Checkbox = {}
-    
+
     Icon = Icon or "sfsymbols:checkmark"
-    
+
     local Radius = 9
-    
+
     local IconCheckboxFrame = Creator.Image(
         Icon,
         Icon,
@@ -19,14 +19,14 @@ function Checkbox.New(Value, Icon, IconSize, Parent, Callback, Config)
         (Config and Config.Window.Folder or "Temp"),
         "Checkbox",
         true,
-        false, 
+        false,
         "CheckboxIcon"
     )
     IconCheckboxFrame.Size = UDim2.new(1,-26+IconSize,1,-26+IconSize)
     IconCheckboxFrame.AnchorPoint = Vector2.new(0.5,0.5)
     IconCheckboxFrame.Position = UDim2.new(0.5,0,0.5,0)
-    
-    
+
+
     local CheckboxFrame = Creator.NewRoundFrame(Radius, "Squircle",{
         ImageTransparency = .85, -- 0
         ThemeTag = {
@@ -59,10 +59,10 @@ function Checkbox.New(Value, Icon, IconSize, Parent, Callback, Config)
             --     })
             -- })
         }),
-        
+
         IconCheckboxFrame,
     }, true)
-    
+
     function Checkbox:Set(Toggled)
         if Toggled then
             Tween(CheckboxFrame.Layer, 0.06, {
@@ -92,7 +92,7 @@ function Checkbox.New(Value, Icon, IconSize, Parent, Callback, Config)
             end
         end)
     end
-    
+
     return CheckboxFrame, Checkbox
 end
 

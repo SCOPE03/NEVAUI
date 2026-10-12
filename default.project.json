@@ -1,10 +1,10 @@
 {
-    "name": "WindUI",
+    "name": "NevaUI",
     "tree": {
         "$className": "DataModel",
 
         "ReplicatedStorage": {
-            "WindUI": {
+            "NevaUI": {
                 "$path": "src/"
             },
             "build": {

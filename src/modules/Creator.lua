@@ -12,13 +12,13 @@ local DynamicShapeModule = require("./DynamicShape")
 
 local RenderStepped = RunService.Heartbeat
 
-local IconsURL = "https://raw.githubusercontent.com/Footagesus/Icons/main/Main-v2.lua"
+local IconsURL = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/src/Icons/Main-v2.lua"
 
 local Icons = require("../Icons/Main-v2")
 
 Icons.SetIconsType("lucide")
 
-local WindUI
+local NevaUI
 
 local Creator
 Creator = {
@@ -126,12 +126,12 @@ Creator = {
 	ThemeChangeCallbacks = {},
 }
 
-function Creator.Init(WindUITable)
-	WindUI = WindUITable
+function Creator.Init(NevaUITable)
+	NevaUI = NevaUITable
 
 	Creator.ThemeFallbacks = require("../themes/Fallbacks")(Creator)
 
-	Creator.UIScale = WindUITable.UIScale
+	Creator.UIScale = NevaUITable.UIScale
 
 	DynamicShapeModule:Init(Creator)
 end
@@ -156,12 +156,12 @@ function Creator.SafeCallback(Function, ...)
 
 	local Success, Event = pcall(Function, ...)
 	if not Success then
-		if WindUI and WindUI.Window and WindUI.Window.Debug then
+		if NevaUI and NevaUI.Window and NevaUI.Window.Debug then
 			local _, i = Event:find(":%d+: ")
 
-			warn("[ WindUI: DEBUG Mode ] " .. Event)
+			warn("[ NevaUI: DEBUG Mode ] " .. Event)
 
-			return WindUI:Notify({
+			return NevaUI:Notify({
 				Title = "DEBUG Mode: Error",
 				Content = not i and Event or Event:sub(i + 1),
 				Duration = 8,
@@ -171,8 +171,8 @@ function Creator.SafeCallback(Function, ...)
 end
 
 function Creator.Gradient(stops, props)
-	if WindUI and WindUI.Gradient then
-		return WindUI:Gradient(stops, props)
+	if NevaUI and NevaUI.Gradient then
+		return NevaUI:Gradient(stops, props)
 	end
 
 	local colorSequence = {}
@@ -628,7 +628,7 @@ function Creator.SetDraggable(can)
 end
 
 function Creator.Drag(mainFrame, dragFrames, ondrag)
-	local CurInput = WindUI.GenerateGUID()
+	local CurInput = NevaUI.GenerateGUID()
 
 	local currentDragFrame = nil
 	local dragging = false
@@ -669,11 +669,11 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
 				input.UserInputType == Enum.UserInputType.MouseButton1
 				or input.UserInputType == Enum.UserInputType.Touch
 			then
-				if WindUI and WindUI.CurrentInput and WindUI.CurrentInput ~= CurInput then
+				if NevaUI and NevaUI.CurrentInput and NevaUI.CurrentInput ~= CurInput then
 					return
 				end
 
-				WindUI.CurrentInput = CurInput
+				NevaUI.CurrentInput = CurInput
 
 				dragging = true
 				activeInput = input
@@ -692,7 +692,7 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
 		if not dragging then
 			return
 		end
-		if WindUI.CurrentInput and WindUI.CurrentInput ~= CurInput then
+		if NevaUI.CurrentInput and NevaUI.CurrentInput ~= CurInput then
 			return
 		end
 
@@ -708,7 +708,7 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
 	end)
 
 	UserInputService.InputEnded:Connect(function(input)
-		if not dragging or WindUI.CurrentInput ~= CurInput then
+		if not dragging or NevaUI.CurrentInput ~= CurInput then
 			return
 		end
 
@@ -719,7 +719,7 @@ function Creator.Drag(mainFrame, dragFrames, ondrag)
 				and input.UserInputType == Enum.UserInputType.MouseButton1
 			)
 		then
-			WindUI.CurrentInput = nil
+			NevaUI.CurrentInput = nil
 			dragging = false
 			activeInput = nil
 			currentDragFrame = nil
@@ -787,7 +787,7 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed, Them
 		}).IconFrame
 		IconLabel.Parent = ImageFrame
 	elseif string.find(Img, "http") and not string.find(Img, "roblox.com") then
-		local FileName = "WindUI/" .. Folder .. "/assets/." .. Type .. "-" .. Name .. ".png"
+		local FileName = "NevaUI/" .. Folder .. "/assets/." .. Type .. "-" .. Name .. ".png"
 		local success, response = pcall(function()
 			task.spawn(function()
 				local response = Creator.Request
@@ -808,7 +808,7 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed, Them
 				else
 					warn(
 						string.format(
-							"[ WindUI.Creator ] Failed to load custom asset '%s': %s",
+							"[ NevaUI.Creator ] Failed to load custom asset '%s': %s",
 							FileName,
 							tostring(asset)
 						)
@@ -821,7 +821,7 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed, Them
 		end)
 		if not success then
 			warn(
-				"[ WindUI.Creator ]  '" .. identifyexecutor()
+				"[ NevaUI.Creator ]  '" .. identifyexecutor()
 					or "Studio" .. "' doesnt support the URL Images. Error: " .. response
 			)
 

@@ -3,7 +3,7 @@ local Localization = {}
 
 
 -- function Localization:Init(Creator)
-    
+
 -- end
 
 function Localization:New(LocalizationConfig, Creator)
@@ -13,9 +13,9 @@ function Localization:New(LocalizationConfig, Creator)
         Prefix = LocalizationConfig.Prefix or "loc:",
         DefaultLanguage = LocalizationConfig.DefaultLanguage or "en"
     }
-    
+
     Creator.Localization = LocalizationModule
-    
+
     return LocalizationModule
 end
 

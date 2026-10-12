@@ -13,13 +13,13 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
         Icon = SectionConfig.Icon,
         IconThemed = SectionConfig.IconThemed,
         Opened = SectionConfig.Opened or false,
-        
+
         HeaderSize = 42,
         IconSize = 18,
-        
+
         Expandable = false,
     }
-    
+
     local IconFrame
     if SectionModule.Icon then
         IconFrame = Creator.Image(
@@ -32,11 +32,11 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
             SectionModule.IconThemed,
             "TabSectionIcon"
         )
-        
+
         IconFrame.Size = UDim2.new(0,SectionModule.IconSize,0,SectionModule.IconSize)
         IconFrame.ImageLabel.ImageTransparency = .25
     end
-    
+
     local ChevronIconData = Creator.Icon("chevron-down")
     local ChevronIconFrame = New("Frame", {
         Size = UDim2.new(0,SectionModule.IconSize,0,SectionModule.IconSize),
@@ -55,7 +55,7 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
             ImageTransparency = .7,
         })
     })
-    
+
     local SectionFrame = New("Frame", {
         Size = UDim2.new(1,0,0,SectionModule.HeaderSize),
         BackgroundTransparency = 1,
@@ -72,10 +72,10 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
                 Text = SectionModule.Title,
                 TextXAlignment = "Left",
                 Size = UDim2.new(
-                    1, 
+                    1,
                     IconFrame and (-SectionModule.IconSize-10)*2
                         or (-SectionModule.IconSize-10),
-                        
+
                     1,
                     0
                 ),
@@ -115,8 +115,8 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
             }),
         })
     })
-    
-    
+
+
     function SectionModule:Tab(TabConfig)
         if not SectionModule.Expandable then
             SectionModule.Expandable = true
@@ -125,14 +125,14 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
         TabConfig.Parent = SectionFrame.Content
         return TabModule.New(TabConfig, UIScale)
     end
-    
+
     function SectionModule:Open()
         if SectionModule.Expandable then
             SectionModule.Opened = true
             Tween(SectionFrame, 0.33, {
                 Size = UDim2.new(1,0,0, SectionModule.HeaderSize + (SectionFrame.Content.AbsoluteSize.Y/UIScale))
             }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-            
+
             Tween(ChevronIconFrame.ImageLabel, 0.1, {Rotation = 180}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         end
     end
@@ -145,7 +145,7 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
             Tween(ChevronIconFrame.ImageLabel, 0.1, {Rotation = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
         end
     end
-    
+
     Creator.AddSignal(SectionFrame.TextButton.MouseButton1Click, function()
         if SectionModule.Expandable then
             if SectionModule.Opened then
@@ -155,13 +155,13 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
             end
         end
     end)
-    
+
     Creator.AddSignal(SectionFrame.Content.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
         if SectionModule.Opened then
             SectionModule:Open()
         end
     end)
-    
+
     if SectionModule.Opened then
         task.spawn(function()
             task.wait()
@@ -169,8 +169,8 @@ function Section.New(SectionConfig, Parent, Folder, UIScale, Window)
         end)
     end
 
-    
-    
+
+
     return SectionModule
 end
 

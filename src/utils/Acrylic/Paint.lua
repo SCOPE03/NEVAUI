@@ -107,13 +107,13 @@ return function(props)
   		}),
   	})
 
-    
+
     local Blur
-    
+
     task.wait()
 	if props.UseAcrylic then
 		Blur = AcrylicBlur()
-		
+
 		Blur.Frame.Parent = AcrylicPaint.Frame
 		AcrylicPaint.Model = Blur.Model
 		AcrylicPaint.AddParent = Blur.AddParent

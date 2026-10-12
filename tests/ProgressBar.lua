@@ -1,6 +1,6 @@
-local WindUI = require("../src/Init")
+local NevaUI = require("../src/Init")
 
-local Window = WindUI:CreateWindow({
+local Window = NevaUI:CreateWindow({
 	Title = "ProgressBar Test",
 })
 

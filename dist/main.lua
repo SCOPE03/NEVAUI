@@ -1,15 +1,15 @@
 --[[
      _      ___         ____  ______
     | | /| / (_)__  ___/ / / / /  _/
-    | |/ |/ / / _ \/ _  / /_/ // /  
+    | |/ |/ / / _ \/ _  / /_/ // /
     |__/|__/_/_//_/\_,_/\____/___/
-    
+
     v1.6.66  |  2026-10-07  |  Roblox UI Library for scripts
-    
+
     To view the source code, see the `src/` folder on the official GitHub repository.
-    
-    Author: Footagesus (Footages, .ftgs, oftgs)
-    Github: https://github.com/Footagesus/WindUI
+
+    Author: NEVA (NEVA, .ftgs, oftgs)
+    Github: https://github.com/SCOPE03/NEVAUI
     Discord: https://discord.gg/ftgs-development-hub-1300692552005189632
     License: MIT
 ]]
@@ -22,7 +22,7 @@ Height:number?,
 Focused:boolean,
 
 Window:any,
-WindUI:any,
+NevaUI:any,
 Tab:any,
 Parent:Instance,
 }local a a={cache={}, load=function(b)if not a.cache[b]then a.cache[b]={c=a[b]()}end return a.cache[b].c end}do function a.a()
@@ -24505,22 +24505,22 @@ IconThemeTag=nil,
 
 Icons={
 lucide=IsExploit()and Loadstring(
-Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/lucide/dist/Icons.lua"
+Get"https://raw.githubusercontent.com/SCOPE03/NEVAUI/refs/heads/main/src/Icons/lucide/dist/Icons.lua"
 )()or a.load'b',
 solar=IsExploit()and Loadstring(
-Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/solar/dist/Icons.lua"
+Get"https://raw.githubusercontent.com/SCOPE03/NEVAUI/refs/heads/main/src/Icons/solar/dist/Icons.lua"
 )()or a.load'c',
 craft=IsExploit()and Loadstring(
-Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/craft/dist/Icons.lua"
+Get"https://raw.githubusercontent.com/SCOPE03/NEVAUI/refs/heads/main/src/Icons/craft/dist/Icons.lua"
 )()or a.load'd',
 geist=IsExploit()and Loadstring(
-Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/geist/dist/Icons.lua"
+Get"https://raw.githubusercontent.com/SCOPE03/NEVAUI/refs/heads/main/src/Icons/geist/dist/Icons.lua"
 )()or a.load'e',
 sfsymbols=IsExploit()and Loadstring(
-Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/sfsymbols/dist/Icons.lua"
+Get"https://raw.githubusercontent.com/SCOPE03/NEVAUI/refs/heads/main/src/Icons/sfsymbols/dist/Icons.lua"
 )()or a.load'f',
 gravity=IsExploit()and Loadstring(
-Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/gravity/dist/Icons.lua"
+Get"https://raw.githubusercontent.com/SCOPE03/NEVAUI/refs/heads/main/src/Icons/gravity/dist/Icons.lua"
 )()or a.load'g',
 },
 }
@@ -25015,7 +25015,7 @@ if not u then
 if m and m.Window and m.Window.Debug then local
 x, z=v:find":%d+: "
 
-warn("[ WindUI: DEBUG Mode ] "..v)
+warn("[ NevaUI: DEBUG Mode ] "..v)
 
 return m:Notify{
 Title="DEBUG Mode: Error",
@@ -25643,7 +25643,7 @@ Colors={
 }.IconFrame
 J.Parent=H
 elseif string.find(v,"http")and not string.find(v,"roblox.com")then
-local J="WindUI/"..A.."/assets/."..B.."-"..x..".png"
+local J="NevaUI/"..A.."/assets/."..B.."-"..x..".png"
 local L,M=pcall(function()
 task.spawn(function()
 local L=p.Request
@@ -25664,7 +25664,7 @@ H.ImageLabel.Image=N
 else
 warn(
 string.format(
-"[ WindUI.Creator ] Failed to load custom asset '%s': %s",
+"[ NevaUI.Creator ] Failed to load custom asset '%s': %s",
 J,
 tostring(N)
 )
@@ -25677,7 +25677,7 @@ end)
 end)
 if not L then
 warn(
-"[ WindUI.Creator ]  '"..identifyexecutor()
+"[ NevaUI.Creator ]  '"..identifyexecutor()
 or"Studio".."' doesnt support the URL Images. Error: "..M
 )
 
@@ -26727,12 +26727,12 @@ New=a.load'p'.New
 
 return[[
 {
-    "name": "windui",
+    "name": "nevaui",
     "version": "1.6.66",
     "main": "./dist/main.lua",
-    "repository": "https://github.com/Footagesus/WindUI",
+    "repository": "https://github.com/SCOPE03/NEVAUI",
     "discord": "https://discord.gg/ftgs-development-hub-1300692552005189632",
-    "author": "Footagesus",
+    "author": "NEVA",
     "description": "Roblox UI Library for scripts",
     "license": "MIT",
     "scripts": {
@@ -27051,7 +27051,7 @@ UICorner=28,
 UIPadding=12,
 
 Window=ag,
-WindUI=ah,
+NevaUI=ah,
 
 UIElements={},
 }
@@ -27224,7 +27224,7 @@ local af=a.load't'.New
 
 function aa.new(ag,ah,ai,aj)
 local ak=a.load'u'
-local al=ak.Create(true,"Popup",ag.Window,ag.WindUI,ag.WindUI.ScreenGui.KeySystem)
+local al=ak.Create(true,"Popup",ag.Window,ag.NevaUI,ag.NevaUI.ScreenGui.KeySystem)
 
 local am={}
 
@@ -27520,7 +27520,7 @@ PaddingBottom=UDim.new(0,10),
 })
 
 for i,l in next,ag.KeySystem.API do
-local m=ag.WindUI.Services[l.Type]
+local m=ag.NevaUI.Services[l.Type]
 if m then
 local p={}
 for r,u in next,m.Args do
@@ -27606,7 +27606,7 @@ ad(v,0.08,{ImageTransparency=1}):Play()
 end)
 ab.AddSignal(v.MouseButton1Click,function()
 r.Copy()
-ag.WindUI:Notify{
+ag.NevaUI:Notify{
 Title="Key System",
 Content="Key link copied to clipboard.",
 Image="key",
@@ -27662,7 +27662,7 @@ task.wait(0.4)
 ai(true)
 end
 else
-ag.WindUI:Notify{
+ag.NevaUI:Notify{
 Title="Key System. Error",
 Content="Invalid key.",
 Icon="triangle-alert",
@@ -27695,7 +27695,7 @@ end
 if b then
 handleSuccess(aA)
 else
-ag.WindUI:Notify{
+ag.NevaUI:Notify{
 Title="Key System. Error",
 Content=d,
 Icon="triangle-alert",
@@ -28091,7 +28091,7 @@ IconSize=22,
 }
 
 local ah=a.load'u'
-local ai=ah.Create(true,"Popup",ae.WindUI.Window,ae.WindUI,af)
+local ai=ah.Create(true,"Popup",ae.NevaUI.Window,ae.NevaUI,af)
 
 local aj=200
 
@@ -28112,7 +28112,7 @@ al=ab.Image(
 ag.Icon,
 ag.Title..":"..ag.Icon,
 0,
-ae.WindUI.Window,
+ae.NevaUI.Window,
 "Popup",
 true,
 ae.IconThemed,
@@ -29153,17 +29153,17 @@ end
 
 function ae.Init(af,ag)
 if not ag.Folder then
-warn"[ WindUI.ConfigManager ] Window.Folder is not specified."
+warn"[ NevaUI.ConfigManager ] Window.Folder is not specified."
 return false
 end
 if ab:IsStudio()or not writefile then
-warn"[ WindUI.ConfigManager ] The config system doesn't work in the studio."
+warn"[ NevaUI.ConfigManager ] The config system doesn't work in the studio."
 return false
 end
 
 ad=ag
 ae.Folder=ad.Folder
-ae.Path="WindUI/"..tostring(ae.Folder).."/config/"
+ae.Path="NevaUI/"..tostring(ae.Folder).."/config/"
 
 if not isfolder(ae.Path)then
 makefolder(ae.Path)
@@ -29182,7 +29182,7 @@ end
 
 function ae.SetPath(af,ag)
 if not ag then
-warn"[ WindUI.ConfigManager ] Custom path is not specified."
+warn"[ NevaUI.ConfigManager ] Custom path is not specified."
 return false
 end
 
@@ -29266,7 +29266,7 @@ end
 
 local ak,al=pcall(function()
 local ak=readfile or function()
-warn"[ WindUI.ConfigManager ] The config system doesn't work in the studio."
+warn"[ NevaUI.ConfigManager ] The config system doesn't work in the studio."
 return nil
 end
 return ac:JSONDecode(ak(ai.Path))
@@ -29353,9 +29353,9 @@ local al,am=pcall(function()
 return ai:Load()
 end)
 if al then
-if ad.Debug then print("[ WindUI.ConfigManager ] AutoLoaded config: "..ag)end
+if ad.Debug then print("[ NevaUI.ConfigManager ] AutoLoaded config: "..ag)end
 else
-warn("[ WindUI.ConfigManager ] Failed to AutoLoad config: "..ag.." - "..tostring(am))
+warn("[ NevaUI.ConfigManager ] Failed to AutoLoad config: "..ag.." - "..tostring(am))
 end
 end)
 end
@@ -31138,7 +31138,7 @@ at:Disconnect()
 at=nil
 end
 
-al.WindUI.CurrentInput=nil
+al.NevaUI.CurrentInput=nil
 
 if b then
 return
@@ -31377,7 +31377,7 @@ end
 
 ai:Set(ak,false,ah.Window.NewElements)
 
-local an=ah.WindUI.GenerateGUID()
+local an=ah.NevaUI.GenerateGUID()
 
 if ah.Window.NewElements and am.Animate then
 if ai.Type=="Toggle"then
@@ -31389,11 +31389,11 @@ ao.UserInputType==Enum.UserInputType.MouseButton1
 or ao.UserInputType==Enum.UserInputType.Touch
 )
 then
-if ah.WindUI.CurrentInput and ah.WindUI.CurrentInput~=an then
+if ah.NevaUI.CurrentInput and ah.NevaUI.CurrentInput~=an then
 return
 end
 
-ah.WindUI.CurrentInput=an
+ah.NevaUI.CurrentInput=an
 am:Animate(ao,ai)
 end
 end)
@@ -31724,7 +31724,7 @@ ao:Disconnect()
 ai=false
 ay.ScrollingEnabled=true
 
-ak.WindUI.CurrentInput=nil
+ak.NevaUI.CurrentInput=nil
 
 if ak.Window.NewElements then
 ag(al.UIElements.SliderIcon.Frame.Thumb,0.2,{
@@ -31804,7 +31804,7 @@ end
 end
 end)
 
-local az=ak.WindUI.GenerateGUID()
+local az=ak.NevaUI.GenerateGUID()
 
 ae.AddSignal(al.UIElements.SliderContainer.InputBegan,function(aA)
 if al.Locked or ai then
@@ -31814,10 +31814,10 @@ if
 aA.UserInputType==Enum.UserInputType.MouseButton1
 or aA.UserInputType==Enum.UserInputType.Touch
 then
-if ak.WindUI.CurrentInput and ak.WindUI.CurrentInput~=az then
+if ak.NevaUI.CurrentInput and ak.NevaUI.CurrentInput~=az then
 return
 end
-ak.WindUI.CurrentInput=az
+ak.NevaUI.CurrentInput=az
 
 al:Set(ap,aA)
 
@@ -32545,7 +32545,7 @@ Position=UDim2.new(-10,0,-10,0),
 Visible=false,
 Active=false,
 
-Parent=ao.WindUI.DropdownGui,
+Parent=ao.NevaUI.DropdownGui,
 AnchorPoint=Vector2.new(1,0),
 },{
 ap.UIElements.Menu,
@@ -32561,7 +32561,7 @@ UDim2.fromOffset(0,ap.UIElements.UIListLayout.AbsoluteContentSize.Y)
 end
 
 local function RecalculateListSize()
-local at=ao.WindUI.DropdownGui.AbsoluteSize.Y
+local at=ao.NevaUI.DropdownGui.AbsoluteSize.Y
 
 local au=ap.UIElements.UIListLayout.AbsoluteContentSize.Y/ao.UIScale
 local av=ap.SearchBarEnabled and(aq.SearchBarHeight+(aq.MenuPadding*3))
@@ -33822,7 +33822,7 @@ am.OnCopy()
 end
 end)
 if not ap then
-al.WindUI:Notify{
+al.NevaUI:Notify{
 Title="Error",
 Content="The "..ao.." is not copied. Error: "..aq,
 Icon="x",
@@ -33830,7 +33830,7 @@ Duration=5,
 }
 end
 end
-end,al.WindUI.UIScale)
+end,al.NevaUI.UIScale)
 
 function am.SetCode(ap,aq)
 ao.Set(aq)
@@ -34733,7 +34733,7 @@ aa.AddSignal(aw.UIElements.Colorpicker.MouseButton1Click,function()
 if ax and not aw.IsShowed then
 aw.IsShowed=true
 
-as:Colorpicker(aw,av.Window,av.WindUI,function(ay,az)
+as:Colorpicker(aw,av.Window,av.NevaUI,function(ay,az)
 aw:Update(ay,az)
 aw.Default=ay
 aw.Transparency=az
@@ -34977,7 +34977,7 @@ end)
 
 local av=am.ElementsModule
 
-av.Load(an,au.Outline.Content,av.Elements,am.Window,am.WindUI,function()
+av.Load(an,au.Outline.Content,av.Elements,am.Window,am.NevaUI,function()
 if not an.Expandable then
 an.Expandable=true
 aq.Visible=true
@@ -35247,7 +35247,7 @@ am,
 an,
 ao.Elements,
 al.Window,
-al.WindUI,
+al.NevaUI,
 function(ap,aq)
 local ar=al.Tab and al.Tab.Gap or(al.Window.NewElements and 1 or 6)
 
@@ -35333,7 +35333,7 @@ am,
 an,
 ao.Elements,
 al.Window,
-al.WindUI,
+al.NevaUI,
 function(ap,aq)
 local ar=al.Tab and al.Tab.Gap or(al.Window.NewElements and 1 or 6)
 
@@ -35433,7 +35433,7 @@ am,
 an,
 ao.Elements,
 al.Window,
-al.WindUI,
+al.NevaUI,
 
 
 
@@ -35560,7 +35560,7 @@ and au.Y>=av.Y
 and au.Y<=av.Y+aw.Y
 end
 
-local au=an.WindUI.GenerateGUID()
+local au=an.NevaUI.GenerateGUID()
 
 ai.AddSignal(at.CanvasGroup.Viewport.MouseEnter,function()
 if ao.Interactive then
@@ -35583,11 +35583,11 @@ if
 (av.UserInputType==Enum.UserInputType.MouseButton1)
 or(av.UserInputType==Enum.UserInputType.Touch and not aq)
 then
-if an.WindUI.CurrentInput and an.WindUI.CurrentInput~=au then
+if an.NevaUI.CurrentInput and an.NevaUI.CurrentInput~=au then
 return
 end
 
-an.WindUI.CurrentInput=au
+an.NevaUI.CurrentInput=au
 
 ap=true
 as=av.Position
@@ -35601,11 +35601,11 @@ if
 av.UserInputType==Enum.UserInputType.MouseButton1
 or av.UserInputType==Enum.UserInputType.Touch
 then
-if an.WindUI.CurrentInput and an.WindUI.CurrentInput~=au then
+if an.NevaUI.CurrentInput and an.NevaUI.CurrentInput~=au then
 return
 end
 
-an.WindUI.CurrentInput=nil
+an.NevaUI.CurrentInput=nil
 
 ap=false
 end
@@ -35755,7 +35755,7 @@ at.Index=#aa.Elements+1
 at.GlobalIndex=#ak.AllElements+1
 at.Parent=af
 at.Window=ak
-at.WindUI=al
+at.NevaUI=al
 at.UIScale=ao
 at.ElementsModule=an local
 
@@ -35779,7 +35779,7 @@ if ay then
 ak.PendingConfigData[at.Flag]=nil
 else
 warn(
-"[ WindUI ] Failed to apply pending config for '"
+"[ NevaUI ] Failed to apply pending config for '"
 ..at.Flag
 .."': "
 ..tostring(az)
@@ -35904,7 +35904,7 @@ OnChangeFunc=function(ao)end,
 
 function ao.Init(ap,aq,ar,as)
 Window=ap
-WindUI=aq
+NevaUI=aq
 ao.ToolTipParent=ar
 ao.TabHighlight=as
 return ao
@@ -36233,7 +36233,7 @@ ar.UIElements.ContainerFrame,
 ar.UIElements.ContainerFrameCanvas.ScrollSliderHolder,
 Window,
 4,
-WindUI
+NevaUI
 )
 end
 
@@ -36331,7 +36331,7 @@ ar,
 ar.UIElements.ContainerFrame,
 aA.Elements,
 Window,
-WindUI,
+NevaUI,
 nil,
 aA,
 aq,
@@ -37380,11 +37380,11 @@ aw.Topbar={Height=52,ButtonsType="Default"}
 end
 
 if not ai:IsStudio()and aw.Folder and writefile then
-if not isfolder("WindUI/"..aw.Folder)then
-makefolder("WindUI/"..aw.Folder)
+if not isfolder("NevaUI/"..aw.Folder)then
+makefolder("NevaUI/"..aw.Folder)
 end
-if not isfolder("WindUI/"..aw.Folder.."/assets")then
-makefolder("WindUI/"..aw.Folder.."/assets")
+if not isfolder("NevaUI/"..aw.Folder.."/assets")then
+makefolder("NevaUI/"..aw.Folder.."/assets")
 end
 if not isfolder(aw.Folder)then
 makefolder(aw.Folder)
@@ -37532,7 +37532,7 @@ aw.UIElements.SideBar,
 aw.UIElements.SideBarContainer.Content,
 aw,
 3,
-av.WindUI
+av.NevaUI
 )
 end
 
@@ -37818,7 +37818,7 @@ Headers={["User-Agent"]="Roblox/Exploit"},
 writefile(u,v)
 end)
 if not v then
-warn("[ WindUI.Window.Background ] Failed to download video: "..tostring(x))
+warn("[ NevaUI.Window.Background ] Failed to download video: "..tostring(x))
 end
 end
 
@@ -37826,9 +37826,9 @@ local v,x=pcall(function()
 return getcustomasset(u)
 end)
 if not v then
-warn("[ WindUI.Window.Background ] Failed to load custom asset: "..tostring(x))
+warn("[ NevaUI.Window.Background ] Failed to load custom asset: "..tostring(x))
 end
-warn"[ WindUI.Window.Background ] VideoFrame may not work with custom video"
+warn"[ NevaUI.Window.Background ] VideoFrame may not work with custom video"
 m=x
 end
 
@@ -37977,7 +37977,7 @@ AnchorPoint=Vector2.new(0.5,0.5),
 Active=true,
 
 },{
-av.WindUI.UIScaleObj,
+av.NevaUI.UIScaleObj,
 aw.AcrylicPaint and aw.AcrylicPaint.Frame or nil,
 d,
 an.NewRoundFrame(aw.UICorner,"Squircle",{
@@ -38126,19 +38126,19 @@ PaddingBottom=UDim.new(0,aw.UIPadding),
 an.AddSignal(aw.UIElements.Main.Main.Topbar.Left:GetPropertyChangedSignal"AbsoluteSize",function()
 local A=0
 local B=aw.UIElements.Main.Main.Topbar.Right.UIListLayout.AbsoluteContentSize.X
-/av.WindUI.UIScale
+/av.NevaUI.UIScale
 
-A=aw.UIElements.Main.Main.Topbar.Left.AbsoluteSize.X/av.WindUI.UIScale
+A=aw.UIElements.Main.Main.Topbar.Left.AbsoluteSize.X/av.NevaUI.UIScale
 if aw.Topbar.ButtonsType~="Default"then
 A=A+B+aw.UIPadding-4
 end
 
 aw.UIElements.Main.Main.Topbar.Center.Position=
-UDim2.new(0,A+(aw.UIPadding/av.WindUI.UIScale),0.5,0)
+UDim2.new(0,A+(aw.UIPadding/av.NevaUI.UIScale),0.5,0)
 aw.UIElements.Main.Main.Topbar.Center.Size=UDim2.new(
 1,
 -A
--(aw.UIPadding/av.WindUI.UIScale)
+-(aw.UIPadding/av.NevaUI.UIScale)
 -(aw.Topbar.ButtonsType=="Default"and B+aw.UIPadding or 0),
 1,
 0
@@ -38149,7 +38149,7 @@ if aw.Topbar.ButtonsType~="Default"then
 an.AddSignal(aw.UIElements.Main.Main.Topbar.Right:GetPropertyChangedSignal"AbsoluteSize",function()
 aw.UIElements.Main.Main.Topbar.Left.Position=UDim2.new(
 0,
-(aw.UIElements.Main.Main.Topbar.Right.AbsoluteSize.X/av.WindUI.UIScale)+aw.UIPadding-4,
+(aw.UIElements.Main.Main.Topbar.Right.AbsoluteSize.X/av.NevaUI.UIScale)+aw.UIPadding-4,
 0,
 0
 )
@@ -38347,7 +38347,7 @@ end
 aw.UIElements.BackgroundGradient=an.NewRoundFrame(aw.UICorner,"Squircle",{
 Size=UDim2.new(1,0,1,0),
 Parent=aw.UIElements.Main.Background,
-ImageTransparency=aw.Transparent and av.WindUI.TransparencyValue or 0,
+ImageTransparency=aw.Transparent and av.NevaUI.TransparencyValue or 0,
 },{
 B,
 })
@@ -38447,7 +38447,7 @@ end
 
 function aw.SetBackgroundTransparency(B,C)
 local F=math.floor(tonumber(C)*10+0.5)/10
-av.WindUI.TransparencyValue=F
+av.NevaUI.TransparencyValue=F
 aw:ToggleTransparency(F>0)
 end
 
@@ -38472,9 +38472,9 @@ local function SetSize(F)
 ap(aw.UIElements.Main,0.45,{
 Size=not aw.IsFullscreen and C or UDim2.new(
 0,
-(av.WindUI.ScreenGui.AbsoluteSize.X-20)/av.WindUI.UIScale,
+(av.NevaUI.ScreenGui.AbsoluteSize.X-20)/av.NevaUI.UIScale,
 0,
-(av.WindUI.ScreenGui.AbsoluteSize.Y-20-52)/av.WindUI.UIScale
+(av.NevaUI.ScreenGui.AbsoluteSize.Y-20-52)/av.NevaUI.UIScale
 ),
 },Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 
@@ -38508,7 +38508,7 @@ aw.IsFullscreen=not G
 SetSize(true)
 end
 
-an.AddSignal(av.WindUI.ScreenGui:GetPropertyChangedSignal"AbsoluteSize",function()
+an.AddSignal(av.NevaUI.ScreenGui:GetPropertyChangedSignal"AbsoluteSize",function()
 if aw.IsFullscreen then
 SetSize()
 end
@@ -38552,7 +38552,7 @@ function aw.OnDestroy(F,G)
 aw.OnDestroyCallback=G
 end
 
-if av.WindUI.UseAcrylic then
+if av.NevaUI.UseAcrylic then
 aw.AcrylicPaint.AddParent(aw.UIElements.Main)
 end
 
@@ -38601,7 +38601,7 @@ end
 aw.UIElements.Main.Background.ImageTransparency=1
 ap(aw.UIElements.Main.Background,0.4,{
 
-ImageTransparency=aw.Transparent and av.WindUI.TransparencyValue or 0,
+ImageTransparency=aw.Transparent and av.NevaUI.TransparencyValue or 0,
 },Enum.EasingStyle.Exponential,Enum.EasingDirection.Out):Play()
 
 if l then
@@ -38664,7 +38664,7 @@ aw.UIElements.Main.Visible=true
 
 aw.UIElements.Main:WaitForChild"Main".Visible=true
 
-av.WindUI:ToggleAcrylic(true)
+av.NevaUI:ToggleAcrylic(true)
 
 end)
 end
@@ -38681,7 +38681,7 @@ an.SafeCallback(aw.OnCloseCallback)
 end)
 end
 
-av.WindUI:ToggleAcrylic(false)
+av.NevaUI:ToggleAcrylic(false)
 
 if aw.UIElements.Main and aw.UIElements.Main:WaitForChild"Main"then
 aw.UIElements.Main.Main.Visible=false
@@ -38773,10 +38773,10 @@ aw.Destroyed=true
 
 task.wait(0.4)
 
-av.WindUI.ScreenGui:Destroy()
-av.WindUI.NotificationGui:Destroy()
-av.WindUI.DropdownGui:Destroy()
-av.WindUI.TooltipGui:Destroy()
+av.NevaUI.ScreenGui:Destroy()
+av.NevaUI.NotificationGui:Destroy()
+av.NevaUI.DropdownGui:Destroy()
+av.NevaUI.TooltipGui:Destroy()
 
 an.DisconnectAll()
 
@@ -38800,9 +38800,9 @@ end
 function aw.ToggleTransparency(F,G)
 
 aw.Transparent=G
-av.WindUI.Transparent=G
+av.NevaUI.Transparent=G
 
-aw.UIElements.Main.Background.ImageTransparency=G and av.WindUI.TransparencyValue or 0
+aw.UIElements.Main.Background.ImageTransparency=G and av.NevaUI.TransparencyValue or 0
 
 
 end
@@ -38845,12 +38845,12 @@ return G
 end
 
 function aw.GetUIScale(F,G)
-return av.WindUI.UIScale
+return av.NevaUI.UIScale
 end
 
 function aw.SetUIScale(F,G)
-av.WindUI.UIScale=G
-ap(av.WindUI.UIScaleObj,0.2,{Scale=G},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
+av.NevaUI.UIScale=G
+ap(av.NevaUI.UIScaleObj,0.2,{Scale=G},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 return aw
 end
 
@@ -38932,7 +38932,7 @@ end
 
 local F=a.load'ag'
 local G=a.load'ah'
-local H=F.Init(aw,av.WindUI,av.WindUI.TooltipGui)
+local H=F.Init(aw,av.NevaUI,av.NevaUI.TooltipGui)
 H:OnChange(function(J)
 aw.CurrentTab=J
 end)
@@ -38941,7 +38941,7 @@ aw.TabModule=H
 
 function aw.Tab(J,L)
 L.Parent=aw.UIElements.SideBar.Frame
-return H.New(L,av.WindUI.UIScale)
+return H.New(L,av.NevaUI.UIScale)
 end
 
 function aw.SelectTab(J,L)
@@ -38953,7 +38953,7 @@ return G.New(
 L,
 aw.UIElements.SideBar.Frame,
 aw.Folder,
-av.WindUI.UIScale,
+av.NevaUI.UIScale,
 aw
 )
 end
@@ -39015,7 +39015,7 @@ Buttons=M.Buttons or{},
 
 TextPadding=14,
 }
-local O=J.Create(false,"Dialog",aw,av.WindUI,aw.UIElements.Main.Main)
+local O=J.Create(false,"Dialog",aw,av.NevaUI,aw.UIElements.Main.Main)
 
 O.UIElements.Main.Size=UDim2.new(0,N.Width,0,0)
 
@@ -39254,7 +39254,7 @@ N.Window=aw
 return at:New(N,aw.UIElements.Main.Main.Topbar.Center.Holder)
 end
 
-local M=av.WindUI.GenerateGUID()
+local M=av.NevaUI.GenerateGUID()
 
 local function startResizing(N)
 if aw.CanResize then
@@ -39268,11 +39268,11 @@ ap(az.ImageLabel,0.1,{ImageTransparency=0.35}):Play()
 
 an.AddSignal(N.Changed,function()
 if N.UserInputState==Enum.UserInputState.End then
-if av.WindUI.CurrentInput and av.WindUI.CurrentInput~=M then
+if av.NevaUI.CurrentInput and av.NevaUI.CurrentInput~=M then
 return
 end
 
-av.WindUI.CurrentInput=nil
+av.NevaUI.CurrentInput=nil
 
 isResizing=false
 aB.Active=false
@@ -39289,10 +39289,10 @@ if
 N.UserInputType==Enum.UserInputType.MouseButton1
 or N.UserInputType==Enum.UserInputType.Touch
 then
-if av.WindUI.CurrentInput and av.WindUI.CurrentInput~=M then
+if av.NevaUI.CurrentInput and av.NevaUI.CurrentInput~=M then
 return
 end
-av.WindUI.CurrentInput=M
+av.NevaUI.CurrentInput=M
 
 if aw.CanResize then
 startResizing(N)
@@ -39326,7 +39326,7 @@ end
 end)
 
 an.AddSignal(az.MouseEnter,function()
-if av.WindUI.CurrentInput and av.WindUI.CurrentInput~=M then
+if av.NevaUI.CurrentInput and av.NevaUI.CurrentInput~=M then
 return
 end
 if not isResizing then
@@ -39334,7 +39334,7 @@ ap(az.ImageLabel,0.1,{ImageTransparency=0.35}):Play()
 end
 end)
 an.AddSignal(az.MouseLeave,function()
-if av.WindUI.CurrentInput and av.WindUI.CurrentInput~=M then
+if av.NevaUI.CurrentInput and av.NevaUI.CurrentInput~=M then
 return
 end
 if not isResizing then
@@ -39584,7 +39584,7 @@ Scale=aa.UIScale,
 aa.UIScaleObj=ax
 
 aa.ScreenGui=at("ScreenGui",{
-Name="WindUI",
+Name="NevaUI",
 Parent=aw,
 IgnoreGuiInset=true,
 ScreenInsets="None",
@@ -39612,17 +39612,17 @@ Name="ToolTips",
 })
 
 aa.NotificationGui=at("ScreenGui",{
-Name="WindUI/Notifications",
+Name="NevaUI/Notifications",
 Parent=aw,
 IgnoreGuiInset=true,
 })
 aa.DropdownGui=at("ScreenGui",{
-Name="WindUI/Dropdowns",
+Name="NevaUI/Dropdowns",
 Parent=aw,
 IgnoreGuiInset=true,
 })
 aa.TooltipGui=at("ScreenGui",{
-Name="WindUI/Tooltips",
+Name="NevaUI/Tooltips",
 Parent=aw,
 IgnoreGuiInset=true,
 })
@@ -39772,7 +39772,7 @@ return f
 end
 
 function aa.Popup(az,aA)
-aA.WindUI=aa
+aA.NevaUI=aa
 return a.load'A'.new(aA,aa.ScreenGui.Popups)
 end
 
@@ -39787,8 +39787,8 @@ function aa.CreateWindow(az,aA)
 local aB=a.load'ak'
 
 if not am:IsStudio()and writefile then
-if not isfolder"WindUI"then
-makefolder"WindUI"
+if not isfolder"NevaUI"then
+makefolder"NevaUI"
 end
 if aA.Folder then
 makefolder(aA.Folder)
@@ -39797,7 +39797,7 @@ makefolder(aA.Title)
 end
 end
 
-aA.WindUI=aa
+aA.NevaUI=aa
 aA.Window=aa.Window
 aA.Parent=aa.ScreenGui.Window
 

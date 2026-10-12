@@ -15,11 +15,11 @@ function OpenButton.New(Window)
     local OpenButtonMain = {
         Button = nil
     }
-    
+
     local Icon
-    
-    
-    
+
+
+
     -- Icon = New("ImageLabel", {
     --     Image = "",
     --     Size = UDim2.new(0,22,0,22),
@@ -41,7 +41,7 @@ function OpenButton.New(Window)
     local DragIconData = Creator.Icon("move")
     local Drag = New("Frame", {
         Size = UDim2.new(0,44-8,0,44-8),
-        BackgroundTransparency = 1, 
+        BackgroundTransparency = 1,
         Name = "Drag",
     }, {
         New("ImageLabel", {
@@ -106,13 +106,13 @@ function OpenButton.New(Window)
         }),
         Drag,
         Divider,
-        
+
         New("UIListLayout", {
             Padding = UDim.new(0, 4),
             FillDirection = "Horizontal",
             VerticalAlignment = "Center",
         }),
-        
+
         New("TextButton",{
             AutomaticSize = "XY",
             Active = true,
@@ -141,11 +141,11 @@ function OpenButton.New(Window)
             PaddingRight = UDim.new(0,4),
         })
     })
-    
+
     OpenButtonMain.Button = Button
-    
-    
-    
+
+
+
     function OpenButtonMain:SetIcon(newIcon)
         if Icon then
             Icon:Destroy()
@@ -165,38 +165,38 @@ function OpenButton.New(Window)
             Icon.Parent = OpenButtonMain.Button.TextButton
         end
     end
-    
+
     if Window.Icon then
         OpenButtonMain:SetIcon(Window.Icon)
     end
-    
-    
-    
+
+
+
     Creator.AddSignal(Button:GetPropertyChangedSignal("AbsoluteSize"), function()
         Container.Size = UDim2.new(
             0, Button.AbsoluteSize.X,
             0, Button.AbsoluteSize.Y
         )
     end)
-    
+
     Creator.AddSignal(Button.TextButton.MouseEnter, function()
         Tween(Button.TextButton, .1, {BackgroundTransparency = .93}):Play()
     end)
     Creator.AddSignal(Button.TextButton.MouseLeave, function()
         Tween(Button.TextButton, .1, {BackgroundTransparency = 1}):Play()
     end)
-    
+
     local DragModule = Creator.Drag(Container)
-    
-    
+
+
     function OpenButtonMain:Visible(v)
         Container.Visible = v
     end
-    
+
     function OpenButtonMain:SetScale(scale)
         UIScale.Scale = scale
     end
-    
+
     function OpenButtonMain:Edit(OpenButtonConfig)
         local OpenButtonModule = {
             Title = OpenButtonConfig.Title,
@@ -209,36 +209,36 @@ function OpenButton.New(Window)
             CornerRadius = OpenButtonConfig.CornerRadius or UDim.new(1, 0),
             StrokeThickness = OpenButtonConfig.StrokeThickness or 2,
             Scale = OpenButtonConfig.Scale or 1,
-            Color = OpenButtonConfig.Color 
+            Color = OpenButtonConfig.Color
                 or ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff")),
         }
-        
+
         -- wtf lol
-        
+
         if OpenButtonModule.Enabled == false then
             Window.IsOpenButtonEnabled = false
         end
-        
+
         if OpenButtonModule.OnlyMobile ~= false then
             OpenButtonModule.OnlyMobile = true
         else
             Window.IsPC = false
         end
-        
-        
+
+
         if OpenButtonModule.Draggable == false and Drag and Divider then
             Drag.Visible = OpenButtonModule.Draggable
             Divider.Visible = OpenButtonModule.Draggable
-            
+
             if DragModule then
                 DragModule:Set(OpenButtonModule.Draggable)
             end
         end
-        
+
         if OpenButtonModule.Position and Container then
             Container.Position = OpenButtonModule.Position
         end
-        
+
         if OpenButtonModule.OnlyIcon == true and Title then
             Title.Visible = false
             Button.TextButton.UIPadding.PaddingLeft = UDim.new(0,7)
@@ -248,11 +248,11 @@ function OpenButton.New(Window)
             Button.TextButton.UIPadding.PaddingLeft = UDim.new(0,7+4)
             Button.TextButton.UIPadding.PaddingRight = UDim.new(0,7+4)
         end
-        
+
         --OpenButtonMain:Visible((not OpenButtonModule.OnlyMobile) or (not Window.IsPC))
-        
+
         --if not OpenButton.Visible then return end
-        
+
         if Title then
             if OpenButtonModule.Title then
                 Title.Text = OpenButtonModule.Title
@@ -261,7 +261,7 @@ function OpenButton.New(Window)
                 --Title.Visible = false
             end
         end
-        
+
         if OpenButtonModule.Icon then
             OpenButtonMain:SetIcon(OpenButtonModule.Icon)
         end
@@ -274,7 +274,7 @@ function OpenButton.New(Window)
         Button.UICorner.CornerRadius = OpenButtonModule.CornerRadius
         Button.TextButton.UICorner.CornerRadius = UDim.new(OpenButtonModule.CornerRadius.Scale, OpenButtonModule.CornerRadius.Offset-4)
         Button.UIStroke.Thickness = OpenButtonModule.StrokeThickness
-        
+
         OpenButtonMain:SetScale(OpenButtonModule.Scale)
     end
 

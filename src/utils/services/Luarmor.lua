@@ -1,7 +1,7 @@
 --[[
 
     Luarmor API   |   https://luarmor.net
-    
+
 ]]
 
 local Luarmor = {}

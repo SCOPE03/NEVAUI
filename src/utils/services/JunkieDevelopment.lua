@@ -2,7 +2,7 @@
 
 --[[
 
-    Junkie Development API   |   
+    Junkie Development API   |
 
 ]]
 
@@ -29,8 +29,8 @@ function JunkieDevelopment.New(ServiceId, ApiKey, Provider)
         local result = JunkieProtected.ValidateKey({ Key = key })
         if result == "valid" then
             print("Key is valid! Starting script...")
-            load()                                                                                                               
-            if _G.JD_IsPremium then                       
+            load()
+            if _G.JD_IsPremium then
                 print("Premium user detected!")
             else
                 print("Standard user")
@@ -42,16 +42,16 @@ function JunkieDevelopment.New(ServiceId, ApiKey, Provider)
             print("Invalid key!")
             --game.Players.LocalPlayer:Kick("Invalid key. Get one from: " .. keyLink)
             return false, "Invalid key. Get one from:" .. keyLink
-        end                                                                                                            
+        end
     end
 
     local function copyLink()
-        local link = JunkieProtected.GetKeyLink()                                                                                        
-        --print("Get your key: " .. link)                                                                                                
+        local link = JunkieProtected.GetKeyLink()
+        --print("Get your key: " .. link)
         if setclipboard then
             setclipboard(link)
         end
-    end                                                                                                                                                                                                                                                                       
+    end
     return {
         Verify = ValidateKey,
         Copy = copyLink

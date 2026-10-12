@@ -25,9 +25,9 @@ function Element:New(Config)
         AspectRatio = Config.AspectRatio or "16:9",
         Radius = Config.Radius or Config.Window.ElementConfig.UICorner,
     }
-    
+
     local MainVideo
-    
+
     if VideoModule.Video then
         local BGVideo
         if string.find(VideoModule.Video, "http") then
@@ -42,7 +42,7 @@ function Element:New(Config)
                     return
                 end
             end
-            
+
             local success, customAsset = pcall(function()
                 return getcustomasset(videoPath)
             end)
@@ -53,7 +53,7 @@ function Element:New(Config)
         else
             BGVideo = VideoModule.Video
         end
-        
+
         MainVideo = New("VideoFrame", {
             BackgroundTransparency = 1,
             Size = UDim2.new(1,0,1,0),
@@ -67,11 +67,11 @@ function Element:New(Config)
             }),
         })
         MainVideo:Play()
-        
-        
+
+
         local aspectRatio = ParseAspectRatio(VideoModule.AspectRatio)
         local aspectRatioConstraint = nil
-        
+
         if aspectRatio then
             aspectRatioConstraint = New("UIAspectRatioConstraint", {
                 Parent = MainVideo,
@@ -81,12 +81,12 @@ function Element:New(Config)
             })
         end
     end
-    
-    
+
+
     function VideoModule:Destroy()
         if MainVideo then MainVideo:Destroy() end
     end
-    
+
     return VideoModule.__type, VideoModule
 end
 

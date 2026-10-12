@@ -34,7 +34,7 @@ function Element:New(Config)
         MainImage.Parent = Config.Parent
         MainImage.Size = UDim2.new(1,0,0,0)
         MainImage.BackgroundTransparency = 1
-        
+
         -- local MainImage = New("ImageLabel", {
         --     Parent = Config.Parent,
         --     Size = UDim2.new(1, 0, 0, 0),
@@ -45,10 +45,10 @@ function Element:New(Config)
         --         CornerRadius = UDim.new(0,ImageModule.Radius)
         --     })
         -- })
-        
+
         local aspectRatio = ParseAspectRatio(ImageModule.AspectRatio)
         local aspectRatioConstraint = nil
-        
+
         if aspectRatio then
             aspectRatioConstraint = New("UIAspectRatioConstraint", {
                 Parent = MainImage,
@@ -57,12 +57,12 @@ function Element:New(Config)
                 DominantAxis = "Width"
             })
         end
-        
+
         function ImageModule:Destroy()
             MainImage:Destroy()
         end
     end
-    
+
     return ImageModule.__type, ImageModule
 end
 

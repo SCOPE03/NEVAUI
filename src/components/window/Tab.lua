@@ -13,11 +13,11 @@ local New = Creator.New
 local CreateToolTip = require("../ui/Tooltip").New
 local CreateScrollSlider = require("../ui/ScrollSlider").New
 
-local Window, WindUI, UIScale
+local Window, NevaUI, UIScale
 
 local TabModule = {
 	--Window = nil,
-	--WindUI = nil,
+	--NevaUI = nil,
 	Tabs = {},
 	Containers = {},
 	SelectedTab = nil,
@@ -28,9 +28,9 @@ local TabModule = {
 	OnChangeFunc = function(v) end,
 }
 
-function TabModule.Init(WindowTable, WindUITable, ToolTipParent, TabHighlight)
+function TabModule.Init(WindowTable, NevaUITable, ToolTipParent, TabHighlight)
 	Window = WindowTable
-	WindUI = WindUITable
+	NevaUI = NevaUITable
 	TabModule.ToolTipParent = ToolTipParent
 	TabModule.TabHighlight = TabHighlight
 	return TabModule
@@ -359,7 +359,7 @@ function TabModule.New(Config, UIScale)
 			Tab.UIElements.ContainerFrameCanvas.ScrollSliderHolder,
 			Window,
 			4,
-			WindUI
+			NevaUI
 		)
 	end
 
@@ -457,7 +457,7 @@ function TabModule.New(Config, UIScale)
 		Tab.UIElements.ContainerFrame,
 		ElementsModule.Elements,
 		Window,
-		WindUI,
+		NevaUI,
 		nil,
 		ElementsModule,
 		UIScale,

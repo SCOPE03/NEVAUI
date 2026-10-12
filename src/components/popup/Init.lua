@@ -13,33 +13,33 @@ function PopupModule.new(PopupConfig, Parent)
         IconThemed = PopupConfig.IconThemed,
         Thumbnail = PopupConfig.Thumbnail,
         Buttons = PopupConfig.Buttons,
-        
+
         IconSize = 22,
     }
-    
+
     local DialogInit = require("../window/Dialog")
-    local Dialog = DialogInit.Create(true, "Popup", PopupConfig.WindUI.Window, PopupConfig.WindUI, Parent)
-    
+    local Dialog = DialogInit.Create(true, "Popup", PopupConfig.NevaUI.Window, PopupConfig.NevaUI, Parent)
+
     local ThumbnailSize = 200
-    
+
     local UISize = 430
     if Popup.Thumbnail and Popup.Thumbnail.Image then
         UISize = 430+(ThumbnailSize/2)
     end
-    
+
     Dialog.UIElements.Main.AutomaticSize = "Y"
     Dialog.UIElements.Main.Size = UDim2.new(0,UISize,0,0)
-    
-    
-    
+
+
+
     local IconFrame
-    
+
     if Popup.Icon then
         IconFrame = Creator.Image(
             Popup.Icon,
             Popup.Title .. ":" .. Popup.Icon,
             0,
-            PopupConfig.WindUI.Window,
+            PopupConfig.NevaUI.Window,
             "Popup",
             true,
             PopupConfig.IconThemed,
@@ -48,8 +48,8 @@ function PopupModule.new(PopupConfig, Parent)
         IconFrame.Size = UDim2.new(0,Popup.IconSize,0,Popup.IconSize)
         IconFrame.LayoutOrder = -1
     end
-    
-    
+
+
     local Title = New("TextLabel", {
         AutomaticSize = "Y",
         BackgroundTransparency = 1,
@@ -75,7 +75,7 @@ function PopupModule.new(PopupConfig, Parent)
         }),
         IconFrame, Title
     })
-    
+
     local TitleContainer = New("Frame", {
         AutomaticSize = "Y",
         Size = UDim2.new(1,0,0,0),
@@ -88,7 +88,7 @@ function PopupModule.new(PopupConfig, Parent)
         -- }),
         IconAndTitleContainer,
     })
-    
+
     local NoteText
     if Popup.Content and Popup.Content ~= "" then
         NoteText = New("TextLabel", {
@@ -118,7 +118,7 @@ function PopupModule.new(PopupConfig, Parent)
             HorizontalAlignment = "Right"
         })
     })
-    
+
     local ThumbnailFrame
     if Popup.Thumbnail and Popup.Thumbnail.Image then
         local ThumbnailTitle
@@ -149,7 +149,7 @@ function PopupModule.new(PopupConfig, Parent)
             })
         })
     end
-    
+
     local MainFrame = New("Frame", {
         --AutomaticSize = "XY",
         Size = UDim2.new(1, ThumbnailFrame and -ThumbnailSize or 0,1,0),
@@ -179,14 +179,14 @@ function PopupModule.new(PopupConfig, Parent)
     })
 
     local CreateButton = require("../ui/Button").New
-    
+
     for _, values in next, Popup.Buttons do
         CreateButton(values.Title, values.Icon, values.Callback, values.Variant, ButtonsContainer, Dialog)
     end
-    
+
     Dialog:Open()
-    
-    
+
+
     return Popup
 end
 

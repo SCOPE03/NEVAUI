@@ -1,8 +1,8 @@
 local RunService = game:GetService("RunService")
 --[[
 
-    WindUI Example (wip)
-    
+    NevaUI Example (wip)
+
 ]]
 
 local cloneref = (cloneref or clonereference or function(instance)
@@ -11,7 +11,7 @@ end)
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local HttpService = cloneref(game:GetService("HttpService"))
 
-local WindUI
+local NevaUI
 
 do
 	local ok, result = pcall(function()
@@ -19,20 +19,20 @@ do
 	end)
 
 	if ok then
-		WindUI = result
+		NevaUI = result
 	else
 		if cloneref(game:GetService("RunService")):IsStudio() then
-			WindUI = require(cloneref(ReplicatedStorage:WaitForChild("WindUI"):WaitForChild("Init")))
+			NevaUI = require(cloneref(ReplicatedStorage:WaitForChild("NevaUI"):WaitForChild("Init")))
 		else
-			WindUI =
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
+			NevaUI =
+				loadstring(game:HttpGet("https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/dist/main.lua"))()
 		end
 	end
 end
 
 --[[
 
-WindUI.Creator.AddIcons("solar", {
+NevaUI.Creator.AddIcons("solar", {
     ["CheckSquareBold"] = "rbxassetid://132438947521974",
     ["CursorSquareBold"] = "rbxassetid://120306472146156",
     ["FileTextBold"] = "rbxassetid://89294979831077",
@@ -45,8 +45,8 @@ WindUI.Creator.AddIcons("solar", {
 })--]]
 
 function createPopup()
-	return WindUI:Popup({
-		Title = "Welcome to the WindUI!",
+	return NevaUI:Popup({
+		Title = "Welcome to the NevaUI!",
 		Icon = "bird",
 		Content = "Hello!",
 		Buttons = {
@@ -70,9 +70,9 @@ function createPopup()
 end
 
 -- */  Window  /* --
-local Window = WindUI:CreateWindow({
-	Title = ".ftgs hub  |  WindUI Example",
-	--Author = "by .ftgs • Footagesus",
+local Window = NevaUI:CreateWindow({
+	Title = ".ftgs hub  |  NevaUI Example",
+	--Author = "by .ftgs • NEVA",
 	Folder = "ftgshub",
 	Icon = "solar:folder-2-bold-duotone",
 	--Theme = "Mellowsi",
@@ -109,7 +109,7 @@ local Window = WindUI:CreateWindow({
 -- */  Tags  /* --
 do
 	Window:Tag({
-		Title = "v" .. WindUI.Version,
+		Title = "v" .. NevaUI.Version,
 		Icon = "github",
 		Color = Color3.fromHex("#1c1c1c"),
 		Border = true,
@@ -253,7 +253,7 @@ end
 -- */  About Tab  /* --
 do
 	local AboutTab = Window:Tab({
-		Title = "About WindUI",
+		Title = "About NevaUI",
 		Desc = "Description Example",
 		Icon = "solar:info-square-bold",
 		IconColor = Grey,
@@ -262,7 +262,7 @@ do
 	})
 
 	local AboutSection = AboutTab:Section({
-		Title = "About WindUI",
+		Title = "About NevaUI",
 	})
 
 	AboutSection:Image({
@@ -274,7 +274,7 @@ do
 	AboutSection:Space({ Columns = 3 })
 
 	AboutSection:Section({
-		Title = "What is WindUI?",
+		Title = "What is NevaUI?",
 		TextSize = 24,
 		FontWeight = Enum.FontWeight.SemiBold,
 	})
@@ -282,7 +282,7 @@ do
 	AboutSection:Space()
 
 	AboutSection:Section({
-		Title = "WindUI is a stylish, open-source UI (User Interface) library specifically designed for Roblox Script Hubs.\nDeveloped by Footagesus (.ftgs, Footages).\nIt aims to provide developers with a modern, customizable, and easy-to-use toolkit for creating visually appealing interfaces within Roblox.\nThe project is primarily written in Lua (Luau), the scripting language used in Roblox.",
+		Title = "NevaUI is a stylish, open-source UI (User Interface) library specifically designed for Roblox Script Hubs.\nDeveloped by NEVA (.ftgs, NEVA).\nIt aims to provide developers with a modern, customizable, and easy-to-use toolkit for creating visually appealing interfaces within Roblox.\nThe project is primarily written in Lua (Luau), the scripting language used in Roblox.",
 		TextSize = 18,
 		TextTransparency = 0.35,
 		FontWeight = Enum.FontWeight.Medium,
@@ -293,15 +293,15 @@ do
 	-- Default buttons
 
 	AboutTab:Button({
-		Title = "Export WindUI JSON (copy)",
+		Title = "Export NevaUI JSON (copy)",
 		Color = Color3.fromHex("#a2ff30"),
 		Justify = "Center",
 		IconAlign = "Left",
 		Icon = "", -- removing icon
 		Callback = function()
-			tableToClipboard(WindUI)
-			WindUI:Notify({
-				Title = "WindUI JSON",
+			tableToClipboard(NevaUI)
+			NevaUI:Notify({
+				Title = "NevaUI JSON",
 				Content = "Copied to Clipboard!",
 			})
 		end,
@@ -553,9 +553,9 @@ do
 		Title = "Notify Button",
 		--Desc = "Button example",
 		Callback = function()
-			WindUI:Notify({
+			NevaUI:Notify({
 				Title = "Hello",
-				Content = "Welcome to the WindUI Example!",
+				Content = "Welcome to the NevaUI Example!",
 				Icon = "solar:bell-bold",
 				Duration = 5,
 				CanClose = false,
@@ -567,9 +567,9 @@ do
 		Title = "Notify Button 2",
 		--Desc = "Button example",
 		Callback = function()
-			WindUI:Notify({
+			NevaUI:Notify({
 				Title = "Hello",
-				Content = "Welcome to the WindUI Example!",
+				Content = "Welcome to the NevaUI Example!",
 				--Icon = "solar:bell-bold",
 				Duration = 5,
 				CanClose = false,
@@ -877,7 +877,7 @@ if not RunService:IsStudio() and writefile and printidentity() then
 			Border = true,
 		})
 
-		-- All elements are taken from the official documentation: https://footagesus.github.io/WindUI-Docs/docs
+		-- All elements are taken from the official documentation: https://github.com/SCOPE03/NEVAUI
 
 		-- Saving elements to the config using `Flag`
 
@@ -1091,7 +1091,7 @@ if not RunService:IsStudio() and writefile and printidentity() then
 			Callback = function()
 				Window.CurrentConfig = ConfigManager:Config(ConfigName)
 				if Window.CurrentConfig:Save() then
-					WindUI:Notify({
+					NevaUI:Notify({
 						Title = "Config Saved",
 						Desc = "Config '" .. ConfigName .. "' saved",
 						Icon = "check",
@@ -1111,7 +1111,7 @@ if not RunService:IsStudio() and writefile and printidentity() then
 			Callback = function()
 				Window.CurrentConfig = ConfigManager:CreateConfig(ConfigName)
 				if Window.CurrentConfig:Load() then
-					WindUI:Notify({
+					NevaUI:Notify({
 						Title = "Config Loaded",
 						Desc = "Config '" .. ConfigName .. "' loaded",
 						Icon = "refresh-cw",
@@ -1138,12 +1138,12 @@ do
 	local InviteCode = "ftgs-development-hub-1300692552005189632"
 	local DiscordAPI = "https://discord.com/api/v10/invites/" .. InviteCode .. "?with_counts=true&with_expiration=true"
 
-	local Response = WindUI.cloneref(game:GetService("HttpService"))
-		:JSONDecode(WindUI.Creator.Request and WindUI.Creator.Request({
+	local Response = NevaUI.cloneref(game:GetService("HttpService"))
+		:JSONDecode(NevaUI.Creator.Request and NevaUI.Creator.Request({
 			Url = DiscordAPI,
 			Method = "GET",
 			Headers = {
-				["User-Agent"] = "WindUI/Example",
+				["User-Agent"] = "NevaUI/Example",
 				["Accept"] = "application/json",
 			},
 		}).Body or "{}")
@@ -1193,7 +1193,7 @@ do
 						if setclipboard then
 							setclipboard("https://discord.gg/" .. InviteCode)
 						else
-							WindUI:Notify({
+							NevaUI:Notify({
 								Title = "Discord Invite Link",
 								Content = "https://discord.gg/" .. InviteCode,
 							})
