@@ -45,7 +45,7 @@ Window:Divider({
 })
 ```
 
-Roblox image asset IDs can be supplied as numbers, for example `Background = 7031850552`.
+Roblox image asset IDs can be supplied as numbers, for example `Background = 11696860078`.
 
 ## Project
 
