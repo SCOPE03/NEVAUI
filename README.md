@@ -10,7 +10,7 @@ local Window = NevaUI:CreateWindow({ Title = "NevaUI" })
 ```
 
 See [`main_example.lua`](main_example.lua) for a fuller example.
-See [`sidebar_example.lua`](sidebar_example.lua) for a complete sidebar configuration showcase using anime-girl background asset `11008731647`.
+See [`sidebar_example.lua`](sidebar_example.lua) for a complete sidebar configuration showcase using Roblox background asset `11696860078`.
 
 ## Sidebar configuration
 
