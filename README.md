@@ -10,7 +10,7 @@ local Window = NevaUI:CreateWindow({ Title = "NevaUI" })
 ```
 
 See [`main_example.lua`](main_example.lua) for a fuller example.
-See [`sidebar_example.lua`](sidebar_example.lua) for a complete sidebar configuration showcase using background asset `7031850552`.
+See [`sidebar_example.lua`](sidebar_example.lua) for a complete sidebar configuration showcase using anime-girl background asset `11008731647`.
 
 ## Sidebar configuration
 

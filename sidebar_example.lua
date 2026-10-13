@@ -20,8 +20,8 @@ local Window = NevaUI:CreateWindow({
 	Title = "Sidebar Showcase",
 	Author = "by NEVA",
 	Icon = "solar:sidebar-minimalistic-bold",
-	Background = 7031850552,
-	BackgroundImageTransparency = 0.35,
+	Background = 11008731647,
+	BackgroundImageTransparency = 0.15,
 	HidePanelBackground = true,
 	Folder = "SidebarShowcase",
 	HideSearchBar = false,
@@ -98,8 +98,8 @@ local LayoutTab = Window:Tab({
 
 LayoutTab:Paragraph({
 	Title = "Background image",
-	Desc = "This window uses Roblox asset 7031850552 as its background image.",
-	Image = "rbxassetid://7031850552",
+	Desc = "This window uses the verified anime-girl Roblox decal 11008731647 as its background image.",
+	Image = "rbxassetid://11008731647",
 })
 
 Window:Divider(DividerStyle)
