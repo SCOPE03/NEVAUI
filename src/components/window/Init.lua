@@ -762,13 +762,13 @@ return function(Config)
 			ThemeTag = {
 				ImageColor3 = "WindowBackground",
 			},
-			--ZIndex = -9999,
-		}, {
+				--ZIndex = -9999,
+			}, {
+				BottomDragFrame,
+				ResizeHandle,
+			}),
 			BGImage,
-			BottomDragFrame,
-			ResizeHandle,
-		}),
-		--[[New("UIScale", {
+			--[[New("UIScale", {
 			Scale = 0.89,
 		}),]]
 		--UIStroke,
