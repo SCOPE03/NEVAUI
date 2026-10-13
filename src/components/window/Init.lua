@@ -536,17 +536,20 @@ return function(Config)
 
 	local IsVideoBG = false
 	local BGImage = nil
+	local BackgroundValue = typeof(Window.Background) == "number"
+			and "rbxassetid://" .. tostring(Window.Background)
+		or Window.Background
 
-	local BGVideo = typeof(Window.Background) == "string" and string.match(Window.Background, "^video:(.+)") or nil
+	local BGVideo = typeof(BackgroundValue) == "string" and string.match(BackgroundValue, "^video:(.+)") or nil
 
-	local BGHttpImage = typeof(Window.Background) == "string"
+	local BGHttpImage = typeof(BackgroundValue) == "string"
 			and not BGVideo
-			and string.match(Window.Background, "^https?://.+")
+			and string.match(BackgroundValue, "^https?://.+")
 		or nil
 
-	local BGRobloxImage = typeof(Window.Background) == "string"
+	local BGRobloxImage = typeof(BackgroundValue) == "string"
 			and not BGVideo
-			and string.match(Window.Background, "^rbxassetid://%d+")
+			and string.match(BackgroundValue, "^rbxassetid://%d+")
 		or nil
 
 	local function GetImageExtension(url)
@@ -661,7 +664,7 @@ return function(Config)
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1, 0, 1, 0),
 			Image = BGRobloxImage,
-			ImageTransparency = 0,
+			ImageTransparency = Window.BackgroundImageTransparency,
 			ScaleType = "Crop",
 		}, {
 			New("UICorner", {
@@ -672,7 +675,7 @@ return function(Config)
 		BGImage = New("ImageLabel", {
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1, 0, 1, 0),
-			Image = typeof(Window.Background) == "string" and Window.Background or "",
+			Image = typeof(BackgroundValue) == "string" and BackgroundValue or "",
 			ImageTransparency = 1,
 			ScaleType = "Crop",
 		}, {
@@ -1762,21 +1765,34 @@ return function(Config)
 		end
 	end
 
-	function Window:Divider()
-		local Divider = New("Frame", {
-			Size = UDim2.new(1, 0, 0, 1),
-			Position = UDim2.new(0.5, 0, 0, 0),
-			AnchorPoint = Vector2.new(0.5, 0),
-			BackgroundTransparency = 0.9,
-			ThemeTag = {
-				BackgroundColor3 = "Text",
-			},
+	function Window:Divider(DividerConfig)
+		DividerConfig = DividerConfig or {}
+
+		local DividerProperties = {
+			Size = UDim2.new(1, -(DividerConfig.Padding or 12) * 2, 0, DividerConfig.Thickness or 2),
+			Position = UDim2.new(0.5, 0, 0.5, 0),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			BackgroundTransparency = DividerConfig.Transparency or 0.35,
+			Name = "DividerLine",
+		}
+		if DividerConfig.Color then
+			DividerProperties.BackgroundColor3 = DividerConfig.Color
+		else
+			DividerProperties.ThemeTag = {
+				BackgroundColor3 = "Accent",
+			}
+		end
+
+		local Divider = New("Frame", DividerProperties, {
+			New("UICorner", {
+				CornerRadius = UDim.new(1, 0),
+			}),
 		})
 		local MainDivider = New("Frame", {
 			Parent = Window.UIElements.SideBar.Frame,
-			--AutomaticSize = "Y",
-			Size = UDim2.new(1, -7, 0, 5),
+			Size = UDim2.new(1, 0, 0, DividerConfig.Height or 12),
 			BackgroundTransparency = 1,
+			Name = "SidebarDividerSpacer",
 		}, {
 			Divider,
 		})

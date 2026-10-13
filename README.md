@@ -26,13 +26,26 @@ local Window = NevaUI:CreateWindow({
         Divider = true,
         DividerThickness = 1,
         DividerTransparency = 0.8,
-        DividerColor = Color3.fromRGB(80, 80, 90), -- optional; follows the theme when omitted
+    DividerColor = Color3.fromRGB(80, 80, 90), -- optional; follows the theme when omitted
     },
 })
 ```
 
 The divider can also be toggled after creation with `Window:SetSidebarDivider(false)`.
 The existing `Window:Divider()` method adds horizontal separators between sidebar items.
+It accepts optional styling such as `Color`, `Thickness`, `Transparency`, `Padding`, and `Height`:
+
+```lua
+Window:Divider({
+    Color = Color3.fromRGB(80, 170, 255),
+    Thickness = 2,
+    Transparency = 0.2,
+    Padding = 10,
+    Height = 14,
+})
+```
+
+Roblox image asset IDs can be supplied as numbers, for example `Background = 7031850552`.
 
 ## Project
 
