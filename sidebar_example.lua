@@ -19,9 +19,9 @@ NevaUI = Result
 local Window = NevaUI:CreateWindow({
 	Title = "Sidebar Showcase",
 	Author = "by NEVA",
-	-- Developers can set Logo to a Roblox Image asset for their script hub.
+	-- Script-hub logo: the topbar and floating open button use this logo.
 	Logo = "rbxassetid://134899357436301",
-	-- Use an Image asset, not a Decal asset. This ID is a verified anime image.
+	-- Use an Image asset, not a Decal asset. HidePanelBackground lets it show through.
 	Background = "rbxassetid://121343473918667",
 	BackgroundImageTransparency = 0.15,
 	HidePanelBackground = true,
