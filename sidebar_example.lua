@@ -1,7 +1,7 @@
 -- NevaUI Sidebar Configuration Example
 -- Demonstrates all configurable sidebar options and runtime controls.
 
-local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/935e7b2/dist/main.lua"
+local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/8dfd24f/dist/main.lua"
 local LoadString = loadstring or load
 local NevaUI
 
