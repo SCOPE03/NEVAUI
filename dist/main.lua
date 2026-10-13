@@ -37809,9 +37809,13 @@ local l
 
 local m=false
 local p
-local r=typeof(ax.Background)=="number"
-and"rbxassetid://"..tostring(ax.Background)
-or ax.Background
+local function ResolveImageAsset(r)
+if typeof(r)=="number"then
+return"rbxassetid://"..tostring(r)
+end
+return r
+end
+local r=ResolveImageAsset(ax.Background)
 
 local u=typeof(r)=="string"and string.match(r,"^video:(.+)")or nil
 
@@ -37884,6 +37888,8 @@ Size=UDim2.new(1,0,1,0),
 Video=u,
 Looped=true,
 Volume=0,
+Visible=true,
+ZIndex=2,
 },{
 ao("UICorner",{
 CornerRadius=UDim.new(0,ax.UICorner),
@@ -37926,6 +37932,8 @@ BackgroundTransparency=1,
 Size=UDim2.new(1,0,1,0),
 Image=B,
 ImageTransparency=0,
+Visible=true,
+ZIndex=2,
 ScaleType="Crop",
 },{
 ao("UICorner",{
@@ -37938,6 +37946,8 @@ BackgroundTransparency=1,
 Size=UDim2.new(1,0,1,0),
 Image=x,
 ImageTransparency=ax.BackgroundImageTransparency,
+Visible=true,
+ZIndex=2,
 ScaleType="Crop",
 },{
 ao("UICorner",{
@@ -37950,6 +37960,8 @@ BackgroundTransparency=1,
 Size=UDim2.new(1,0,1,0),
 Image=typeof(r)=="string"and r or"",
 ImageTransparency=1,
+Visible=true,
+ZIndex=2,
 ScaleType="Crop",
 },{
 ao("UICorner",{
@@ -38483,7 +38495,9 @@ end
 end
 
 function ax.SetBackgroundImage(G,H)
-ax.UIElements.Main.Background.ImageLabel.Image=H
+if p and p:IsA"ImageLabel"then
+p.Image=ResolveImageAsset(H)
+end
 end
 function ax.SetBackgroundImageTransparency(G,H)
 if p and p:IsA"ImageLabel"then

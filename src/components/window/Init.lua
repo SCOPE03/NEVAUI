@@ -536,9 +536,13 @@ return function(Config)
 
 	local IsVideoBG = false
 	local BGImage = nil
-	local BackgroundValue = typeof(Window.Background) == "number"
-			and "rbxassetid://" .. tostring(Window.Background)
-		or Window.Background
+	local function ResolveImageAsset(value)
+		if typeof(value) == "number" then
+			return "rbxassetid://" .. tostring(value)
+		end
+		return value
+	end
+	local BackgroundValue = ResolveImageAsset(Window.Background)
 
 	local BGVideo = typeof(BackgroundValue) == "string" and string.match(BackgroundValue, "^video:(.+)") or nil
 
@@ -611,6 +615,8 @@ return function(Config)
 			Video = BGVideo,
 			Looped = true,
 			Volume = 0,
+			Visible = true,
+			ZIndex = 2,
 		}, {
 			New("UICorner", {
 				CornerRadius = UDim.new(0, Window.UICorner),
@@ -653,6 +659,8 @@ return function(Config)
 			Size = UDim2.new(1, 0, 1, 0),
 			Image = customAsset,
 			ImageTransparency = 0,
+			Visible = true,
+			ZIndex = 2,
 			ScaleType = "Crop",
 		}, {
 			New("UICorner", {
@@ -665,6 +673,8 @@ return function(Config)
 			Size = UDim2.new(1, 0, 1, 0),
 			Image = BGRobloxImage,
 			ImageTransparency = Window.BackgroundImageTransparency,
+			Visible = true,
+			ZIndex = 2,
 			ScaleType = "Crop",
 		}, {
 			New("UICorner", {
@@ -677,6 +687,8 @@ return function(Config)
 			Size = UDim2.new(1, 0, 1, 0),
 			Image = typeof(BackgroundValue) == "string" and BackgroundValue or "",
 			ImageTransparency = 1,
+			Visible = true,
+			ZIndex = 2,
 			ScaleType = "Crop",
 		}, {
 			New("UICorner", {
@@ -1210,7 +1222,9 @@ return function(Config)
 	end
 
 	function Window:SetBackgroundImage(id)
-		Window.UIElements.Main.Background.ImageLabel.Image = id
+		if BGImage and BGImage:IsA("ImageLabel") then
+			BGImage.Image = ResolveImageAsset(id)
+		end
 	end
 	function Window:SetBackgroundImageTransparency(v)
 		if BGImage and BGImage:IsA("ImageLabel") then
