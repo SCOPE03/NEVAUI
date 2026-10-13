@@ -22,6 +22,7 @@ local Window = NevaUI:CreateWindow({
 	Icon = "solar:sidebar-minimalistic-bold",
 	Background = "rbxassetid://7031850552",
 	BackgroundImageTransparency = 0.35,
+	HidePanelBackground = true,
 	Folder = "SidebarShowcase",
 	HideSearchBar = false,
 
@@ -45,10 +46,7 @@ Window:Tag({
 })
 
 -- Horizontal separators can be placed between sidebar entries.
-Window:Section({
-	Title = "Overview",
-	Icon = "layout-dashboard",
-})
+Window:Divider()
 
 local OverviewTab = Window:Tab({
 	Title = "Welcome",
@@ -63,11 +61,7 @@ OverviewTab:Paragraph({
 })
 
 Window:Divider()
-
-Window:Section({
-	Title = "Examples",
-	Icon = "layers-3",
-})
+Window:Divider()
 
 local ControlsTab = Window:Tab({
 	Title = "Live Controls",
@@ -102,11 +96,6 @@ LayoutTab:Paragraph({
 })
 
 Window:Divider()
-
-Window:Section({
-	Title = "More",
-	Icon = "ellipsis",
-})
 
 local AboutTab = Window:Tab({
 	Title = "About",
