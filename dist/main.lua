@@ -25644,6 +25644,8 @@ Colors={
 },
 }.IconFrame
 J.Parent=H
+elseif typeof(v)=="string"and string.match(v,"^rbxassetid://%d+")then
+H.ImageLabel.Image=v
 elseif string.find(v,"http")and not string.find(v,"roblox.com")then
 local J="NevaUI/"..A.."/assets/."..B.."-"..x..".png"
 local L,M=pcall(function()

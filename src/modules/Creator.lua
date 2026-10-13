@@ -786,6 +786,8 @@ function Creator.Image(Img, Name, Corner, Folder, Type, IsThemeTag, Themed, Them
 			},
 		}).IconFrame
 		IconLabel.Parent = ImageFrame
+	elseif typeof(Img) == "string" and string.match(Img, "^rbxassetid://%d+") then
+		ImageFrame.ImageLabel.Image = Img
 	elseif string.find(Img, "http") and not string.find(Img, "roblox.com") then
 		local FileName = "NevaUI/" .. Folder .. "/assets/." .. Type .. "-" .. Name .. ".png"
 		local success, response = pcall(function()
