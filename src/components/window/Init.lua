@@ -32,7 +32,9 @@ return function(Config)
 	local Window = {
 		Title = Config.Title or "UI Library",
 		Author = Config.Author,
-		Icon = Config.Icon,
+		-- Logo is the developer-facing name; Icon remains supported for compatibility.
+		Logo = Config.Logo or Config.Icon,
+		Icon = Config.Logo or Config.Icon,
 		IconSize = Config.IconSize or 22,
 		IconThemed = Config.IconThemed,
 		IconRadius = Config.IconRadius or 0,

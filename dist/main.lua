@@ -37307,7 +37307,9 @@ local aw=av.Sidebar or{}
 local ax={
 Title=av.Title or"UI Library",
 Author=av.Author,
-Icon=av.Icon,
+
+Logo=av.Logo or av.Icon,
+Icon=av.Logo or av.Icon,
 IconSize=av.IconSize or 22,
 IconThemed=av.IconThemed,
 IconRadius=av.IconRadius or 0,

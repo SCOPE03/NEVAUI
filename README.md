@@ -54,6 +54,15 @@ BackgroundImageTransparency = 0.15
 
 Use the Image/texture ID rather than a Decal-only asset ID. The sidebar showcase uses `121343473918667`, a verified anime Image asset. Asset `11696860078` is a Decal asset and may return a thumbnail while still failing to render in an `ImageLabel`.
 
+Developers can set a custom script-hub logo with `Logo`. It accepts an icon name or a Roblox Image asset ID. `Icon` remains supported as a compatibility alias, and `Logo` takes priority when both are supplied:
+
+```lua
+local Window = NevaUI:CreateWindow({
+    Title = "My Script Hub",
+    Logo = "rbxassetid://134899357436301",
+})
+```
+
 ## Project
 
 Maintained by **NEVA**. Report issues and follow development in [SCOPE03/NEVAUI](https://github.com/SCOPE03/NEVAUI).
