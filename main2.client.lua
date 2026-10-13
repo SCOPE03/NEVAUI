@@ -32,7 +32,7 @@ local ThemeName = "Dark"
 
 local Window = NevaUI:CreateWindow({
 	Title = "NevaUI Library",
-	Author = "by .ftgs",
+	Author = "by NEVA",
 	Icon = "solar:wind-bold",
 	Theme = ThemeName,
 	--NewElements = true,

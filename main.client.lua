@@ -71,9 +71,9 @@ end
 
 -- */  Window  /* --
 local Window = NevaUI:CreateWindow({
-	Title = ".ftgs hub  |  NevaUI Example",
-	--Author = "by .ftgs • NEVA",
-	Folder = "ftgshub",
+	Title = "NEVA hub  |  NevaUI Example",
+	--Author = "by NEVA",
+	Folder = "nevahub",
 	Icon = "solar:folder-2-bold-duotone",
 	--Theme = "Mellowsi",
 	--IconSize = 22*2,
@@ -83,7 +83,7 @@ local Window = NevaUI:CreateWindow({
 	HideSearchBar = false,
 
 	OpenButton = {
-		Title = "Open .ftgs hub UI", -- can be changed
+		Title = "Open NEVA hub UI", -- can be changed
 		CornerRadius = UDim.new(1, 0), -- fully rounded
 		StrokeThickness = 3, -- removing outline
 		Enabled = true, -- enable or disable openbutton
@@ -282,7 +282,7 @@ do
 	AboutSection:Space()
 
 	AboutSection:Section({
-		Title = "NevaUI is a stylish, open-source UI (User Interface) library specifically designed for Roblox Script Hubs.\nDeveloped by NEVA (.ftgs, NEVA).\nIt aims to provide developers with a modern, customizable, and easy-to-use toolkit for creating visually appealing interfaces within Roblox.\nThe project is primarily written in Lua (Luau), the scripting language used in Roblox.",
+		Title = "NevaUI is a stylish, open-source UI (User Interface) library specifically designed for Roblox Script Hubs.\nDeveloped by NEVA.\nIt aims to provide developers with a modern, customizable, and easy-to-use toolkit for creating visually appealing interfaces within Roblox.\nThe project is primarily written in Lua (Luau), the scripting language used in Roblox.",
 		TextSize = 18,
 		TextTransparency = 0.35,
 		FontWeight = Enum.FontWeight.Medium,
@@ -1135,7 +1135,7 @@ end
 
 -- */  Other  /* --
 do
-	local InviteCode = "ftgs-development-hub-1300692552005189632"
+	local InviteCode = "ycajkk7Mc7"
 	local DiscordAPI = "https://discord.com/api/v10/invites/" .. InviteCode .. "?with_counts=true&with_expiration=true"
 
 	local Response = NevaUI.cloneref(game:GetService("HttpService"))

@@ -27,6 +27,8 @@ local ConfigManager = require("../../config/Init")
 local Notified = false
 
 return function(Config)
+	local SidebarConfig = Config.Sidebar or {}
+
 	local Window = {
 		Title = Config.Title or "UI Library",
 		Author = Config.Author,
@@ -56,7 +58,14 @@ return function(Config)
 		Transparent = Config.Transparent or false,
 		HideSearchBar = Config.HideSearchBar ~= false,
 		ScrollBarEnabled = Config.ScrollBarEnabled or false,
-		SideBarWidth = Config.SideBarWidth or 200,
+		SideBarWidth = SidebarConfig.Width or Config.SideBarWidth or 200,
+		Sidebar = SidebarConfig,
+		SidebarPadding = SidebarConfig.Padding,
+		SidebarGap = SidebarConfig.Gap,
+		SidebarDivider = SidebarConfig.Divider ~= false,
+		SidebarDividerThickness = SidebarConfig.DividerThickness or 1,
+		SidebarDividerTransparency = SidebarConfig.DividerTransparency or 0.85,
+		SidebarDividerColor = SidebarConfig.DividerColor,
 		Acrylic = Config.Acrylic or false,
 		NewElements = Config.NewElements or false,
 		IgnoreAlerts = Config.IgnoreAlerts or false,
@@ -102,6 +111,8 @@ return function(Config)
 	}
 
 	Window.UICorner = Window.Radius
+	Window.SidebarPadding = Window.SidebarPadding or Window.UIPadding / 2
+	Window.SidebarGap = Window.SidebarGap or Window.Gap
 
 	Window.TopBarButtonIconSize = Window.TopBarButtonIconSize or (Window.Topbar.ButtonsType == "Mac" and 11 or 16)
 
@@ -234,17 +245,17 @@ return function(Config)
 				--PaddingRight = UDim.new(0,4+(Window.UIPadding/2)),
 				PaddingBottom = UDim.new(0, Window.UIPadding / 2),
 			}),
-			New("UIListLayout", {
-				SortOrder = "LayoutOrder",
-				Padding = UDim.new(0, Window.Gap),
+				New("UIListLayout", {
+					SortOrder = "LayoutOrder",
+					Padding = UDim.new(0, Window.SidebarGap),
+				}),
+		}),
+			New("UIPadding", {
+				--PaddingTop = UDim.new(0,4),
+				PaddingLeft = UDim.new(0, Window.SidebarPadding),
+				PaddingRight = UDim.new(0, Window.SidebarPadding),
+				PaddingBottom = UDim.new(0, Window.SidebarPadding),
 			}),
-		}),
-		New("UIPadding", {
-			--PaddingTop = UDim.new(0,4),
-			PaddingLeft = UDim.new(0, Window.UIPadding / 2),
-			PaddingRight = UDim.new(0, Window.UIPadding / 2),
-			PaddingBottom = UDim.new(0, Window.UIPadding / 2),
-		}),
 		--TabHighlight
 	})
 
@@ -304,6 +315,22 @@ return function(Config)
 			PaddingBottom = UDim.new(0, Window.UIPadding / 2),
 		}),
 	})
+
+	local SidebarDividerProperties = {
+		Size = UDim2.new(0, Window.SidebarDividerThickness, 1, -Window.Topbar.Height - Window.UIPadding),
+		Position = UDim2.new(0, Window.SideBarWidth, 0, Window.Topbar.Height + Window.UIPadding / 2),
+		BackgroundTransparency = Window.SidebarDividerTransparency,
+		Visible = Window.SidebarDivider,
+		Name = "SidebarDivider",
+	}
+	if Window.SidebarDividerColor then
+		SidebarDividerProperties.BackgroundColor3 = Window.SidebarDividerColor
+	else
+		SidebarDividerProperties.ThemeTag = {
+			BackgroundColor3 = "Text",
+		}
+	end
+	Window.UIElements.SidebarDivider = New("Frame", SidebarDividerProperties)
 
 	local Blur = New("ImageLabel", { -- Shadow
 		Image = "rbxassetid://8992230677",
@@ -757,6 +784,7 @@ return function(Config)
 				CornerRadius = UDim.new(0, Window.UICorner),
 			}),
 			Window.UIElements.SideBarContainer,
+			Window.UIElements.SidebarDivider,
 			Window.UIElements.MainBar,
 
 			UserIcon,
@@ -1723,6 +1751,14 @@ return function(Config)
 						UDim.new(0, Window.HidePanelBackground and 20 or 10)
 				end
 			end
+		end
+
+	end
+
+	function Window:SetSidebarDivider(v)
+		if typeof(v) == "boolean" then
+			Window.SidebarDivider = v
+			Window.UIElements.SidebarDivider.Visible = v
 		end
 	end
 

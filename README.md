@@ -10,6 +10,29 @@ local Window = NevaUI:CreateWindow({ Title = "NevaUI" })
 ```
 
 See [`main_example.lua`](main_example.lua) for a fuller example.
+See [`sidebar_example.lua`](sidebar_example.lua) for a complete sidebar configuration showcase using background asset `7031850552`.
+
+## Sidebar configuration
+
+Developers can customize the sidebar directly in `CreateWindow`:
+
+```lua
+local Window = NevaUI:CreateWindow({
+    Title = "NevaUI",
+    Sidebar = {
+        Width = 220,
+        Padding = 10,
+        Gap = 6,
+        Divider = true,
+        DividerThickness = 1,
+        DividerTransparency = 0.8,
+        DividerColor = Color3.fromRGB(80, 80, 90), -- optional; follows the theme when omitted
+    },
+})
+```
+
+The divider can also be toggled after creation with `Window:SetSidebarDivider(false)`.
+The existing `Window:Divider()` method adds horizontal separators between sidebar items.
 
 ## Project
 

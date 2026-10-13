@@ -8,7 +8,7 @@
 
     To view the source code, see the `src/` folder on the official GitHub repository.
 
-    Author: NEVA (NEVA, .ftgs, oftgs)
+    Author: NEVA
     Github: {{REPOSITORY}}
     Discord: {{DISCORD}}
     License: {{LICENSE}}

@@ -133,7 +133,7 @@ local Window = NevaUI:CreateWindow({
     SideBarWidth = 200,
 
     OpenButton = {
-        Title = "Open .ftgs hub UI", -- can be changed
+        Title = "Open NEVA hub UI", -- can be changed
         CornerRadius = UDim.new(1,0), -- fully rounded
         StrokeThickness = 3, -- removing outline
         Enabled = true, -- enable or disable openbutton
