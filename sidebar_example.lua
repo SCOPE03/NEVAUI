@@ -1,7 +1,7 @@
 -- NevaUI Sidebar Configuration Example
 -- Demonstrates all configurable sidebar options and runtime controls.
 
-local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/a158d5c/dist/main.lua"
+local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/dd1cc34/dist/main.lua"
 local LoadString = loadstring or load
 local NevaUI
 
@@ -94,6 +94,12 @@ local LayoutTab = Window:Tab({
 	Title = "Layout",
 	Icon = "panel-left",
 	ShowTabTitle = true,
+})
+
+LayoutTab:Image({
+	Image = "rbxassetid://11696860078",
+	AspectRatio = "16:9",
+	Radius = 12,
 })
 
 LayoutTab:Paragraph({
