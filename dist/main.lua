@@ -29644,52 +29644,96 @@ an.Scale=ar
 end
 
 function ag.Edit(aq,ar)
-local as={
+ar=ar or{}
+local as=ar.Floating==true
+local at=ar.Size
+if typeof(at)=="number"then
+at=UDim2.fromOffset(at,at)
+elseif typeof(at)=="Vector2"then
+at=UDim2.fromOffset(at.X,at.Y)
+elseif as and typeof(at)~="UDim2"then
+at=UDim2.fromOffset(54,54)
+end
+
+local au=ar.Color
+if typeof(au)=="Color3"then
+au=ColorSequence.new(au)
+end
+
+local av={
 Title=ar.Title,
 Icon=ar.Icon,
 Enabled=ar.Enabled,
-Position=ar.Position,
-OnlyIcon=ar.OnlyIcon or false,
-Draggable=ar.Draggable or nil,
+Floating=as,
+Position=ar.Position
+or(as and UDim2.new(1,-42,1,-76)or nil),
+Size=at,
+OnlyIcon=ar.OnlyIcon==true or as,
+Draggable=ar.Draggable~=false,
 OnlyMobile=ar.OnlyMobile,
 CornerRadius=ar.CornerRadius or UDim.new(1,0),
 StrokeThickness=ar.StrokeThickness or 2,
 Scale=ar.Scale or 1,
-Color=ar.Color
+Color=au
 or ColorSequence.new(Color3.fromHex"40c9ff",Color3.fromHex"e81cff"),
+BackgroundColor3=ar.BackgroundColor3,
+BackgroundTransparency=ar.BackgroundTransparency,
+StrokeColor=ar.StrokeColor,
+StrokeTransparency=ar.StrokeTransparency,
+ShowDragHandle=ar.ShowDragHandle==true,
 }
 
 
 
-if as.Enabled==false then
+if av.Enabled==false then
 af.IsOpenButtonEnabled=false
 end
 
-if as.OnlyMobile~=false then
-as.OnlyMobile=true
+if av.OnlyMobile~=false then
+av.OnlyMobile=true
 else
 af.IsPC=false
 end
 
 
-if as.Draggable==false and ak and al then
-ak.Visible=as.Draggable
-al.Visible=as.Draggable
-
+if ak and al then
+ak.Visible=av.Floating and av.ShowDragHandle
+al.Visible=not av.Floating and av.Draggable
+end
 if ap then
-ap:Set(as.Draggable)
-end
-end
-
-if as.Position and am then
-am.Position=as.Position
+ap:Set(av.Draggable)
 end
 
-if as.OnlyIcon==true and ai then
+if av.Position and am then
+am.Position=av.Position
+end
+
+if av.Size then
+ao.AutomaticSize="None"
+ao.Size=av.Size
+ao.TextButton.AutomaticSize="None"
+ao.TextButton.Size=UDim2.fromScale(1,1)
+end
+
+if av.BackgroundColor3 then
+ao.BackgroundColor3=av.BackgroundColor3
+end
+if av.BackgroundTransparency~=nil then
+ao.BackgroundTransparency=av.BackgroundTransparency
+end
+if av.StrokeColor then
+ao.UIStroke.Color=av.StrokeColor
+end
+if av.StrokeTransparency~=nil then
+ao.UIStroke.Transparency=av.StrokeTransparency
+end
+
+if av.OnlyIcon==true and ai then
 ai.Visible=false
-ao.TextButton.UIPadding.PaddingLeft=UDim.new(0,7)
-ao.TextButton.UIPadding.PaddingRight=UDim.new(0,7)
-elseif as.OnlyIcon==false then
+ao.TextButton.UIPadding.PaddingLeft=UDim.new(0,av.Floating and 0 or 7)
+ao.TextButton.UIPadding.PaddingRight=UDim.new(0,av.Floating and 0 or 7)
+ao.TextButton.UIListLayout.HorizontalAlignment=av.Floating and"Center"or"Left"
+elseif av.OnlyIcon==false then
 ai.Visible=true
 ao.TextButton.UIPadding.PaddingLeft=UDim.new(0,11)
 ao.TextButton.UIPadding.PaddingRight=UDim.new(0,11)
@@ -29700,28 +29744,28 @@ end
 
 
 if ai then
-if as.Title then
-ai.Text=as.Title
-ab:ChangeTranslationKey(ai,as.Title)
-elseif as.Title==nil then
+if av.Title then
+ai.Text=av.Title
+ab:ChangeTranslationKey(ai,av.Title)
+elseif av.Title==nil then
 
 end
 end
 
-if as.Icon then
-ag:SetIcon(as.Icon)
+if av.Icon then
+ag:SetIcon(av.Icon)
 end
 
-ao.UIStroke.UIGradient.Color=as.Color
+ao.UIStroke.UIGradient.Color=av.Color
 if Glow then
-Glow.UIGradient.Color=as.Color
+Glow.UIGradient.Color=av.Color
 end
 
-ao.UICorner.CornerRadius=as.CornerRadius
-ao.TextButton.UICorner.CornerRadius=UDim.new(as.CornerRadius.Scale,as.CornerRadius.Offset-4)
-ao.UIStroke.Thickness=as.StrokeThickness
+ao.UICorner.CornerRadius=av.CornerRadius
+ao.TextButton.UICorner.CornerRadius=UDim.new(av.CornerRadius.Scale,av.CornerRadius.Offset-4)
+ao.UIStroke.Thickness=av.StrokeThickness
 
-ag:SetScale(as.Scale)
+ag:SetScale(av.Scale)
 end
 
 return ag

@@ -197,21 +197,45 @@ function OpenButton.New(Window)
         UIScale.Scale = scale
     end
 
-    function OpenButtonMain:Edit(OpenButtonConfig)
-        local OpenButtonModule = {
-            Title = OpenButtonConfig.Title,
-            Icon = OpenButtonConfig.Icon,
-            Enabled = OpenButtonConfig.Enabled,
-            Position = OpenButtonConfig.Position,
-            OnlyIcon = OpenButtonConfig.OnlyIcon or false,
-            Draggable = OpenButtonConfig.Draggable or nil,
-            OnlyMobile = OpenButtonConfig.OnlyMobile,
-            CornerRadius = OpenButtonConfig.CornerRadius or UDim.new(1, 0),
-            StrokeThickness = OpenButtonConfig.StrokeThickness or 2,
-            Scale = OpenButtonConfig.Scale or 1,
-            Color = OpenButtonConfig.Color
-                or ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff")),
-        }
+	function OpenButtonMain:Edit(OpenButtonConfig)
+		OpenButtonConfig = OpenButtonConfig or {}
+		local Floating = OpenButtonConfig.Floating == true
+		local ConfiguredSize = OpenButtonConfig.Size
+		if typeof(ConfiguredSize) == "number" then
+			ConfiguredSize = UDim2.fromOffset(ConfiguredSize, ConfiguredSize)
+		elseif typeof(ConfiguredSize) == "Vector2" then
+			ConfiguredSize = UDim2.fromOffset(ConfiguredSize.X, ConfiguredSize.Y)
+		elseif Floating and typeof(ConfiguredSize) ~= "UDim2" then
+			ConfiguredSize = UDim2.fromOffset(54, 54)
+		end
+
+		local ConfiguredColor = OpenButtonConfig.Color
+		if typeof(ConfiguredColor) == "Color3" then
+			ConfiguredColor = ColorSequence.new(ConfiguredColor)
+		end
+
+		local OpenButtonModule = {
+			Title = OpenButtonConfig.Title,
+			Icon = OpenButtonConfig.Icon,
+			Enabled = OpenButtonConfig.Enabled,
+			Floating = Floating,
+			Position = OpenButtonConfig.Position
+				or (Floating and UDim2.new(1, -42, 1, -76) or nil),
+			Size = ConfiguredSize,
+			OnlyIcon = OpenButtonConfig.OnlyIcon == true or Floating,
+			Draggable = OpenButtonConfig.Draggable ~= false,
+			OnlyMobile = OpenButtonConfig.OnlyMobile,
+			CornerRadius = OpenButtonConfig.CornerRadius or UDim.new(1, 0),
+			StrokeThickness = OpenButtonConfig.StrokeThickness or 2,
+			Scale = OpenButtonConfig.Scale or 1,
+			Color = ConfiguredColor
+				or ColorSequence.new(Color3.fromHex("40c9ff"), Color3.fromHex("e81cff")),
+			BackgroundColor3 = OpenButtonConfig.BackgroundColor3,
+			BackgroundTransparency = OpenButtonConfig.BackgroundTransparency,
+			StrokeColor = OpenButtonConfig.StrokeColor,
+			StrokeTransparency = OpenButtonConfig.StrokeTransparency,
+			ShowDragHandle = OpenButtonConfig.ShowDragHandle == true,
+		}
 
         -- wtf lol
 
@@ -226,23 +250,43 @@ function OpenButton.New(Window)
         end
 
 
-        if OpenButtonModule.Draggable == false and Drag and Divider then
-            Drag.Visible = OpenButtonModule.Draggable
-            Divider.Visible = OpenButtonModule.Draggable
+		if Drag and Divider then
+			Drag.Visible = OpenButtonModule.Floating and OpenButtonModule.ShowDragHandle
+			Divider.Visible = not OpenButtonModule.Floating and OpenButtonModule.Draggable
+		end
+		if DragModule then
+			DragModule:Set(OpenButtonModule.Draggable)
+		end
 
-            if DragModule then
-                DragModule:Set(OpenButtonModule.Draggable)
-            end
-        end
+		if OpenButtonModule.Position and Container then
+			Container.Position = OpenButtonModule.Position
+		end
 
-        if OpenButtonModule.Position and Container then
-            Container.Position = OpenButtonModule.Position
-        end
+		if OpenButtonModule.Size then
+			Button.AutomaticSize = "None"
+			Button.Size = OpenButtonModule.Size
+			Button.TextButton.AutomaticSize = "None"
+			Button.TextButton.Size = UDim2.fromScale(1, 1)
+		end
 
-        if OpenButtonModule.OnlyIcon == true and Title then
-            Title.Visible = false
-            Button.TextButton.UIPadding.PaddingLeft = UDim.new(0,7)
-            Button.TextButton.UIPadding.PaddingRight = UDim.new(0,7)
+		if OpenButtonModule.BackgroundColor3 then
+			Button.BackgroundColor3 = OpenButtonModule.BackgroundColor3
+		end
+		if OpenButtonModule.BackgroundTransparency ~= nil then
+			Button.BackgroundTransparency = OpenButtonModule.BackgroundTransparency
+		end
+		if OpenButtonModule.StrokeColor then
+			Button.UIStroke.Color = OpenButtonModule.StrokeColor
+		end
+		if OpenButtonModule.StrokeTransparency ~= nil then
+			Button.UIStroke.Transparency = OpenButtonModule.StrokeTransparency
+		end
+
+		if OpenButtonModule.OnlyIcon == true and Title then
+			Title.Visible = false
+			Button.TextButton.UIPadding.PaddingLeft = UDim.new(0, OpenButtonModule.Floating and 0 or 7)
+			Button.TextButton.UIPadding.PaddingRight = UDim.new(0, OpenButtonModule.Floating and 0 or 7)
+			Button.TextButton.UIListLayout.HorizontalAlignment = OpenButtonModule.Floating and "Center" or "Left"
         elseif OpenButtonModule.OnlyIcon == false then
             Title.Visible = true
             Button.TextButton.UIPadding.PaddingLeft = UDim.new(0,7+4)

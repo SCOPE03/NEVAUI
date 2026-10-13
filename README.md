@@ -63,6 +63,25 @@ local Window = NevaUI:CreateWindow({
 })
 ```
 
+The open/close control can be changed to a Fluent-style floating button. `Size` accepts a number, `Vector2`, or `UDim2`; `Position` uses normal screen-space `UDim2` coordinates:
+
+```lua
+OpenButton = {
+    Floating = true,
+    OnlyMobile = false,
+    OnlyIcon = true,
+    Size = 56,
+    Position = UDim2.new(1, -44, 1, -82),
+    Draggable = true,
+    BackgroundColor3 = Color3.fromRGB(18, 18, 22),
+    BackgroundTransparency = 0.12,
+    StrokeThickness = 2,
+    StrokeTransparency = 0.05,
+}
+```
+
+`Floating` defaults the button to a circular 54-pixel control near the bottom-right when no position or size is supplied. Set `Icon` inside `OpenButton` to use a different image from the window `Logo`. `ShowDragHandle = true` adds the drag glyph; dragging is enabled by default in floating mode.
+
 ## Project
 
 Maintained by **NEVA**. Report issues and follow development in [SCOPE03/NEVAUI](https://github.com/SCOPE03/NEVAUI).
