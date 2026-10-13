@@ -45,7 +45,14 @@ Window:Divider({
 })
 ```
 
-Roblox image asset IDs can be supplied as numbers, for example `Background = 11696860078`.
+Backgrounds use Roblox **Image** asset IDs, for example:
+
+```lua
+Background = "rbxassetid://121343473918667"
+BackgroundImageTransparency = 0.15
+```
+
+Use the Image/texture ID rather than a Decal-only asset ID. The sidebar showcase uses `121343473918667`, a verified anime Image asset. Asset `11696860078` is a Decal asset and may return a thumbnail while still failing to render in an `ImageLabel`.
 
 ## Project
 
