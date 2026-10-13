@@ -1,7 +1,7 @@
 -- NevaUI Sidebar Configuration Example
 -- Demonstrates all configurable sidebar options and runtime controls.
 
-local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/dd1cc34/dist/main.lua"
+local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/935e7b2/dist/main.lua"
 local LoadString = loadstring or load
 local NevaUI
 
@@ -19,7 +19,8 @@ NevaUI = Result
 local Window = NevaUI:CreateWindow({
 	Title = "Sidebar Showcase",
 	Author = "by NEVA",
-	Icon = "solar:sidebar-minimalistic-bold",
+	-- Developers can set Logo to a Roblox Image asset for their script hub.
+	Logo = "rbxassetid://134899357436301",
 	-- Use an Image asset, not a Decal asset. This ID is a verified anime image.
 	Background = "rbxassetid://121343473918667",
 	BackgroundImageTransparency = 0.15,
