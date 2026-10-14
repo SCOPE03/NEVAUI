@@ -5,7 +5,7 @@ local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/dist/m
 -- Source GIF: https://tenor.com/view/chad-sigma-xtreme-xtremeverse-power-gif-11831658867899348818
 -- GitHub GIF copy: https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-chad-sigma-11831658867899348818-background.gif
 -- Roblox ImageLabels use the matching sprite sheet; they do not play raw GIF files.
-local BackgroundUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-chad-sigma-11831658867899348818-background-sprites.png"
+local BackgroundUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-chad-sigma-11831658867899348818-background-sprites-v2.png"
 local LogoAsset = "rbxassetid://76738354597155"
 local LoadString = loadstring or load
 
