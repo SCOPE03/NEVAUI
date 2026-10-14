@@ -18,6 +18,11 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 	}
 
 	if NewElement then
+		local ActiveColor = (Config and Config.ToggleColor) or Color3.fromRGB(164, 151, 223)
+		local InactiveColor = Color3.fromRGB(49, 49, 55)
+		local ActiveThumbColor = Color3.fromRGB(250, 249, 255)
+		local InactiveThumbColor = Color3.fromRGB(128, 128, 136)
+
 		local ToggleContainer = New("Frame", {
 			Size = UDim2.new(0, 58, 0, 30),
 			BackgroundTransparency = 1,
@@ -28,9 +33,8 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 			Size = UDim2.new(0, 56, 0, 28),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.new(0.5, 0, 0.5, 0),
-			BackgroundColor3 = Color3.fromRGB(70, 70, 76),
+			BackgroundColor3 = InactiveColor,
 			BackgroundTransparency = 0,
-			ThemeTag = { BackgroundColor3 = "Toggle" },
 		}, {
 			New("UICorner", { CornerRadius = UDim.new(1, 0) }),
 		})
@@ -41,7 +45,7 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 			Size = UDim2.new(0, 22, 0, 22),
 			Position = UDim2.new(0, 3, 0.5, 0),
 			AnchorPoint = Vector2.new(0, 0.5),
-			BackgroundColor3 = Color3.fromRGB(205, 205, 212),
+			BackgroundColor3 = InactiveThumbColor,
 			BorderSizePixel = 0,
 			ZIndex = 2,
 		}, {
@@ -59,18 +63,24 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 		Hitbox.Parent = Track
 
 		local function ApplyState(isOn, animated)
-			local trackColor = isOn and "Toggle" or "Text"
+			local trackColor = isOn and ActiveColor or InactiveColor
+			local thumbColor = isOn and ActiveThumbColor or InactiveThumbColor
 			local targetPosition = UDim2.new(0, isOn and 31 or 3, 0.5, 0)
 			if animated then
-				Tween(Knob, 0.18, { Position = targetPosition }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-				Tween(Track, 0.18, { BackgroundTransparency = isOn and 0 or 0.82 }):Play()
-				Knob.BackgroundColor3 = isOn and Color3.new(1, 1, 1) or Color3.fromRGB(205, 205, 212)
+				Tween(Knob, 0.18, {
+					Position = targetPosition,
+					BackgroundColor3 = thumbColor,
+				}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+				Tween(Track, 0.18, {
+					BackgroundColor3 = trackColor,
+					BackgroundTransparency = 0,
+				}):Play()
 			else
 				Knob.Position = targetPosition
-				Track.BackgroundTransparency = isOn and 0 or 0.82
-				Knob.BackgroundColor3 = isOn and Color3.new(1, 1, 1) or Color3.fromRGB(205, 205, 212)
+				Knob.BackgroundColor3 = thumbColor
+				Track.BackgroundColor3 = trackColor
+				Track.BackgroundTransparency = 0
 			end
-			Creator.SetThemeTag(Track, { BackgroundColor3 = trackColor })
 		end
 
 		function Toggle:Set(Toggled, isCallback, isAnim)

@@ -27,6 +27,7 @@ Tab:Toggle({
 	Title = "Modern toggle",
 	Desc = 'Style = "Modern" — pill track with a circular thumb.',
 	Style = "Modern",
+	ToggleColor = Color3.fromRGB(164, 151, 223),
 	Value = true,
 	Callback = function(value)
 		print("Modern toggle:", value)
