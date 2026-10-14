@@ -148,17 +148,14 @@ HidePanelBackground = true
 
 `121343473918667` is a verified Roblox Image asset. Asset `11696860078` is a Decal asset and may return a thumbnail while still failing to render in an `ImageLabel`.
 
-For GIF-like motion, store a sprite sheet in GitHub and set `BackgroundAnimation`. Roblox `ImageLabel`s cannot play a raw `.gif` file directly, so the example includes the [original Tenor page](https://tenor.com/view/chad-sigma-xtreme-xtremeverse-power-gif-11831658867899348818), a [GitHub-hosted GIF copy](examples/assets/neva-tenor-chad-sigma-11831658867899348818-background.gif), and the matching [runtime sprite sheet](examples/assets/neva-tenor-chad-sigma-11831658867899348818-background-sprites-v2.png). Keep the sheet at or below `1024x1024`; Roblox downscales larger images, which breaks the frame grid and makes neighboring tiles bleed into view.
+For a static image background, point `Background` at an Image asset ID:
 
 ```lua
-Background = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-chad-sigma-11831658867899348818-background-sprites-v2.png",
-BackgroundAnimation = {
-    FrameSize = Vector2.new(128, 128),
-    FrameCount = 29,
-    Columns = 8,
-    FPS = 8.3,
-},
+Background = "rbxassetid://117316815074414",
+BackgroundImageTransparency = 0.15,
 ```
+
+The example uses asset `117316815074414` with a red-tinted theme (`ThemeColors` override the dark defaults).
 
 ### Theme color overrides
 
@@ -418,7 +415,8 @@ The sidebar example includes:
 
 The animated-background example includes:
 
-- Background GIF and sprite sheet: [`neva-tenor-chad-sigma-11831658867899348818-background-sprites-v2.png`](examples/assets/neva-tenor-chad-sigma-11831658867899348818-background-sprites-v2.png)
+- Static background image: `rbxassetid://117316815074414`
+- Red theme override (`ThemeColors`)
 - Large left sidebar logo: `rbxassetid://76738354597155`
 - Floating open button using the same logo
 - Legacy control styling by default
