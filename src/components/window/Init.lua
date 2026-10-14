@@ -103,7 +103,7 @@ return function(Config)
 		SidebarSelectorColor = SidebarConfig.SelectorColor,
 		SidebarTabHeight = SidebarConfig.TabHeight,
 		SidebarTabRadius = SidebarConfig.TabRadius,
-		SidebarIconSize = SidebarConfig.IconSize,
+		SidebarIconSize = SidebarConfig.IconSize or 20,
 		SidebarScrollBarThickness = SidebarConfig.ScrollBarThickness,
 		SidebarScrollBarTransparency = SidebarConfig.ScrollBarTransparency or 0.5,
 		SidebarScrollBarColor = SidebarConfig.ScrollBarColor,
@@ -2006,25 +2006,34 @@ return function(Config)
 		local LastSelectorY = nil
 
 		local function UpdateSelector(Instant)
-			if not ActiveTabFrame or not ActiveTabFrame.Parent then
+			local SideBar = Window.UIElements.SideBar
+			local Content = SideBar.Frame
+			if not ActiveTabFrame or not ActiveTabFrame.Parent or not Content then
 				SelectorFrame.Visible = false
 				return
 			end
-			local TargetY = ActiveTabFrame.AbsolutePosition.Y
-					- Window.UIElements.SideBar.AbsolutePosition.Y
-					+ Window.UIElements.SideBar.CanvasPosition.Y
-			local TargetHeight = ActiveTabFrame.AbsoluteSize.Y
+			-- Measure against the content frame rather than the ScrollingFrame: the
+			-- tab's AbsolutePosition already includes the canvas scroll, so adding
+			-- CanvasPosition would double-count it and the selector would drift away
+			-- from the active tab. Absolute positions are scaled by the live UIScale,
+			-- so divide it out to get the offset in the sidebar's own units.
+			local Scale = Config.NevaUI.UIScale or 1
+			local TargetY = (ActiveTabFrame.AbsolutePosition.Y - Content.AbsolutePosition.Y) / Scale
+			local TargetHeight = ActiveTabFrame.AbsoluteSize.Y / Scale
 			if TargetHeight <= 0 then
 				SelectorFrame.Visible = false
 				return
 			end
+			-- The scrollbar sits on the left, over the content, so keep the selector
+			-- to its right instead of hidden underneath it.
+			local TargetX = math.max(Window.SidebarSelectorX, SideBar.ScrollBarThickness or 0)
 			SelectorFrame.Visible = true
 			SelectorFrame.Size = UDim2.new(0, Window.SidebarSelectorWidth, 0, TargetHeight)
 			if Instant or LastSelectorY == nil then
-				SelectorFrame.Position = UDim2.new(0, Window.SidebarSelectorX, 0, TargetY)
+				SelectorFrame.Position = UDim2.new(0, TargetX, 0, TargetY)
 			elseif TargetY ~= LastSelectorY then
 				Tween(SelectorFrame, 0.16, {
-					Position = UDim2.new(0, Window.SidebarSelectorX, 0, TargetY),
+					Position = UDim2.new(0, TargetX, 0, TargetY),
 				}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
 			end
 			LastSelectorY = TargetY
@@ -2032,9 +2041,9 @@ return function(Config)
 
 		TabModule:OnSelectorTarget(function(TabObject)
 			ActiveTabFrame = TabObject and TabObject.UIElements and TabObject.UIElements.Main or nil
+			-- Selection can run before the tab has been laid out; the first update is
+			-- instant, then re-measure once the frame geometry is available.
 			UpdateSelector(false)
-			-- The first selection often runs before the tab has been laid out, so
-			-- re-measure once the frame geometry is available.
 			task.defer(function()
 				UpdateSelector(true)
 			end)

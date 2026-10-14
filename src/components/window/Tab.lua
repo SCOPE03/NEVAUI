@@ -175,7 +175,7 @@ function TabModule.New(Config, UIScale)
 	local Icon
 	local Icon2
 
-	local TabIconSize = Window.SidebarIconSize or 16
+	local TabIconSize = Window.SidebarIconSize or 20
 
 	if Tab.Icon then
 		Icon = Creator.Image(

@@ -36222,7 +36222,7 @@ local at=0
 local au
 local av
 
-local aw=Window.SidebarIconSize or 16
+local aw=Window.SidebarIconSize or 20
 
 if ar.Icon then
 au=ak.Image(
@@ -37639,7 +37639,7 @@ SidebarSelectorRadius=aw.SelectorRadius or 999,
 SidebarSelectorColor=aw.SelectorColor,
 SidebarTabHeight=aw.TabHeight,
 SidebarTabRadius=aw.TabRadius,
-SidebarIconSize=aw.IconSize,
+SidebarIconSize=aw.IconSize or 20,
 SidebarScrollBarThickness=aw.ScrollBarThickness,
 SidebarScrollBarTransparency=aw.ScrollBarTransparency or 0.5,
 SidebarScrollBarColor=aw.ScrollBarColor,
@@ -39542,35 +39542,44 @@ local aK
 local T
 
 local function UpdateSelector(U)
-if not aK or not aK.Parent then
+local V=aA.UIElements.SideBar
+local W=V.Frame
+if not aK or not aK.Parent or not W then
 aI.Visible=false
 return
 end
-local V=aK.AbsolutePosition.Y
--aA.UIElements.SideBar.AbsolutePosition.Y
-+aA.UIElements.SideBar.CanvasPosition.Y
-local W=aK.AbsoluteSize.Y
-if W<=0 then
+
+
+
+
+
+local X=av.NevaUI.UIScale or 1
+local Y=(aK.AbsolutePosition.Y-W.AbsolutePosition.Y)/X
+local _=aK.AbsoluteSize.Y/X
+if _<=0 then
 aI.Visible=false
 return
 end
+
+
+local aL=math.max(aA.SidebarSelectorX,V.ScrollBarThickness or 0)
 aI.Visible=true
-aI.Size=UDim2.new(0,aA.SidebarSelectorWidth,0,W)
+aI.Size=UDim2.new(0,aA.SidebarSelectorWidth,0,_)
 if U or T==nil then
-aI.Position=UDim2.new(0,aA.SidebarSelectorX,0,V)
-elseif V~=T then
+aI.Position=UDim2.new(0,aL,0,Y)
+elseif Y~=T then
 aJ(aI,0.16,{
-Position=UDim2.new(0,aA.SidebarSelectorX,0,V),
+Position=UDim2.new(0,aL,0,Y),
 },Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 end
-T=V
+T=Y
 end
 
-aH:OnSelectorTarget(function(U)
-aK=U and U.UIElements and U.UIElements.Main or nil
+aH:OnSelectorTarget(function(aL)
+aK=aL and aL.UIElements and aL.UIElements.Main or nil
+
+
 UpdateSelector(false)
-
-
 task.defer(function()
 UpdateSelector(true)
 end)
@@ -39615,13 +39624,13 @@ aA.HidePanelBackground=aJ
 aA.UIElements.MainBar.Background.Visible=aJ
 
 if aH then
-for aK,T in next,aH.Containers do
-T.ScrollingFrame.UIPadding.PaddingTop=UDim.new(0,aA.HidePanelBackground and 20 or 10)
-T.ScrollingFrame.UIPadding.PaddingLeft=
+for aK,aL in next,aH.Containers do
+aL.ScrollingFrame.UIPadding.PaddingTop=UDim.new(0,aA.HidePanelBackground and 20 or 10)
+aL.ScrollingFrame.UIPadding.PaddingLeft=
 UDim.new(0,aA.HidePanelBackground and 20 or 10)
-T.ScrollingFrame.UIPadding.PaddingRight=
+aL.ScrollingFrame.UIPadding.PaddingRight=
 UDim.new(0,aA.HidePanelBackground and 20 or 10)
-T.ScrollingFrame.UIPadding.PaddingBottom=
+aL.ScrollingFrame.UIPadding.PaddingBottom=
 UDim.new(0,aA.HidePanelBackground and 20 or 10)
 end
 end
@@ -39644,28 +39653,28 @@ local aK=aA.SidebarBrandLogoHolder
 if not aK then
 return
 end
-local T=aA.SidebarBrandLogoPadding or 0
-local U=aK:FindFirstChild"LogoImage"
+local aL=aA.SidebarBrandLogoPadding or 0
+local T=aK:FindFirstChild"LogoImage"
 aA.SidebarBrand.LogoSize=aJ
 aA.SidebarBrandLogoSize=aJ
-aK.Size=UDim2.new(0,aJ+(T*2),0,aJ+(T*2))
-if U then
-U.Size=UDim2.new(1,0,1,0)
+aK.Size=UDim2.new(0,aJ+(aL*2),0,aJ+(aL*2))
+if T then
+T.Size=UDim2.new(1,0,1,0)
 end
 end
 
 function aA.SetSidebarBrandLogoBackground(aI,aJ,aK)
-local T=aA.SidebarBrandLogoHolder
-if not T then
+local aL=aA.SidebarBrandLogoHolder
+if not aL then
 return
 end
 if aJ==nil then
-T.BackgroundTransparency=1
+aL.BackgroundTransparency=1
 aA.SidebarBrandLogoBackground=nil
 return
 end
-T.BackgroundColor3=aJ
-T.BackgroundTransparency=aK or 0
+aL.BackgroundColor3=aJ
+aL.BackgroundTransparency=aK or 0
 aA.SidebarBrandLogoBackground=aJ
 aA.SidebarBrandLogoBackgroundTransparency=aK or 0
 end
@@ -39688,14 +39697,14 @@ aK.BackgroundColor3=aJ
 end
 end
 
-function aA.SetSidebarColor(aI,aJ,aK,T)
+function aA.SetSidebarColor(aI,aJ,aK,aL)
 if type(aJ)~="string"then
 return
 end
 aA.SidebarColors=aA.SidebarColors or{}
 aA.SidebarColors[aJ]=aK
-if T~=nil then
-aA.SidebarColors[aJ.."Transparency"]=T
+if aL~=nil then
+aA.SidebarColors[aJ.."Transparency"]=aL
 end
 an.SetTheme(an.Theme,aA.SidebarColors)
 end
@@ -39718,26 +39727,26 @@ BackgroundColor3="Accent",
 }
 end
 
-local T=ao("Frame",aK,{
+local aL=ao("Frame",aK,{
 ao("UICorner",{
 CornerRadius=UDim.new(1,0),
 }),
 })
-local U=ao("Frame",{
+local T=ao("Frame",{
 Parent=aA.UIElements.SideBar.Frame,
 Size=UDim2.new(1,0,0,aJ.Height or 12),
 BackgroundTransparency=1,
 Name="SidebarDividerSpacer",
 },{
-T,
+aL,
 })
 
-return U
+return T
 end
 
 local aI=a.load'u'
 function aA.Dialog(aJ,aK)
-local T={
+local aL={
 Title=aK.Title or"Dialog",
 Width=aK.Width or 320,
 Content=aK.Content,
@@ -39745,88 +39754,88 @@ Buttons=aK.Buttons or{},
 
 TextPadding=14,
 }
-local U=aI.Create(false,"Dialog",aA,av.NevaUI,aA.UIElements.Main.Main)
+local T=aI.Create(false,"Dialog",aA,av.NevaUI,aA.UIElements.Main.Main)
 
-U.UIElements.Main.Size=UDim2.new(0,T.Width,0,0)
+T.UIElements.Main.Size=UDim2.new(0,aL.Width,0,0)
 
-local V=ao("Frame",{
+local U=ao("Frame",{
 Size=UDim2.new(1,0,1,0),
 AutomaticSize="Y",
 BackgroundTransparency=1,
-Parent=U.UIElements.Main,
+Parent=T.UIElements.Main,
 },{
 ao("UIListLayout",{
 FillDirection="Vertical",
 
-Padding=UDim.new(0,U.UIPadding),
+Padding=UDim.new(0,T.UIPadding),
 }),
 })
 
-local W=ao("Frame",{
+local V=ao("Frame",{
 Size=UDim2.new(1,0,0,0),
 AutomaticSize="Y",
 BackgroundTransparency=1,
-Parent=V,
+Parent=U,
 },{
 ao("UIListLayout",{
 FillDirection="Horizontal",
-Padding=UDim.new(0,U.UIPadding),
+Padding=UDim.new(0,T.UIPadding),
 VerticalAlignment="Center",
 }),
 ao("UIPadding",{
-PaddingTop=UDim.new(0,T.TextPadding/2),
-PaddingLeft=UDim.new(0,T.TextPadding/2),
-PaddingRight=UDim.new(0,T.TextPadding/2),
+PaddingTop=UDim.new(0,aL.TextPadding/2),
+PaddingLeft=UDim.new(0,aL.TextPadding/2),
+PaddingRight=UDim.new(0,aL.TextPadding/2),
 }),
 })
 
-local X
+local W
 if aK.Icon then
-X=an.Image(
+W=an.Image(
 aK.Icon,
-T.Title..":"..aK.Icon,
+aL.Title..":"..aK.Icon,
 0,
 aA,
 "Dialog",
 true,
 aK.IconThemed
 )
-X.Size=UDim2.new(0,22,0,22)
-X.Parent=W
+W.Size=UDim2.new(0,22,0,22)
+W.Parent=V
 end
 
-U.UIElements.UIListLayout=ao("UIListLayout",{
+T.UIElements.UIListLayout=ao("UIListLayout",{
 Padding=UDim.new(0,12),
 FillDirection="Vertical",
 HorizontalAlignment="Left",
 VerticalFlex="SpaceBetween",
-Parent=U.UIElements.Main,
+Parent=T.UIElements.Main,
 })
 
 ao("UISizeConstraint",{
 MinSize=Vector2.new(180,20),
 MaxSize=Vector2.new(400,math.huge),
-Parent=U.UIElements.Main,
+Parent=T.UIElements.Main,
 })
 
-U.UIElements.Title=ao("TextLabel",{
-Text=T.Title,
+T.UIElements.Title=ao("TextLabel",{
+Text=aL.Title,
 TextSize=20,
 FontFace=Font.new(an.Font,Enum.FontWeight.SemiBold),
 TextXAlignment="Left",
 TextWrapped=true,
 RichText=true,
-Size=UDim2.new(1,X and-26-U.UIPadding or 0,0,0),
+Size=UDim2.new(1,W and-26-T.UIPadding or 0,0,0),
 AutomaticSize="Y",
 ThemeTag={
 TextColor3="Text",
 },
 BackgroundTransparency=1,
-Parent=W,
+Parent=V,
 })
-if T.Content then
+if aL.Content then
 ao("TextLabel",{
-Text=T.Content,
+Text=aL.Content,
 TextSize=18,
 TextTransparency=0.4,
 TextWrapped=true,
@@ -39840,31 +39849,31 @@ ThemeTag={
 TextColor3="Text",
 },
 BackgroundTransparency=1,
-Parent=V,
+Parent=U,
 },{
 ao("UIPadding",{
-PaddingLeft=UDim.new(0,T.TextPadding/2),
-PaddingRight=UDim.new(0,T.TextPadding/2),
-PaddingBottom=UDim.new(0,T.TextPadding/2),
+PaddingLeft=UDim.new(0,aL.TextPadding/2),
+PaddingRight=UDim.new(0,aL.TextPadding/2),
+PaddingBottom=UDim.new(0,aL.TextPadding/2),
 }),
 })
 end
 
-local Y=ao("UIListLayout",{
+local X=ao("UIListLayout",{
 Padding=UDim.new(0,6),
 FillDirection="Horizontal",
 HorizontalAlignment="Center",
 HorizontalFlex="Fill",
 })
 
-local _=ao("Frame",{
+local Y=ao("Frame",{
 Size=UDim2.new(1,0,0,36),
 AutomaticSize="None",
 BackgroundTransparency=1,
-Parent=U.UIElements.Main,
+Parent=T.UIElements.Main,
 LayoutOrder=4,
 },{
-Y,
+X,
 
 
 
@@ -39873,12 +39882,12 @@ Y,
 
 })
 
-local aL={}
+local _={}
 
-for aM,aN in next,T.Buttons do
+for aM,aN in next,aL.Buttons do
 local aO=
-ar(aN.Title,aN.Icon,aN.Callback,aN.Variant,_,U,true)
-table.insert(aL,aO)
+ar(aN.Title,aN.Icon,aN.Callback,aN.Variant,Y,T,true)
+table.insert(_,aO)
 aO.Size=UDim2.new(1,0,1,0)
 end
 
@@ -39934,9 +39943,9 @@ end
 
 
 
-U:Open()
+T:Open()
 
-return U
+return T
 end
 
 local aJ=false

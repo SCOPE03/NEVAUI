@@ -292,7 +292,7 @@ Sidebar = {
     SelectorColor = Color3.fromRGB(80, 170, 255),
     TabHeight = 34,
     TabRadius = 10,
-    IconSize = 17,
+    IconSize = 20,
     ScrollBarThickness = 4,
     ScrollBarTransparency = 0.6,
     ScrollBarColor = Color3.fromRGB(80, 170, 255),
@@ -327,7 +327,7 @@ Sidebar = {
 | `SelectorColor` | `Color3` | theme accent | Sliding selector color. Defaults to the `SidebarSelector` theme token. |
 | `TabHeight` | number | automatic | Fixed sidebar tab height in pixels. When omitted, tabs size to their content. |
 | `TabRadius` | number | window radius | Corner radius of sidebar tabs. |
-| `IconSize` | number | `16` | Sidebar tab icon size in pixels. |
+| `IconSize` | number | `20` | Sidebar tab icon size in pixels. |
 | `ScrollBarThickness` | number | `0` | Sidebar scrollbar width. `0` hides the scrollbar. |
 | `ScrollBarTransparency` | number | `0.5` | Sidebar scrollbar transparency. |
 | `ScrollBarColor` | `Color3` | theme default | Sidebar scrollbar color. |

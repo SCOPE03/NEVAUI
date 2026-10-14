@@ -86,7 +86,7 @@ local Window = NevaUI:CreateWindow({
                 -- Sidebar tab sizing and iconography.
                 TabHeight = 34,
                 TabRadius = 10,
-                IconSize = 17,
+                IconSize = 20,
                 -- Sidebar scrollbar (shown when tabs overflow).
                 ScrollBarThickness = 4,
                 ScrollBarTransparency = 0.6,
