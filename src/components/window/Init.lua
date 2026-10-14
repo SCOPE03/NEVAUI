@@ -87,8 +87,12 @@ return function(Config)
 		Sidebar = SidebarConfig,
 		SidebarBrand = SidebarBrandConfig,
 		SidebarBrandHeight = SidebarBrandHeight,
+		SidebarBrandLogoBackground = SidebarBrandConfig.LogoBackground,
+		SidebarBrandLogoBackgroundTransparency = SidebarBrandConfig.LogoBackgroundTransparency,
+		SidebarBrandLogoPadding = SidebarBrandConfig.LogoPadding,
 		SidebarPadding = SidebarConfig.Padding,
 		SidebarGap = SidebarConfig.Gap,
+		SidebarColors = SidebarConfig.Colors,
 		SidebarDivider = SidebarConfig.Divider ~= false,
 		SidebarDividerThickness = SidebarConfig.DividerThickness or 1,
 		SidebarDividerTransparency = SidebarConfig.DividerTransparency or 0.85,
@@ -154,6 +158,14 @@ return function(Config)
 	Window.UICorner = Window.Radius
 	Window.SidebarPadding = Window.SidebarPadding or Window.UIPadding / 2
 	Window.SidebarGap = Window.SidebarGap or Window.Gap
+
+	if Window.SidebarColors ~= nil then
+		if type(Window.SidebarColors) ~= "table" then
+			error("Sidebar.Colors must be a table of theme-token overrides.", 2)
+		end
+		-- Merge onto the already-merged active theme so ThemeColors overrides are preserved.
+		Creator.SetTheme(Creator.Theme or Config.NevaUI.Themes[Config.Theme or "Dark"], Window.SidebarColors)
+	end
 
 	Window.TopBarButtonIconSize = Window.TopBarButtonIconSize or (Window.Topbar.ButtonsType == "Mac" and 11 or 16)
 
@@ -333,10 +345,11 @@ return function(Config)
 	local SidebarBrandFrame
 	if Window.SidebarBrandHeight > 0 then
 		local BrandContent = {}
+		local BrandLogoPadding = Window.SidebarBrandLogoPadding or 0
 		local BrandLogoSize = math.min(
 			Window.SidebarBrand.LogoSize or (Window.SidebarBrand.Layout == "Stacked" and 36 or 24),
-			Window.SidebarBrandHeight - 12,
-			math.max(0, Window.SideBarWidth - (Window.SidebarPadding * 2)),
+			Window.SidebarBrandHeight - 12 - (BrandLogoPadding * 2),
+			math.max(0, Window.SideBarWidth - (Window.SidebarPadding * 2) - (BrandLogoPadding * 2)),
 			Window.SidebarBrand.Layout == "Stacked"
 				and type(Window.SidebarBrand.Title) == "string"
 				and Window.SidebarBrand.Title ~= ""
@@ -361,21 +374,49 @@ return function(Config)
 				Window.SidebarBrand.LogoThemed or false,
 				"SidebarBrandLogo"
 			)
-			BrandLogo.Name = "Logo"
-			BrandLogo.LayoutOrder = 1
-			BrandLogo.Size = UDim2.new(0, BrandLogoSize, 0, BrandLogoSize)
+			BrandLogo.Name = "LogoImage"
+			BrandLogo.Size = UDim2.new(1, 0, 1, 0)
 			if BrandLogo:FindFirstChildWhichIsA("ImageLabel") then
 				BrandLogo:FindFirstChildWhichIsA("ImageLabel").ScaleType = Window.SidebarBrand.LogoScaleType == "Crop"
 					and Enum.ScaleType.Crop
 					or Enum.ScaleType.Fit
 			end
-			BrandLogo.ZIndex = 7
-			for _, BrandDescendant in ipairs(BrandLogo:GetDescendants()) do
+			-- Wrapping the image keeps the logo background-free unless the developer
+			-- opts into a LogoBackground; padding then insets the artwork.
+			local BrandLogoHolder = New("Frame", {
+				Name = "Logo",
+				LayoutOrder = 1,
+				Size = UDim2.new(0, BrandLogoSize + (BrandLogoPadding * 2), 0, BrandLogoSize + (BrandLogoPadding * 2)),
+				BackgroundTransparency = 1,
+				ZIndex = 7,
+			}, {
+				New("UIPadding", {
+					PaddingTop = UDim.new(0, BrandLogoPadding),
+					PaddingBottom = UDim.new(0, BrandLogoPadding),
+					PaddingLeft = UDim.new(0, BrandLogoPadding),
+					PaddingRight = UDim.new(0, BrandLogoPadding),
+				}),
+				BrandLogo,
+			})
+			if Window.SidebarBrandLogoBackground then
+				BrandLogoHolder.BackgroundColor3 = Window.SidebarBrandLogoBackground
+				BrandLogoHolder.BackgroundTransparency = Window.SidebarBrandLogoBackgroundTransparency or 0
+			end
+			if (Window.SidebarBrand.LogoRadius or 0) > 0 then
+				New("UICorner", {
+					CornerRadius = UDim.new(0, Window.SidebarBrand.LogoRadius),
+					Parent = BrandLogoHolder,
+				})
+			end
+			for _, BrandDescendant in ipairs(BrandLogoHolder:GetDescendants()) do
 				if BrandDescendant:IsA("GuiObject") then
 					BrandDescendant.ZIndex = 7
 				end
 			end
-			table.insert(BrandContent, BrandLogo)
+			table.insert(BrandContent, BrandLogoHolder)
+			Window.SidebarBrandLogoSize = BrandLogoSize
+			Window.SidebarBrandLogoPadding = BrandLogoPadding
+			Window.SidebarBrandLogoHolder = BrandLogoHolder
 		end
 		if Window.SidebarBrand.Title and Window.SidebarBrand.Title ~= "" then
 			table.insert(BrandContent, New("TextLabel", {
@@ -385,7 +426,7 @@ return function(Config)
 					and UDim2.new(1, -(Window.SidebarPadding * 2), 0, (Window.SidebarBrand.TitleSize or 16) + 8)
 					or UDim2.new(
 						1,
-						Window.SidebarBrand.Logo and -(BrandLogoSize + Window.SidebarGap) or 0,
+						Window.SidebarBrand.Logo and -((BrandLogoSize + (BrandLogoPadding * 2)) + Window.SidebarGap) or 0,
 						1,
 						0
 					),
@@ -2059,6 +2100,40 @@ return function(Config)
 		end
 	end
 
+	function Window:SetSidebarBrandLogoSize(Size)
+		if typeof(Size) ~= "number" then
+			return
+		end
+		local Holder = Window.SidebarBrandLogoHolder
+		if not Holder then
+			return
+		end
+		local Padding = Window.SidebarBrandLogoPadding or 0
+		local Image = Holder:FindFirstChild("LogoImage")
+		Window.SidebarBrand.LogoSize = Size
+		Window.SidebarBrandLogoSize = Size
+		Holder.Size = UDim2.new(0, Size + (Padding * 2), 0, Size + (Padding * 2))
+		if Image then
+			Image.Size = UDim2.new(1, 0, 1, 0)
+		end
+	end
+
+	function Window:SetSidebarBrandLogoBackground(Color, Transparency)
+		local Holder = Window.SidebarBrandLogoHolder
+		if not Holder then
+			return
+		end
+		if Color == nil then
+			Holder.BackgroundTransparency = 1
+			Window.SidebarBrandLogoBackground = nil
+			return
+		end
+		Holder.BackgroundColor3 = Color
+		Holder.BackgroundTransparency = Transparency or 0
+		Window.SidebarBrandLogoBackground = Color
+		Window.SidebarBrandLogoBackgroundTransparency = Transparency or 0
+	end
+
 	function Window:SetSidebarSelector(v)
 		if typeof(v) == "boolean" then
 			Window.SidebarSelector = v
@@ -2075,6 +2150,18 @@ return function(Config)
 			Creator.Objects[Selector] = nil
 			Selector.BackgroundColor3 = Color
 		end
+	end
+
+	function Window:SetSidebarColor(Token, Color, Transparency)
+		if type(Token) ~= "string" then
+			return
+		end
+		Window.SidebarColors = Window.SidebarColors or {}
+		Window.SidebarColors[Token] = Color
+		if Transparency ~= nil then
+			Window.SidebarColors[Token .. "Transparency"] = Transparency
+		end
+		Creator.SetTheme(Creator.Theme, Window.SidebarColors)
 	end
 
 	function Window:Divider(DividerConfig)

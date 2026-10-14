@@ -16,7 +16,7 @@ local Window = NevaUI:CreateWindow({
 
 For a complete working example, see [`sidebar_example.lua`](sidebar_example.lua). It demonstrates the background image, script-hub logo, floating open button, sidebar styling, dividers, and runtime controls. For the opt-in two-column Dashboard layout, see [`dashboard_example.lua`](dashboard_example.lua).
 
-For an animated background, large left-side brand logo, and floating open button, see [`anime_background_example.lua`](anime_background_example.lua).
+For an animated background, large left-side brand logo, floating open button, and a sidebar with search plus live color/logo controls, see [`anime_background_example.lua`](anime_background_example.lua).
 
 ## Complete `CreateWindow` configuration
 
@@ -271,8 +271,17 @@ Sidebar = {
         Title = "NevaUI",
         LogoSize = 54,
         LogoScaleType = "Fit",
+        LogoPadding = 0,
+        LogoBackground = nil, -- optional Color3 swatch behind the logo
+        LogoBackgroundTransparency = 0,
         TitleSize = 24,
         Height = 140,
+    },
+    Colors = {
+        SidebarBackground = Color3.fromRGB(24, 14, 14),
+        SidebarBackgroundTransparency = 0.08,
+        SidebarSelector = Color3.fromRGB(220, 60, 60),
+        TabBackgroundActive = Color3.fromRGB(120, 40, 40),
     },
     Divider = true,
     DividerThickness = 2,
@@ -293,6 +302,7 @@ Sidebar = {
 | Option | Type | Default | Description |
 |---|---|---:|---|
 | `Width` | number | Standard: `200`; Dashboard: `190` | Sidebar width in pixels. |
+| `Colors` | table | `nil` | Sidebar-scoped theme-token overrides (for example `SidebarBackground`, `SidebarSelector`, `TabBackgroundActive`). Merged onto the active theme so `ThemeColors` are preserved. |
 | `Padding` | number | automatic | Inner sidebar padding. |
 | `Gap` | number | automatic | Vertical gap between sidebar items. |
 | `Brand.Layout` | string | `"Horizontal"` | `"Stacked"` centers the logo above the title; `"Horizontal"` keeps them side by side. |
@@ -300,6 +310,9 @@ Sidebar = {
 | `Brand.Title` | string | `nil` | Wordmark displayed beside or below the sidebar logo, depending on `Brand.Layout`. |
 | `Brand.LogoSize` | number | Horizontal: `24`; Stacked: `36` | Sidebar brand logo size in pixels. The rendered size is clamped to fit the header and sidebar width. |
 | `Brand.LogoScaleType` | string | `"Fit"` | `"Fit"` contains the whole image in its bounds; `"Crop"` fills the bounds and may trim its edges. |
+| `Brand.LogoPadding` | number | `0` | Inset between the logo image and its bounds. Also used by `Brand.LogoBackground`. |
+| `Brand.LogoBackground` | `Color3` | `nil` | Optional background swatch behind the brand logo. When unset, the logo is drawn with no background. |
+| `Brand.LogoBackgroundTransparency` | number | `0` | Transparency of `Brand.LogoBackground`. |
 | `Brand.Height` | number | Horizontal: `56`; Stacked: `96` | Height reserved above sidebar search and tabs (clamped to at least `40`). |
 | `Brand.LogoRadius` | number | `0` | Corner radius of the brand image. |
 | `Brand.LogoThemed` | boolean | `false` | Applies theme coloring to the logo where supported. |
@@ -325,6 +338,16 @@ The sliding selector can also be recolored or toggled at runtime:
 Window:SetSidebarSelector(false)
 Window:SetSidebarSelector(true)
 Window:SetSidebarSelectorColor(Color3.fromRGB(80, 170, 255))
+```
+
+The brand logo and sidebar colors can also be changed at runtime:
+
+```lua
+Window:SetSidebarBrandLogoSize(72)
+Window:SetSidebarBrandLogoBackground(Color3.fromRGB(24, 14, 14), 0.1)
+Window:SetSidebarBrandLogoBackground(nil) -- remove the background swatch
+Window:SetSidebarColor("SidebarBackground", Color3.fromRGB(24, 14, 14))
+Window:SetSidebarColor("TabBackgroundActive", Color3.fromRGB(120, 40, 40), 0.12)
 ```
 
 The sliding selector color follows the `SidebarSelector` theme token, which defaults to the theme accent and can be overridden through `ThemeColors`:
