@@ -37543,9 +37543,17 @@ local au=a.F()
 return function(av)
 local aw=av.Sidebar or{}
 local ax=aw.Brand or{}
+if ax.Layout~=nil
+and ax.Layout~="Horizontal"
+and ax.Layout~="Stacked"
+then
+error('Invalid Sidebar.Brand.Layout "'..tostring(ax.Layout)..'". Expected "Horizontal" or "Stacked".',2)
+end
 local ay=ax.Logo~=nil
 or(type(ax.Title)=="string"and ax.Title~="")
-local az=ay and math.max(40,ax.Height or 56)or 0
+local az=ay
+and math.max(40,ax.Height or(ax.Layout=="Stacked"and 96 or 56))
+or 0
 
 local aA={
 Title=av.Title or"UI Library",
@@ -37796,7 +37804,7 @@ local m
 if aA.SidebarBrandHeight>0 then
 local p={}
 local r=math.min(
-aA.SidebarBrand.LogoSize or 24,
+aA.SidebarBrand.LogoSize or(aA.SidebarBrand.Layout=="Stacked"and 36 or 24),
 aA.SidebarBrandHeight-12
 )
 if aA.SidebarBrand.Logo then
@@ -37825,7 +37833,9 @@ if aA.SidebarBrand.Title and aA.SidebarBrand.Title~=""then
 table.insert(p,ao("TextLabel",{
 Name="Title",
 LayoutOrder=2,
-Size=UDim2.new(
+Size=aA.SidebarBrand.Layout=="Stacked"
+and UDim2.new(1,-(aA.SidebarPadding*2),0,(aA.SidebarBrand.TitleSize or 16)+8)
+or UDim2.new(
 1,
 aA.SidebarBrand.Logo and-(r+aA.SidebarGap)or 0,
 1,
@@ -37837,7 +37847,8 @@ Text=aA.SidebarBrand.Title,
 TextSize=aA.SidebarBrand.TitleSize or 16,
 TextWrapped=false,
 TextTruncate="AtEnd",
-TextXAlignment="Left",
+TextXAlignment=aA.SidebarBrand.Layout=="Stacked"and"Center"or"Left",
+TextYAlignment="Center",
 FontFace=Font.new(an.Font,Enum.FontWeight.SemiBold),
 ThemeTag={
 TextColor3="Text",
@@ -37845,15 +37856,17 @@ TextColor3="Text",
 }))
 end
 table.insert(p,ao("UIListLayout",{
-FillDirection="Horizontal",
+FillDirection=aA.SidebarBrand.Layout=="Stacked"and"Vertical"or"Horizontal",
 SortOrder="LayoutOrder",
 VerticalAlignment="Center",
-HorizontalAlignment="Left",
+HorizontalAlignment=aA.SidebarBrand.Layout=="Stacked"and"Center"or"Left",
 Padding=UDim.new(0,aA.SidebarGap),
 }))
 table.insert(p,ao("UIPadding",{
 PaddingLeft=UDim.new(0,aA.SidebarPadding),
 PaddingRight=UDim.new(0,aA.SidebarPadding),
+PaddingTop=UDim.new(0,aA.SidebarBrand.Layout=="Stacked"and aA.SidebarPadding or 0),
+PaddingBottom=UDim.new(0,aA.SidebarBrand.Layout=="Stacked"and aA.SidebarPadding or 0),
 }))
 m=ao("Frame",{
 Name="SidebarBrand",

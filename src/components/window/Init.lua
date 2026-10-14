@@ -29,9 +29,17 @@ local Notified = false
 return function(Config)
 	local SidebarConfig = Config.Sidebar or {}
 	local SidebarBrandConfig = SidebarConfig.Brand or {}
+	if SidebarBrandConfig.Layout ~= nil
+		and SidebarBrandConfig.Layout ~= "Horizontal"
+		and SidebarBrandConfig.Layout ~= "Stacked"
+	then
+		error('Invalid Sidebar.Brand.Layout "' .. tostring(SidebarBrandConfig.Layout) .. '". Expected "Horizontal" or "Stacked".', 2)
+	end
 	local HasSidebarBrand = SidebarBrandConfig.Logo ~= nil
 		or (type(SidebarBrandConfig.Title) == "string" and SidebarBrandConfig.Title ~= "")
-	local SidebarBrandHeight = HasSidebarBrand and math.max(40, SidebarBrandConfig.Height or 56) or 0
+	local SidebarBrandHeight = HasSidebarBrand
+		and math.max(40, SidebarBrandConfig.Height or (SidebarBrandConfig.Layout == "Stacked" and 96 or 56))
+		or 0
 
 	local Window = {
 		Title = Config.Title or "UI Library",
@@ -282,7 +290,7 @@ return function(Config)
 	if Window.SidebarBrandHeight > 0 then
 		local BrandContent = {}
 		local BrandLogoSize = math.min(
-			Window.SidebarBrand.LogoSize or 24,
+			Window.SidebarBrand.LogoSize or (Window.SidebarBrand.Layout == "Stacked" and 36 or 24),
 			Window.SidebarBrandHeight - 12
 		)
 		if Window.SidebarBrand.Logo then
@@ -311,19 +319,22 @@ return function(Config)
 			table.insert(BrandContent, New("TextLabel", {
 				Name = "Title",
 				LayoutOrder = 2,
-				Size = UDim2.new(
-					1,
-					Window.SidebarBrand.Logo and -(BrandLogoSize + Window.SidebarGap) or 0,
-					1,
-					0
-				),
+				Size = Window.SidebarBrand.Layout == "Stacked"
+					and UDim2.new(1, -(Window.SidebarPadding * 2), 0, (Window.SidebarBrand.TitleSize or 16) + 8)
+					or UDim2.new(
+						1,
+						Window.SidebarBrand.Logo and -(BrandLogoSize + Window.SidebarGap) or 0,
+						1,
+						0
+					),
 				BackgroundTransparency = 1,
 				ZIndex = 7,
 				Text = Window.SidebarBrand.Title,
 				TextSize = Window.SidebarBrand.TitleSize or 16,
 				TextWrapped = false,
 				TextTruncate = "AtEnd",
-				TextXAlignment = "Left",
+				TextXAlignment = Window.SidebarBrand.Layout == "Stacked" and "Center" or "Left",
+				TextYAlignment = "Center",
 				FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
 				ThemeTag = {
 					TextColor3 = "Text",
@@ -331,15 +342,17 @@ return function(Config)
 			}))
 		end
 		table.insert(BrandContent, New("UIListLayout", {
-			FillDirection = "Horizontal",
+			FillDirection = Window.SidebarBrand.Layout == "Stacked" and "Vertical" or "Horizontal",
 			SortOrder = "LayoutOrder",
 			VerticalAlignment = "Center",
-			HorizontalAlignment = "Left",
+			HorizontalAlignment = Window.SidebarBrand.Layout == "Stacked" and "Center" or "Left",
 			Padding = UDim.new(0, Window.SidebarGap),
 		}))
 		table.insert(BrandContent, New("UIPadding", {
 			PaddingLeft = UDim.new(0, Window.SidebarPadding),
 			PaddingRight = UDim.new(0, Window.SidebarPadding),
+			PaddingTop = UDim.new(0, Window.SidebarBrand.Layout == "Stacked" and Window.SidebarPadding or 0),
+			PaddingBottom = UDim.new(0, Window.SidebarBrand.Layout == "Stacked" and Window.SidebarPadding or 0),
 		}))
 		SidebarBrandFrame = New("Frame", {
 			Name = "SidebarBrand",
