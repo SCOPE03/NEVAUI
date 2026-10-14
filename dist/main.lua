@@ -30859,21 +30859,23 @@ AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.new(0.5,0,0.5,0),
 BackgroundColor3=ao,
 BackgroundTransparency=0,
-},{
-ac("UICorner",{CornerRadius=UDim.new(1,0)}),
 })
 as.Parent=ar
 
 local at=ac("Frame",{
 Name="Frame",
-Size=UDim2.new(0,18,0,18),
-Position=UDim2.new(0,5,0.5,0),
+Size=UDim2.new(0,26,0,24),
+Position=UDim2.new(0,2,0.5,0),
 AnchorPoint=Vector2.new(0,0.5),
 BackgroundColor3=aq,
 BorderSizePixel=0,
 ZIndex=2,
 },{
-ac("UICorner",{CornerRadius=UDim.new(1,0)}),
+ac("UIStroke",{
+Color=Color3.fromRGB(32,32,36),
+Transparency=0.5,
+Thickness=1,
+}),
 })
 at.Parent=as
 
@@ -30889,7 +30891,7 @@ au.Parent=as
 local function ApplyState(av,aw)
 local ax=av and an or ao
 local ay=av and ap or aq
-local az=UDim2.new(0,av and 37 or 5,0.5,0)
+local az=UDim2.new(0,av and 32 or 2,0.5,0)
 if aw then
 ad(at,0.18,{
 Position=az,
