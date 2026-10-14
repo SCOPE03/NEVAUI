@@ -55,6 +55,21 @@ local Window = NevaUI:CreateWindow({
 			Height = 92,
 		},
 		Divider = true,
+		DividerThickness = 2,
+		DividerTransparency = 0.72,
+		DividerColor = Color3.fromRGB(220, 60, 60),
+		-- Sliding accent bar that tracks the selected tab.
+		Selector = true,
+		SelectorWidth = 4,
+		SelectorColor = Color3.fromRGB(220, 60, 60),
+		-- Sidebar tab sizing and iconography.
+		TabHeight = 34,
+		TabRadius = 10,
+		IconSize = 17,
+		-- Sidebar scrollbar (shown when tabs overflow).
+		ScrollBarThickness = 4,
+		ScrollBarTransparency = 0.6,
+		ScrollBarColor = Color3.fromRGB(220, 60, 60),
 	},
 	OpenButton = {
 		Floating = true,
@@ -75,6 +90,30 @@ local Window = NevaUI:CreateWindow({
 local WelcomeTab = Window:Tab({
 	Title = "Welcome",
 	Icon = "house",
+	ShowTabTitle = true,
+})
+
+local VisualsTab = Window:Tab({
+	Title = "Visuals",
+	Icon = "eye",
+	ShowTabTitle = true,
+})
+
+local CombatTab = Window:Tab({
+	Title = "Combat",
+	Icon = "sword",
+	ShowTabTitle = true,
+})
+
+local PlayerTab = Window:Tab({
+	Title = "Player",
+	Icon = "user",
+	ShowTabTitle = true,
+})
+
+local SettingsTab = Window:Tab({
+	Title = "Settings",
+	Icon = "settings",
 	ShowTabTitle = true,
 })
 
@@ -136,3 +175,34 @@ SecondTable:Button({
 		print("Second panel button is working.")
 	end,
 })
+
+-- Extra tabs keep the rail long enough to show the sliding selector and the
+-- sidebar scrollbar.
+local function AddPlaceholderTab(Tab, Label, Icon)
+	local Panel = Tab:Section({
+		Title = Label,
+		Desc = "Placeholder panel for " .. Label,
+		Icon = Icon,
+		Box = true,
+		BoxBorder = true,
+		Opened = true,
+	})
+
+	Panel:Button({
+		Title = "Action",
+		Style = "Legacy",
+		Icon = "play",
+		Callback = function()
+			print(Label .. " action pressed.")
+		end,
+	})
+
+	return Panel
+end
+
+AddPlaceholderTab(VisualsTab, "Visuals", "eye")
+AddPlaceholderTab(CombatTab, "Combat", "sword")
+AddPlaceholderTab(PlayerTab, "Player", "user")
+AddPlaceholderTab(SettingsTab, "Settings", "settings")
+
+Window:SelectTab(1)

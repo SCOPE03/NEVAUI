@@ -93,6 +93,16 @@ return function(Config)
 		SidebarDividerThickness = SidebarConfig.DividerThickness or 1,
 		SidebarDividerTransparency = SidebarConfig.DividerTransparency or 0.85,
 		SidebarDividerColor = SidebarConfig.DividerColor,
+		SidebarSelector = SidebarConfig.Selector ~= false,
+		SidebarSelectorWidth = SidebarConfig.SelectorWidth or 3,
+		SidebarSelectorRadius = SidebarConfig.SelectorRadius or 999,
+		SidebarSelectorColor = SidebarConfig.SelectorColor,
+		SidebarTabHeight = SidebarConfig.TabHeight,
+		SidebarTabRadius = SidebarConfig.TabRadius,
+		SidebarIconSize = SidebarConfig.IconSize,
+		SidebarScrollBarThickness = SidebarConfig.ScrollBarThickness,
+		SidebarScrollBarTransparency = SidebarConfig.ScrollBarTransparency or 0.5,
+		SidebarScrollBarColor = SidebarConfig.ScrollBarColor,
 		Acrylic = Config.Acrylic or false,
 		NewElements = Config.NewElements == nil and Config.Layout == "Dashboard" or Config.NewElements or false,
 		IgnoreAlerts = Config.IgnoreAlerts or false,
@@ -249,24 +259,8 @@ return function(Config)
 
 	local SidebarSearchHeight = not Window.HideSearchBar and (39 + 6) or 0
 	local SidebarReservedHeight = Window.SidebarBrandHeight + SidebarSearchHeight
-	Window.UIElements.SideBar = New("ScrollingFrame", {
-		Size = UDim2.new(
-			1,
-			Window.ScrollBarEnabled and -3 - (Window.UIPadding / 2) or 0,
-			1,
-			-SidebarReservedHeight
-		),
-		Position = UDim2.new(0, 0, 0, SidebarReservedHeight),
-		AnchorPoint = Vector2.new(0, 0),
-		BackgroundTransparency = 1,
-		ScrollBarThickness = 0,
-		ElasticBehavior = "Never",
-		CanvasSize = UDim2.new(0, 0, 0, 0),
-		AutomaticCanvasSize = "Y",
-		ScrollingDirection = "Y",
-		ClipsDescendants = true,
-		VerticalScrollBarPosition = "Left",
-	}, {
+	local SidebarScrollThickness = Window.SidebarScrollBarThickness or 0
+	local SideBarFrameChildren = {
 		New("Frame", {
 			BackgroundTransparency = 1,
 			AutomaticSize = "Y",
@@ -279,19 +273,62 @@ return function(Config)
 				--PaddingRight = UDim.new(0,4+(Window.UIPadding/2)),
 				PaddingBottom = UDim.new(0, Window.UIPadding / 2),
 			}),
-				New("UIListLayout", {
-					SortOrder = "LayoutOrder",
-					Padding = UDim.new(0, Window.SidebarGap),
-				}),
-		}),
-			New("UIPadding", {
-				--PaddingTop = UDim.new(0,4),
-				PaddingLeft = UDim.new(0, Window.SidebarPadding),
-				PaddingRight = UDim.new(0, Window.SidebarPadding),
-				PaddingBottom = UDim.new(0, Window.SidebarPadding),
+			New("UIListLayout", {
+				SortOrder = "LayoutOrder",
+				Padding = UDim.new(0, Window.SidebarGap),
 			}),
-		--TabHighlight
-	})
+		}),
+		New("UIPadding", {
+			--PaddingTop = UDim.new(0,4),
+			PaddingLeft = UDim.new(0, Window.SidebarPadding),
+			PaddingRight = UDim.new(0, Window.SidebarPadding),
+			PaddingBottom = UDim.new(0, Window.SidebarPadding),
+		}),
+	}
+	Window.UIElements.SideBar = New("ScrollingFrame", {
+		Size = UDim2.new(
+			1,
+			Window.ScrollBarEnabled and -3 - (Window.UIPadding / 2) or 0,
+			1,
+			-SidebarReservedHeight
+		),
+		Position = UDim2.new(0, 0, 0, SidebarReservedHeight),
+		AnchorPoint = Vector2.new(0, 0),
+		BackgroundTransparency = 1,
+		ScrollBarThickness = SidebarScrollThickness,
+		ScrollBarImageTransparency = Window.SidebarScrollBarTransparency,
+		ScrollBarImageColor3 = Window.SidebarScrollBarColor,
+		ElasticBehavior = "Never",
+		CanvasSize = UDim2.new(0, 0, 0, 0),
+		AutomaticCanvasSize = "Y",
+		ScrollingDirection = "Y",
+		ClipsDescendants = true,
+		VerticalScrollBarPosition = "Left",
+	}, SideBarFrameChildren)
+
+	local SidebarSelector
+	if Window.SidebarSelector then
+		Window.SidebarSelectorX = math.max(0, Window.SidebarPadding - Window.SidebarSelectorWidth - 2)
+		local SelectorProperties = {
+			Name = "SidebarSelector",
+			Size = UDim2.new(0, Window.SidebarSelectorWidth, 0, 0),
+			Position = UDim2.new(0, Window.SidebarSelectorX, 0, 0),
+			BackgroundColor3 = Window.SidebarSelectorColor or Color3.fromRGB(255, 255, 255),
+			BorderSizePixel = 0,
+			Visible = false,
+			ZIndex = 5,
+		}
+		if not Window.SidebarSelectorColor then
+			SelectorProperties.ThemeTag = { BackgroundColor3 = "SidebarSelector" }
+		end
+		SidebarSelector = New("Frame", SelectorProperties, {
+			New("UICorner", {
+				CornerRadius = UDim.new(0, Window.SidebarSelectorRadius),
+			}),
+		})
+		SidebarSelector.Parent = Window.UIElements.SideBar
+		Window.UIElements.SidebarSelector = SidebarSelector
+	end
 
 	local SidebarBrandFrame
 	if Window.SidebarBrandHeight > 0 then
@@ -1912,9 +1949,63 @@ return function(Config)
 	local TabModule = TabModuleMain.Init(Window, Config.NevaUI, Config.NevaUI.TooltipGui)
 	TabModule:OnChange(function(t)
 		Window.CurrentTab = t
+		if Window.UIElements.SidebarSelector then
+			Window.UIElements.SidebarSelector.Visible = false
+		end
 	end)
 
 	Window.TabModule = TabModule
+
+	-- Tracks the active tab frame so the sidebar selector can slide between tabs,
+	-- including while the sidebar is scrolled.
+	if Window.UIElements.SidebarSelector then
+		local SelectorFrame = Window.UIElements.SidebarSelector
+		local Tween = Creator.Tween
+		local ActiveTabFrame = nil
+		local LastSelectorY = nil
+
+		local function UpdateSelector(Instant)
+			if not ActiveTabFrame or not ActiveTabFrame.Parent then
+				SelectorFrame.Visible = false
+				return
+			end
+			local TargetY = ActiveTabFrame.AbsolutePosition.Y
+					- Window.UIElements.SideBar.AbsolutePosition.Y
+					+ Window.UIElements.SideBar.CanvasPosition.Y
+			local TargetHeight = ActiveTabFrame.AbsoluteSize.Y
+			if TargetHeight <= 0 then
+				SelectorFrame.Visible = false
+				return
+			end
+			SelectorFrame.Visible = true
+			SelectorFrame.Size = UDim2.new(0, Window.SidebarSelectorWidth, 0, TargetHeight)
+			if Instant or LastSelectorY == nil then
+				SelectorFrame.Position = UDim2.new(0, Window.SidebarSelectorX, 0, TargetY)
+			elseif TargetY ~= LastSelectorY then
+				Tween(SelectorFrame, 0.16, {
+					Position = UDim2.new(0, Window.SidebarSelectorX, 0, TargetY),
+				}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+			end
+			LastSelectorY = TargetY
+		end
+
+		TabModule:OnSelectorTarget(function(TabObject)
+			ActiveTabFrame = TabObject and TabObject.UIElements and TabObject.UIElements.Main or nil
+			UpdateSelector(false)
+			-- The first selection often runs before the tab has been laid out, so
+			-- re-measure once the frame geometry is available.
+			task.defer(function()
+				UpdateSelector(true)
+			end)
+		end)
+
+		Creator.AddSignal(Window.UIElements.SideBar:GetPropertyChangedSignal("CanvasPosition"), function()
+			UpdateSelector(true)
+		end)
+		Creator.AddSignal(Window.UIElements.SideBar.Frame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
+			UpdateSelector(true)
+		end)
+	end
 
 	function Window:Tab(TabConfig)
 		TabConfig.Parent = Window.UIElements.SideBar.Frame
@@ -1965,6 +2056,24 @@ return function(Config)
 		if typeof(v) == "boolean" then
 			Window.SidebarDivider = v
 			Window.UIElements.SidebarDivider.Visible = v
+		end
+	end
+
+	function Window:SetSidebarSelector(v)
+		if typeof(v) == "boolean" then
+			Window.SidebarSelector = v
+			if Window.UIElements.SidebarSelector then
+				Window.UIElements.SidebarSelector.Visible = v
+			end
+		end
+	end
+
+	function Window:SetSidebarSelectorColor(Color)
+		Window.SidebarSelectorColor = Color
+		local Selector = Window.UIElements.SidebarSelector
+		if Selector and Color then
+			Creator.Objects[Selector] = nil
+			Selector.BackgroundColor3 = Color
 		end
 	end
 

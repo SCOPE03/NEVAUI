@@ -19,6 +19,7 @@ return function(Creator)
 		WindowBackground = "Background",
 		SidebarBackground = "Background",
 		SidebarBackgroundTransparency = 1,
+		SidebarSelector = "Accent",
 
 		WindowShadow = "Black",
 		--WindowShadowTransparency = .7,

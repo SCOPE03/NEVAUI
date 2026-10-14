@@ -182,7 +182,7 @@ ThemeColors = {
 
 `ThemeColors` is merged onto a copy of the selected theme, so built-in theme tables are not modified. If `SidebarBackground` is set without `SidebarBackgroundTransparency`, the sidebar becomes opaque; set a transparency explicitly when you want a different value. Theme overrides also stay applied when calling `NevaUI:SetTheme()`.
 
-Common tokens include `Background`, `PanelBackground`, `PanelBackgroundTransparency`, `SidebarBackground`, `TabBackground`, `TabBackgroundActive`, `TabBackgroundActiveTransparency`, `ElementBackground`, `ElementTitle`, `Text`, `Icon`, `Button`, `Toggle`, `ToggleBar`, `Slider`, and `Checkbox`. Other theme/fallback tokens can also be overridden for outlines, placeholders, hover states, and control descriptions.
+Common tokens include `Background`, `PanelBackground`, `PanelBackgroundTransparency`, `SidebarBackground`, `SidebarSelector`, `TabBackground`, `TabBackgroundActive`, `TabBackgroundActiveTransparency`, `ElementBackground`, `ElementTitle`, `Text`, `Icon`, `Button`, `Toggle`, `ToggleBar`, `Slider`, and `Checkbox`. Other theme/fallback tokens can also be overridden for outlines, placeholders, hover states, and control descriptions.
 
 ### Size and behavior options
 
@@ -278,6 +278,15 @@ Sidebar = {
     DividerThickness = 2,
     DividerTransparency = 0.72,
     DividerColor = Color3.fromRGB(80, 170, 255),
+    Selector = true,
+    SelectorWidth = 4,
+    SelectorColor = Color3.fromRGB(80, 170, 255),
+    TabHeight = 34,
+    TabRadius = 10,
+    IconSize = 17,
+    ScrollBarThickness = 4,
+    ScrollBarTransparency = 0.6,
+    ScrollBarColor = Color3.fromRGB(80, 170, 255),
 }
 ```
 
@@ -299,6 +308,32 @@ Sidebar = {
 | `DividerThickness` | number | `1` | Divider width. |
 | `DividerTransparency` | number | `0.85` | Divider transparency. |
 | `DividerColor` | `Color3` | theme text color | Divider color. |
+| `Selector` | boolean | `true` | Shows the sliding accent bar that tracks the selected tab. |
+| `SelectorWidth` | number | `3` | Sliding selector width in pixels. |
+| `SelectorRadius` | number | `999` | Sliding selector corner radius. `999` makes it fully rounded. |
+| `SelectorColor` | `Color3` | theme accent | Sliding selector color. Defaults to the `SidebarSelector` theme token. |
+| `TabHeight` | number | automatic | Fixed sidebar tab height in pixels. When omitted, tabs size to their content. |
+| `TabRadius` | number | window radius | Corner radius of sidebar tabs. |
+| `IconSize` | number | `16` | Sidebar tab icon size in pixels. |
+| `ScrollBarThickness` | number | `0` | Sidebar scrollbar width. `0` hides the scrollbar. |
+| `ScrollBarTransparency` | number | `0.5` | Sidebar scrollbar transparency. |
+| `ScrollBarColor` | `Color3` | theme default | Sidebar scrollbar color. |
+
+The sliding selector can also be recolored or toggled at runtime:
+
+```lua
+Window:SetSidebarSelector(false)
+Window:SetSidebarSelector(true)
+Window:SetSidebarSelectorColor(Color3.fromRGB(80, 170, 255))
+```
+
+The sliding selector color follows the `SidebarSelector` theme token, which defaults to the theme accent and can be overridden through `ThemeColors`:
+
+```lua
+ThemeColors = {
+    SidebarSelector = Color3.fromRGB(80, 170, 255),
+}
+```
 
 `SideBarWidth` is retained as a legacy top-level alias for `Sidebar.Width`.
 
