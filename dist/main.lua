@@ -30848,13 +30848,13 @@ local ap=Color3.fromRGB(250,249,255)
 local aq=Color3.fromRGB(128,128,136)
 
 local ar=ac("Frame",{
-Size=UDim2.new(0,58,0,30),
+Size=UDim2.new(0,64,0,32),
 BackgroundTransparency=1,
 Parent=ai,
 })
 local as=ac("Frame",{
 Name="ToggleFrame",
-Size=UDim2.new(0,56,0,28),
+Size=UDim2.new(0,60,0,28),
 AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.new(0.5,0,0.5,0),
 BackgroundColor3=ao,
@@ -30866,8 +30866,8 @@ as.Parent=ar
 
 local at=ac("Frame",{
 Name="Frame",
-Size=UDim2.new(0,22,0,22),
-Position=UDim2.new(0,3,0.5,0),
+Size=UDim2.new(0,18,0,18),
+Position=UDim2.new(0,5,0.5,0),
 AnchorPoint=Vector2.new(0,0.5),
 BackgroundColor3=aq,
 BorderSizePixel=0,
@@ -30889,7 +30889,7 @@ au.Parent=as
 local function ApplyState(av,aw)
 local ax=av and an or ao
 local ay=av and ap or aq
-local az=UDim2.new(0,av and 31 or 3,0.5,0)
+local az=UDim2.new(0,av and 37 or 5,0.5,0)
 if aw then
 ad(at,0.18,{
 Position=az,

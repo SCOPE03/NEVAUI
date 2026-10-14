@@ -163,7 +163,7 @@ HidePanelBackground = true
 
 ## Per-element styles
 
-`NewElements` remains the window-wide default. Elements with style-dependent visuals or layout can override that default with `Style = "Modern"` or `Style = "Legacy"`. If `Style` is omitted, the element follows the window's `NewElements` setting. The Modern Toggle is a flat switch with a lavender active track, charcoal inactive track, and round thumb, matching the reference design; use `ToggleColor = Color3.fromRGB(...)` to override its active color. The same style choice is available on buttons and other elements that support the modern layout.
+`NewElements` remains the window-wide default. Elements with style-dependent visuals or layout can override that default with `Style = "Modern"` or `Style = "Legacy"`. If `Style` is omitted, the element follows the window's `NewElements` setting. The Modern Toggle uses the reference's long capsule track and smaller circular thumb, sliding across a flat track; it defaults to lavender when on and charcoal when off. Set `ToggleColor = Color3.fromRGB(...)` to customize the active track. The same style choice is available on buttons and other elements that support the modern layout.
 
 For a runnable test with only the styled controls, see [`style_example.lua`](style_example.lua).
 
