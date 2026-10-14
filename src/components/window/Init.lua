@@ -60,6 +60,7 @@ return function(Config)
 		Folder = Config.Folder,
 		Resizable = Config.Resizable ~= false,
 		Background = Config.Background,
+		BackgroundAnimation = Config.BackgroundAnimation,
 		BackgroundImageTransparency = Config.BackgroundImageTransparency or 0,
 		ShadowTransparency = Config.ShadowTransparency or 0.6,
 		User = Config.User or {},
@@ -682,6 +683,7 @@ return function(Config)
 
 	local IsVideoBG = false
 	local BGImage = nil
+	local BackgroundAnimationActive = false
 	local function ResolveImageAsset(value)
 		if typeof(value) == "number" then
 			return "rbxassetid://" .. tostring(value)
@@ -841,6 +843,44 @@ return function(Config)
 				CornerRadius = UDim.new(0, Window.UICorner),
 			}),
 		})
+	end
+
+	local BackgroundAnimation = Window.BackgroundAnimation
+	if BackgroundAnimation then
+		if type(BackgroundAnimation) ~= "table" then
+			error("BackgroundAnimation must be a table.", 2)
+		end
+		if not BGImage or not BGImage:IsA("ImageLabel") then
+			error("BackgroundAnimation requires an image background, not a VideoFrame.", 2)
+		end
+
+		local FrameSize = BackgroundAnimation.FrameSize
+		local FrameCount = math.floor(tonumber(BackgroundAnimation.FrameCount) or 0)
+		local Columns = math.floor(tonumber(BackgroundAnimation.Columns) or 0)
+		local FPS = tonumber(BackgroundAnimation.FPS) or 0
+		if typeof(FrameSize) ~= "Vector2" or FrameSize.X <= 0 or FrameSize.Y <= 0 then
+			error("BackgroundAnimation.FrameSize must be a positive Vector2.", 2)
+		end
+		if FrameCount < 1 or Columns < 1 or FPS <= 0 or FPS > 60 then
+			error("BackgroundAnimation requires positive FrameCount and Columns, and FPS greater than 0 and no more than 60.", 2)
+		end
+
+		BGImage.ImageRectSize = FrameSize
+		BackgroundAnimationActive = true
+		task.spawn(function()
+			while BackgroundAnimationActive and BGImage and not BGImage.Parent do
+				task.wait()
+			end
+
+			local FrameIndex = 0
+			while BackgroundAnimationActive and BGImage and BGImage.Parent do
+				local Column = FrameIndex % Columns
+				local Row = math.floor(FrameIndex / Columns)
+				BGImage.ImageRectOffset = Vector2.new(Column * FrameSize.X, Row * FrameSize.Y)
+				FrameIndex = (FrameIndex + 1) % FrameCount
+				task.wait(1 / FPS)
+			end
+		end)
 	end
 
 	local BottomDragFrame = Creator.NewRoundFrame(99, "Squircle", {
@@ -1369,6 +1409,9 @@ return function(Config)
 
 	function Window:SetBackgroundImage(id)
 		if BGImage and BGImage:IsA("ImageLabel") then
+			BackgroundAnimationActive = false
+			BGImage.ImageRectSize = Vector2.new(0, 0)
+			BGImage.ImageRectOffset = Vector2.new(0, 0)
 			BGImage.Image = ResolveImageAsset(id)
 		end
 	end
