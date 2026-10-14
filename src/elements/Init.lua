@@ -33,7 +33,12 @@ return {
 				config.ParentTable = tbl
 				config.Index = #tbl.Elements + 1
 				config.GlobalIndex = #Window.AllElements + 1
-				config.Parent = Container
+				local ElementParent = Container
+				if Window.Layout == "Dashboard" and Tab and tbl == Tab and Tab.UIElements.DashboardColumns then
+					local columnIndex = ((#tbl.Elements) % #Tab.UIElements.DashboardColumns) + 1
+					ElementParent = Tab.UIElements.DashboardColumns[columnIndex]
+				end
+				config.Parent = ElementParent
 				config.Window = Window
 				config.NevaUI = NevaUI
 				config.UIScale = UIScale

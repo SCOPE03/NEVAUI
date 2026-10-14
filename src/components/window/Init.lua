@@ -28,10 +28,15 @@ local Notified = false
 
 return function(Config)
 	local SidebarConfig = Config.Sidebar or {}
+	local SidebarBrandConfig = SidebarConfig.Brand or {}
+	local HasSidebarBrand = SidebarBrandConfig.Logo ~= nil
+		or (type(SidebarBrandConfig.Title) == "string" and SidebarBrandConfig.Title ~= "")
+	local SidebarBrandHeight = HasSidebarBrand and math.max(40, SidebarBrandConfig.Height or 56) or 0
 
 	local Window = {
 		Title = Config.Title or "UI Library",
 		Author = Config.Author,
+		Layout = Config.Layout or "Standard",
 		-- Logo is the developer-facing name; Icon remains supported for compatibility.
 		Logo = Config.Logo or Config.Icon,
 		Icon = Config.Logo or Config.Icon,
@@ -49,7 +54,8 @@ return function(Config)
 
 		Size = Config.Size,
 
-		MinSize = Config.MinSize or Vector2.new(560, 350),
+		MinSize = Config.MinSize
+			or (Config.Layout == "Dashboard" and Vector2.new(680, 360) or Vector2.new(560, 350)),
 		MaxSize = Config.MaxSize or Vector2.new(850, 560),
 
 		TopBarButtonIconSize = Config.TopBarButtonIconSize,
@@ -60,8 +66,12 @@ return function(Config)
 		Transparent = Config.Transparent or false,
 		HideSearchBar = Config.HideSearchBar ~= false,
 		ScrollBarEnabled = Config.ScrollBarEnabled or false,
-		SideBarWidth = SidebarConfig.Width or Config.SideBarWidth or 200,
+		SideBarWidth = SidebarConfig.Width
+			or Config.SideBarWidth
+			or (Config.Layout == "Dashboard" and 190 or 200),
 		Sidebar = SidebarConfig,
+		SidebarBrand = SidebarBrandConfig,
+		SidebarBrandHeight = SidebarBrandHeight,
 		SidebarPadding = SidebarConfig.Padding,
 		SidebarGap = SidebarConfig.Gap,
 		SidebarDivider = SidebarConfig.Divider ~= false,
@@ -69,7 +79,7 @@ return function(Config)
 		SidebarDividerTransparency = SidebarConfig.DividerTransparency or 0.85,
 		SidebarDividerColor = SidebarConfig.DividerColor,
 		Acrylic = Config.Acrylic or false,
-		NewElements = Config.NewElements or false,
+		NewElements = Config.NewElements == nil and Config.Layout == "Dashboard" or Config.NewElements or false,
 		IgnoreAlerts = Config.IgnoreAlerts or false,
 		HidePanelBackground = Config.HidePanelBackground or false,
 		AutoScale = Config.AutoScale ~= false,
@@ -112,6 +122,10 @@ return function(Config)
 		IsToggleDragging = false,
 	}
 
+	if Window.Layout ~= "Standard" and Window.Layout ~= "Dashboard" then
+		error('Invalid Layout "' .. tostring(Window.Layout) .. '". Expected "Standard" or "Dashboard".', 2)
+	end
+
 	Window.UICorner = Window.Radius
 	Window.SidebarPadding = Window.SidebarPadding or Window.UIPadding / 2
 	Window.SidebarGap = Window.SidebarGap or Window.Gap
@@ -123,7 +137,8 @@ return function(Config)
 		UICorner = Window.ElementsRadius or (Window.NewElements and 23 or 16),
 	}
 
-	local WindowSize = Window.Size or UDim2.new(0, 580, 0, 460)
+	local WindowSize = Window.Size
+		or (Window.Layout == "Dashboard" and UDim2.new(0, 820, 0, 460) or UDim2.new(0, 580, 0, 460))
 	Window.Size = UDim2.new(
 		WindowSize.X.Scale,
 		math.clamp(WindowSize.X.Offset, Window.MinSize.X, Window.MaxSize.X),
@@ -217,15 +232,17 @@ return function(Config)
 	--     }
 	-- })
 
+	local SidebarSearchHeight = not Window.HideSearchBar and (39 + 6) or 0
+	local SidebarReservedHeight = Window.SidebarBrandHeight + SidebarSearchHeight
 	Window.UIElements.SideBar = New("ScrollingFrame", {
 		Size = UDim2.new(
 			1,
 			Window.ScrollBarEnabled and -3 - (Window.UIPadding / 2) or 0,
 			1,
-			not Window.HideSearchBar and -39 - 6 or 0
+			-SidebarReservedHeight
 		),
-		Position = UDim2.new(0, 0, 1, 0),
-		AnchorPoint = Vector2.new(0, 1),
+		Position = UDim2.new(0, 0, 0, SidebarReservedHeight),
+		AnchorPoint = Vector2.new(0, 0),
 		BackgroundTransparency = 1,
 		ScrollBarThickness = 0,
 		ElasticBehavior = "Never",
@@ -261,6 +278,90 @@ return function(Config)
 		--TabHighlight
 	})
 
+	local SidebarBrandFrame
+	if Window.SidebarBrandHeight > 0 then
+		local BrandContent = {}
+		local BrandLogoSize = math.min(
+			Window.SidebarBrand.LogoSize or 24,
+			Window.SidebarBrandHeight - 12
+		)
+		if Window.SidebarBrand.Logo then
+			local BrandLogo = Creator.Image(
+				Window.SidebarBrand.Logo,
+				Window.SidebarBrand.Title or Window.Title,
+				Window.SidebarBrand.LogoRadius or 0,
+				Window.Folder,
+				"SidebarBrand",
+				true,
+				Window.SidebarBrand.LogoThemed or false,
+				"SidebarBrandLogo"
+			)
+			BrandLogo.Name = "Logo"
+			BrandLogo.LayoutOrder = 1
+			BrandLogo.Size = UDim2.new(0, BrandLogoSize, 0, BrandLogoSize)
+			table.insert(BrandContent, BrandLogo)
+		end
+		if Window.SidebarBrand.Title and Window.SidebarBrand.Title ~= "" then
+			table.insert(BrandContent, New("TextLabel", {
+				Name = "Title",
+				LayoutOrder = 2,
+				Size = UDim2.new(
+					1,
+					Window.SidebarBrand.Logo and -(BrandLogoSize + Window.SidebarGap) or 0,
+					1,
+					0
+				),
+				BackgroundTransparency = 1,
+				Text = Window.SidebarBrand.Title,
+				TextSize = Window.SidebarBrand.TitleSize or 16,
+				TextWrapped = false,
+				TextTruncate = "AtEnd",
+				TextXAlignment = "Left",
+				FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
+				ThemeTag = {
+					TextColor3 = "Text",
+				},
+			}))
+		end
+		table.insert(BrandContent, New("UIListLayout", {
+			FillDirection = "Horizontal",
+			SortOrder = "LayoutOrder",
+			VerticalAlignment = "Center",
+			HorizontalAlignment = "Left",
+			Padding = UDim.new(0, Window.SidebarGap),
+		}))
+		table.insert(BrandContent, New("UIPadding", {
+			PaddingLeft = UDim.new(0, Window.SidebarPadding),
+			PaddingRight = UDim.new(0, Window.SidebarPadding),
+		}))
+		SidebarBrandFrame = New("Frame", {
+			Name = "SidebarBrand",
+			Size = UDim2.new(1, 0, 0, Window.SidebarBrandHeight),
+			BackgroundTransparency = 1,
+		}, BrandContent)
+		Window.UIElements.SidebarBrand = SidebarBrandFrame
+	end
+
+	local SideBarContainerChildren = {
+		New("Frame", {
+			Name = "Content",
+			BackgroundTransparency = 1,
+			Size = UDim2.new(
+				1,
+				0,
+			1,
+			not Window.HideSearchBar
+					and -39 - 6 - Window.UIPadding - Window.SidebarBrandHeight
+					or -Window.UIPadding / 2 - Window.SidebarBrandHeight
+			),
+			Position = UDim2.new(0, 0, 1, -Window.UIPadding / 2),
+			AnchorPoint = Vector2.new(0, 1),
+		}),
+		Window.UIElements.SideBar,
+	}
+	if SidebarBrandFrame then
+		table.insert(SideBarContainerChildren, 1, SidebarBrandFrame)
+	end
 	Window.UIElements.SideBarContainer = New("Frame", {
 		Size = UDim2.new(
 			0,
@@ -271,16 +372,7 @@ return function(Config)
 		Position = UDim2.new(0, 0, 0, Window.Topbar.Height),
 		BackgroundTransparency = 1,
 		Visible = true,
-	}, {
-		New("Frame", {
-			Name = "Content",
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1, 0, 1, not Window.HideSearchBar and -39 - 6 - Window.UIPadding or -Window.UIPadding / 2),
-			Position = UDim2.new(0, 0, 1, -Window.UIPadding / 2),
-			AnchorPoint = Vector2.new(0, 1),
-		}),
-		Window.UIElements.SideBar,
-	})
+	}, SideBarContainerChildren)
 
 	if Window.ScrollBarEnabled then
 		CreateScrollSlider(
@@ -2224,7 +2316,12 @@ return function(Config)
 
 		local SearchLabel = CreateLabel("Search", "search", Window.UIElements.SideBarContainer, true)
 		SearchLabel.Size = UDim2.new(1, -Window.UIPadding / 2, 0, 39)
-		SearchLabel.Position = UDim2.new(0, Window.UIPadding / 2, 0,--[[Window.UIPadding/2]] 0)
+		SearchLabel.Position = UDim2.new(
+			0,
+			Window.UIPadding / 2,
+			0,
+			Window.SidebarBrandHeight
+		)
 
 		Creator.AddSignal(SearchLabel.MouseButton1Click, function()
 			if IsOpen then
