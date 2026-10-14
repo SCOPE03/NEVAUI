@@ -72,7 +72,7 @@ local Window = NevaUI:CreateWindow({
         Padding = 10,
         Gap = 8,
         Brand = {
-            Logo = "sparkles", -- icon name or Roblox image asset
+            Logo = "rbxassetid://134899357436301", -- Roblox image asset ID
             Title = "My Script Hub",
             LogoSize = 24,
             Height = 56,
@@ -207,9 +207,11 @@ Tab:Slider({
 
 ## Dashboard layout
 
-Set `Layout = "Dashboard"` to keep the existing tab navigation while distributing top-level tab controls into two auto-height columns. Nested controls stay inside their parent group. The Dashboard layout defaults to modern element styling unless `NewElements` is explicitly set. `Layout = "Standard"` preserves the current single-column layout.
+Set `Layout = "Dashboard"` to keep the existing sidebar navigation while distributing top-level tab controls into two auto-height columns. Nested controls stay inside their parent group. The Dashboard layout defaults to modern element styling unless `NewElements` is explicitly set. `Layout = "Standard"` preserves the current single-column layout.
 
-The optional `Sidebar.Brand` header works with either layout, placing the brand above the navigation rail. The main Dashboard content remains in the two-column area to the right.
+For a full-width row above the columns, set `Placement = "Header"` on a top-level group. This is intended for category controls; see the runnable example for buttons that show and hide the matching settings cards.
+
+The optional `Sidebar.Brand` header works with either layout, placing the brand above the navigation rail. The main Dashboard content uses a full-width header row followed by the two-column area to the right. The focused example uses `NewElements = false`, so its controls retain the original Legacy look.
 
 See [`dashboard_example.lua`](dashboard_example.lua) for a runnable configuration.
 
@@ -223,7 +225,7 @@ Sidebar = {
     Padding = 10,
     Gap = 8,
     Brand = {
-        Logo = "sparkles", -- icon name or Roblox image asset
+        Logo = "rbxassetid://134899357436301", -- Roblox image asset ID
         Title = "My Script Hub",
         LogoSize = 24,
         Height = 56,

@@ -35,8 +35,15 @@ return {
 				config.GlobalIndex = #Window.AllElements + 1
 				local ElementParent = Container
 				if Window.Layout == "Dashboard" and Tab and tbl == Tab and Tab.UIElements.DashboardColumns then
-					local columnIndex = ((#tbl.Elements) % #Tab.UIElements.DashboardColumns) + 1
-					ElementParent = Tab.UIElements.DashboardColumns[columnIndex]
+					if config.Placement == "Header" then
+						ElementParent = Tab.UIElements.DashboardHeader
+						ElementParent.Visible = true
+					else
+						local elementCount = Tab.UIElements.DashboardElementCount or 0
+						local columnIndex = (elementCount % #Tab.UIElements.DashboardColumns) + 1
+						ElementParent = Tab.UIElements.DashboardColumns[columnIndex]
+						Tab.UIElements.DashboardElementCount = elementCount + 1
+					end
 				end
 				config.Parent = ElementParent
 				config.Window = Window
