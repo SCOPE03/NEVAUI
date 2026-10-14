@@ -16,6 +16,8 @@ local Window = NevaUI:CreateWindow({
 
 For a complete working example, see [`sidebar_example.lua`](sidebar_example.lua). It demonstrates the background image, script-hub logo, floating open button, sidebar styling, dividers, and runtime controls. For the opt-in two-column Dashboard layout, see [`dashboard_example.lua`](dashboard_example.lua).
 
+For an original anime background, large left-side brand logo, and floating open button, see [`anime_background_example.lua`](anime_background_example.lua).
+
 ## Complete `CreateWindow` configuration
 
 All window options are supplied to `NevaUI:CreateWindow({ ... })`.
@@ -385,12 +387,13 @@ Window:OnDestroy(function() end)
 
 ## Example
 
-The complete example is available here:
+The runnable examples are available here:
 
 - [`sidebar_example.lua`](sidebar_example.lua)
+- [`anime_background_example.lua`](anime_background_example.lua)
 - [Latest executor example](https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/sidebar_example.lua)
 
-It includes:
+The sidebar example includes:
 
 - Background image: `rbxassetid://121343473918667`
 - Script-hub logo: `rbxassetid://134899357436301`
@@ -399,6 +402,13 @@ It includes:
 - Draggable positioning
 - Sidebar width, padding, gap, and divider configuration
 - Runtime divider control
+
+The anime-background example includes:
+
+- Original background art: [`neva-cute-anime-background.jpg`](examples/assets/neva-cute-anime-background.jpg)
+- Large left sidebar logo: `rbxassetid://76738354597155`
+- Floating open button using the same logo
+- Legacy control styling by default
 
 ## Project
 
