@@ -158,8 +158,8 @@ function Element:New(Config)
 	ProgressBar.UIElements.Container = New("Frame", {
 		Name = "ProgressBarContainer",
 		Size = UDim2.new(0, ProgressBar.Width, 0, 36),
-		Position = UDim2.new(1, 0, Config.Window.NewElements and 0 or 0.5, 0),
-		AnchorPoint = Vector2.new(1, Config.Window.NewElements and 0 or 0.5),
+		Position = UDim2.new(1, 0, Config.NewElements and 0 or 0.5, 0),
+		AnchorPoint = Vector2.new(1, Config.NewElements and 0 or 0.5),
 		BackgroundTransparency = 1,
 		Parent = ProgressBar.ProgressBarFrame.UIElements.Main,
 	}, {

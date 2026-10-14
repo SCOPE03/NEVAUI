@@ -57,7 +57,7 @@ function Element:New(Config)
 				})
 			end
 		end
-	end, Config.NevaUI.UIScale)
+		end, Config.NevaUI.UIScale, Config.NewElements)
 
 	function Code:SetCode(code)
 		CodeElement.Set(code)
@@ -74,7 +74,7 @@ function Element:New(Config)
 	end
 
 	function Code.UpdateShape(Tab)
-		if Config.Window.NewElements then
+		if Config.NewElements then
 			local newShape = Creator:GetElementPosition(
 				Tab.Elements,
 				Code.Index,

@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /
     |__/|__/_/_//_/\_,_/\____/___/
 
-    v1.6.66  |  2026-10-13  |  NevaUI Roblox UI Library
+    v1.6.66  |  2026-10-14  |  NevaUI Roblox UI Library
 
     To view the source code, see the `src/` folder on the official GitHub repository.
 
@@ -30038,7 +30038,7 @@ if ah.Thumbnail then
 ao=aa.Image(
 ah.Thumbnail,
 ah.Title,
-ag.Window.NewElements and ah.UICorner-11 or(ah.UICorner-4),
+ag.NewElements and ah.UICorner-11 or(ah.UICorner-4),
 ag.Window.Folder,
 "Thumbnail",
 false,
@@ -30050,7 +30050,7 @@ if ah.Image then
 ap=aa.Image(
 ah.Image,
 ah.Title,
-ag.Window.NewElements and ah.UICorner-11 or(ah.UICorner-4),
+ag.NewElements and ah.UICorner-11 or(ah.UICorner-4),
 ag.Window.Folder,
 "Image",
 ah.IconThemed,
@@ -30129,7 +30129,7 @@ Name="TitleFrame",
 ab("UIListLayout",{
 Padding=UDim.new(0,ah.UIPadding),
 FillDirection="Horizontal",
-VerticalAlignment=ag.Window.NewElements and(ah.Justify=="Between"and"Top"or"Center")
+VerticalAlignment=ag.NewElements and(ah.Justify=="Between"and"Top"or"Center")
 or"Center",
 HorizontalAlignment=ah.Justify~="Between"and ah.Justify or"Center",
 }),
@@ -30147,15 +30147,15 @@ or 0,
 Name="TitleFrame",
 },{
 ab("UIPadding",{
-PaddingTop=UDim.new(0,(ag.Window.NewElements and ah.UIPadding/2 or 0)+aj),
-PaddingLeft=UDim.new(0,(ag.Window.NewElements and ah.UIPadding/2 or 0)+ai),
+PaddingTop=UDim.new(0,(ag.NewElements and ah.UIPadding/2 or 0)+aj),
+PaddingLeft=UDim.new(0,(ag.NewElements and ah.UIPadding/2 or 0)+ai),
 PaddingRight=UDim.new(
 0,
-(ag.Window.NewElements and ah.UIPadding/2 or 0)+ai
+(ag.NewElements and ah.UIPadding/2 or 0)+ai
 ),
 PaddingBottom=UDim.new(
 0,
-(ag.Window.NewElements and ah.UIPadding/2 or 0)+aj
+(ag.NewElements and ah.UIPadding/2 or 0)+aj
 ),
 }),
 ab("UIListLayout",{
@@ -30363,15 +30363,15 @@ Padding=UDim.new(0,8),
 local d,f=ac(ah.UICorner,"Squircle",{
 Size=UDim2.new(1,0,0,0),
 AutomaticSize="Y",
-ImageTransparency=ah.Color and 0.05 or(not ag.Window.NewElements and 0.93 or nil),
+ImageTransparency=ah.Color and 0.05 or(not ag.NewElements and 0.93 or nil),
 
 
 
 Parent=ag.Parent,
 ThemeTag={
-ImageColor3=not ah.Color and(ag.Window.NewElements and"ElementBackground"or"Text")or nil,
+ImageColor3=not ah.Color and(ag.NewElements and"ElementBackground"or"Text")or nil,
 ImageTransparency=not ah.Color
-and(ag.Window.NewElements and"ElementBackgroundTransparency"or nil)
+and(ag.NewElements and"ElementBackgroundTransparency"or nil)
 or nil,
 },
 ImageColor3=ah.Color and(typeof(ah.Color)=="string"and Color3.fromHex(
@@ -30631,7 +30631,7 @@ end)
 end
 
 function ah.UpdateShape(g)
-if ag.Window.NewElements then
+if ag.NewElements then
 local h=aa:GetElementPosition(
 g.Elements,
 ah.Index,
@@ -30701,7 +30701,7 @@ ak.Variant or"White",
 ai,
 nil,
 nil,
-af.Window.NewElements and 999 or 10
+af.NewElements and 999 or 10
 )
 al.Size=UDim2.new(1,0,0,38)
 
@@ -30840,6 +30840,74 @@ Total=80,
 Cols=10,
 },
 }
+
+if ak then
+local an=ac("Frame",{
+Size=UDim2.new(0,58,0,30),
+BackgroundTransparency=1,
+Parent=ai,
+})
+local ao=ac("Frame",{
+Name="ToggleFrame",
+Size=UDim2.new(0,56,0,28),
+AnchorPoint=Vector2.new(0.5,0.5),
+Position=UDim2.new(0.5,0,0.5,0),
+BackgroundColor3=Color3.fromRGB(70,70,76),
+BackgroundTransparency=0,
+ThemeTag={BackgroundColor3="Toggle"},
+},{
+ac("UICorner",{CornerRadius=UDim.new(1,0)}),
+})
+ao.Parent=an
+
+local ap=ac("Frame",{
+Name="Frame",
+Size=UDim2.new(0,22,0,22),
+Position=UDim2.new(0,3,0.5,0),
+AnchorPoint=Vector2.new(0,0.5),
+BackgroundColor3=Color3.fromRGB(205,205,212),
+BorderSizePixel=0,
+ZIndex=2,
+},{
+ac("UICorner",{CornerRadius=UDim.new(1,0)}),
+})
+ap.Parent=ao
+
+local aq=ac("TextButton",{
+Name="Hitbox",
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+Text="",
+ZIndex=3,
+},nil)
+aq.Parent=ao
+
+local function ApplyState(ar,as)
+local at=ar and"Toggle"or"Text"
+local au=UDim2.new(0,ar and 31 or 3,0.5,0)
+if as then
+ad(ap,0.18,{Position=au},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
+ad(ao,0.18,{BackgroundTransparency=ar and 0 or 0.82}):Play()
+ap.BackgroundColor3=ar and Color3.new(1,1,1)or Color3.fromRGB(205,205,212)
+else
+ap.Position=au
+ao.BackgroundTransparency=ar and 0 or 0.82
+ap.BackgroundColor3=ar and Color3.new(1,1,1)or Color3.fromRGB(205,205,212)
+end
+ab.SetThemeTag(ao,{BackgroundColor3=at})
+end
+
+function am.Set(ar,as,at,au)
+ApplyState(as,at~=false)
+if at~=false and aj then
+task.spawn(function()
+ab.SafeCallback(aj,as)
+end)
+end
+end
+
+return an,am
+end
 
 function am.GetGlassFrame(an,ao:number):(string,Vector2,Vector2)
 local ap=am.GlassSpritesheet
@@ -31404,7 +31472,7 @@ ai.Icon,
 ai.IconSize,
 ai.ToggleFrame.UIElements.Main,
 ai.Callback,
-ah.Window.NewElements,
+ah.NewElements,
 ah
 )
 elseif ai.Type=="Checkbox"then
@@ -31420,8 +31488,8 @@ else
 error("Unknown Toggle Type: "..tostring(ai.Type))
 end
 
-al.AnchorPoint=Vector2.new(1,ah.Window.NewElements and 0 or 0.5)
-al.Position=UDim2.new(1,0,ah.Window.NewElements and 0 or 0.5,0)
+al.AnchorPoint=Vector2.new(1,ah.NewElements and 0 or 0.5)
+al.Position=UDim2.new(1,0,ah.NewElements and 0 or 0.5,0)
 
 function ai.Set(an,ao,ap,aq)
 if aj then
@@ -31431,11 +31499,11 @@ ai.Value=ao
 end
 end
 
-ai:Set(ak,false,ah.Window.NewElements)
+ai:Set(ak,false,ah.NewElements)
 
 local an=ah.NevaUI.GenerateGUID()
 
-if ah.Window.NewElements and am.Animate then
+if ah.NewElements and am.Animate then
 if ai.Type=="Toggle"then
 aa.AddSignal(al.ToggleFrame.Hitbox.InputBegan,function(ao)
 if
@@ -31462,11 +31530,11 @@ end
 else
 if ai.Type=="Toggle"then
 aa.AddSignal(al.ToggleFrame.Hitbox.MouseButton1Click,function()
-ai:Set(not ai.Value,nil,ah.Window.NewElements)
+ai:Set(not ai.Value,nil,ah.NewElements)
 end)
 elseif ai.Type=="Checkbox"then
 aa.AddSignal(al.MouseButton1Click,function()
-ai:Set(not ai.Value,nil,ah.Window.NewElements)
+ai:Set(not ai.Value,nil,ah.NewElements)
 end)
 end
 end
@@ -31508,7 +31576,7 @@ UIElements={},
 IsFocusing=false,
 
 Width=ak.Width or 130,
-TextBoxWidth=ak.Window.NewElements and 40 or 30,
+TextBoxWidth=ak.NewElements and 40 or 30,
 ThumbSize=13,
 IconSize=26,
 }
@@ -31617,9 +31685,9 @@ ImageColor3="Slider",
 ae.NewRoundFrame(99,"Squircle",{
 Size=UDim2.new(
 0,
-ak.Window.NewElements and(al.ThumbSize*2)or(al.ThumbSize+2),
+ak.NewElements and(al.ThumbSize*2)or(al.ThumbSize+2),
 0,
-ak.Window.NewElements and(al.ThumbSize+4)or(al.ThumbSize+2)
+ak.NewElements and(al.ThumbSize+4)or(al.ThumbSize+2)
 ),
 Position=UDim2.new(1,0,0.5,0),
 AnchorPoint=Vector2.new(0.5,0.5),
@@ -31641,7 +31709,7 @@ ImageTransparency=0.5,
 al.UIElements.SliderContainer=af("Frame",{
 Size=UDim2.new(al.Title==nil and 1 or 0,al.Title==nil and 0 or al.Width,0,0),
 AutomaticSize="Y",
-Position=UDim2.new(1,al.IsTextbox and(ak.Window.NewElements and-16 or 0)or 0,0.5,0),
+Position=UDim2.new(1,al.IsTextbox and(ak.NewElements and-16 or 0)or 0,0.5,0),
 AnchorPoint=Vector2.new(1,0.5),
 BackgroundTransparency=1,
 Parent=al.SliderFrame.UIElements.Main,
@@ -31782,14 +31850,14 @@ ay.ScrollingEnabled=true
 
 ak.NevaUI.CurrentInput=nil
 
-if ak.Window.NewElements then
+if ak.NewElements then
 ag(al.UIElements.SliderIcon.Frame.Thumb,0.2,{
 ImageTransparency=0,
 Size=UDim2.new(
 0,
-ak.Window.NewElements and(al.ThumbSize*2)or(al.ThumbSize+2),
+ak.NewElements and(al.ThumbSize*2)or(al.ThumbSize+2),
 0,
-ak.Window.NewElements and(al.ThumbSize+4)or(al.ThumbSize+2)
+ak.NewElements and(al.ThumbSize+4)or(al.ThumbSize+2)
 ),
 },Enum.EasingStyle.Quint,Enum.EasingDirection.InOut):Play()
 end
@@ -31878,12 +31946,12 @@ ak.NevaUI.CurrentInput=az
 al:Set(ap,aA)
 
 
-if ak.Window.NewElements then
+if ak.NewElements then
 ag(al.UIElements.SliderIcon.Frame.Thumb,0.24,{
 ImageTransparency=0.85,
 Size=UDim2.new(
 0,
-(ak.Window.NewElements and(al.ThumbSize*2)or al.ThumbSize)+8,
+(ak.NewElements and(al.ThumbSize*2)or al.ThumbSize)+8,
 0,
 al.ThumbSize+8
 ),
@@ -32061,8 +32129,8 @@ TextColor3="ProgressBarText",
 ao.UIElements.Container=ac("Frame",{
 Name="ProgressBarContainer",
 Size=UDim2.new(0,ao.Width,0,36),
-Position=UDim2.new(1,0,ag.Window.NewElements and 0 or 0.5,0),
-AnchorPoint=Vector2.new(1,ag.Window.NewElements and 0 or 0.5),
+Position=UDim2.new(1,0,ag.NewElements and 0 or 0.5,0),
+AnchorPoint=Vector2.new(1,ag.NewElements and 0 or 0.5),
 BackgroundTransparency=1,
 Parent=ao.ProgressBarFrame.UIElements.Main,
 },{
@@ -32250,7 +32318,7 @@ ak.Value,
 nil,
 ak.KeybindFrame.UIElements.Main,
 nil,
-aj.Window.NewElements and 12 or 10
+aj.NewElements and 12 or 10
 )
 
 ak.UIElements.Keybind.Size=
@@ -32435,14 +32503,14 @@ function(al)
 aj:Set(al,true)
 end,
 nil,
-ai.Window.NewElements and 12 or 10,
+ai.NewElements and 12 or 10,
 aj.ClearTextOnFocus
 )
 
 if aj.Type~="Textarea"then
 al.Size=UDim2.new(0,aj.Width,0,36)
-al.Position=UDim2.new(1,0,ai.Window.NewElements and 0 or 0.5,0)
-al.AnchorPoint=Vector2.new(1,ai.Window.NewElements and 0 or 0.5)
+al.Position=UDim2.new(1,0,ai.NewElements and 0 or 0.5,0)
+al.AnchorPoint=Vector2.new(1,ai.NewElements and 0 or 0.5)
 else
 al.Size=UDim2.new(1,0,0,148)
 end
@@ -33275,15 +33343,15 @@ Tags=ao.Tags,
 
 if ap.Callback then
 ap.UIElements.Dropdown=
-ai("",nil,ap.DropdownFrame.UIElements.Main,nil,ao.Window.NewElements and 12 or 10)
+ai("",nil,ap.DropdownFrame.UIElements.Main,nil,ao.NewElements and 12 or 10)
 
 ap.UIElements.Dropdown.Frame.Frame.TextLabel.TextTruncate="AtEnd"
 ap.UIElements.Dropdown.Frame.Frame.TextLabel.Size=
 UDim2.new(1,ap.UIElements.Dropdown.Frame.Frame.TextLabel.Size.X.Offset-18-12-12,0,0)
 
 ap.UIElements.Dropdown.Size=UDim2.new(0,ap.Width,0,36)
-ap.UIElements.Dropdown.Position=UDim2.new(1,0,ao.Window.NewElements and 0 or 0.5,0)
-ap.UIElements.Dropdown.AnchorPoint=Vector2.new(1,ao.Window.NewElements and 0 or 0.5)
+ap.UIElements.Dropdown.Position=UDim2.new(1,0,ao.NewElements and 0 or 0.5,0)
+ap.UIElements.Dropdown.AnchorPoint=Vector2.new(1,ao.NewElements and 0 or 0.5)
 
 
 
@@ -33592,15 +33660,17 @@ local ai=af.Tween
 
 local ak=a.V()
 
-function aa.New(al,am,an,ao,ap)
-local aq={
-Radius=am.ElementConfig.UICorner,
-Padding=am.NewElements and am.ElementConfig.UIPadding+4 or am.ElementConfig.UIPadding,
+function aa.New(al,am,an,ao,ap,aq)
+aq=aq==nil and am.NewElements or aq
+local ar={
+Radius=am.ElementsRadius or(aq and 23 or 16),
+Padding=aq and(am.NewElements and am.ElementConfig.UIPadding+4 or 14)
+or am.ElementConfig.UIPadding,
 
 CodeFrame=nil,
 }
 
-local ar=ag("TextLabel",{
+local as=ag("TextLabel",{
 Text="",
 TextColor3=Color3.fromHex"#CDD6F4",
 TextTransparency=0,
@@ -33614,15 +33684,15 @@ BackgroundTransparency=1,
 AutomaticSize="XY",
 },{
 ag("UIPadding",{
-PaddingTop=UDim.new(0,aq.Padding+3),
-PaddingLeft=UDim.new(0,aq.Padding+3),
-PaddingRight=UDim.new(0,aq.Padding+3),
-PaddingBottom=UDim.new(0,aq.Padding+3),
+PaddingTop=UDim.new(0,ar.Padding+3),
+PaddingLeft=UDim.new(0,ar.Padding+3),
+PaddingRight=UDim.new(0,ar.Padding+3),
+PaddingBottom=UDim.new(0,ar.Padding+3),
 }),
 })
-ar.Font="Code"
+as.Font="Code"
 
-local as=ag("ScrollingFrame",{
+local at=ag("ScrollingFrame",{
 Size=UDim2.new(1,0,0,0),
 BackgroundTransparency=1,
 AutomaticCanvasSize=al.Height~=nil and"XY"or"X",
@@ -33631,19 +33701,19 @@ ElasticBehavior="Never",
 CanvasSize=UDim2.new(0,0,0,0),
 ScrollBarThickness=0,
 },{
-ar,
+as,
 })
 
-local at=af.Icon"copy"
-local au=al.CanCopied
+local au=af.Icon"copy"
+local av=al.CanCopied
 and ag("TextButton",{
 BackgroundTransparency=1,
 Size=UDim2.new(0,35,0,35),
-Position=UDim2.new(1,-aq.Padding/2,0,aq.Padding/2),
+Position=UDim2.new(1,-ar.Padding/2,0,ar.Padding/2),
 AnchorPoint=Vector2.new(1,0),
 Visible=ao and true or false,
 },{
-af.NewRoundFrame(aq.Radius-4,"Squircle",{
+af.NewRoundFrame(ar.Radius-4,"Squircle",{
 
 
 
@@ -33658,9 +33728,9 @@ ag("UIScale",{
 Scale=1,
 }),
 ag("ImageLabel",{
-Image=at and at[1],
-ImageRectSize=at and at[2]and at[2].ImageRectSize,
-ImageRectOffset=at and at[2]and at[2].ImageRectPosition,
+Image=au and au[1],
+ImageRectSize=au and au[2]and au[2].ImageRectSize,
+ImageRectOffset=au and au[2]and au[2].ImageRectPosition,
 BackgroundTransparency=1,
 AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.new(0.5,0,0.5,0),
@@ -33675,7 +33745,7 @@ ImageTransparency=0.1,
 })
 or nil
 
-local av,aw=af.NewRoundFrame(aq.Radius,"SquircleOutline",{
+local aw,ax=af.NewRoundFrame(ar.Radius,"SquircleOutline",{
 Size=UDim2.new(1,0,1,0),
 
 
@@ -33685,13 +33755,13 @@ ImageTransparency=0.955,
 Visible=false,
 })
 
-local ax,ay=af.NewRoundFrame(aq.Radius,"Squircle-TL-TR",{
+local ay,az=af.NewRoundFrame(ar.Radius,"Squircle-TL-TR",{
 
 
 
 ImageColor3=Color3.fromHex"#ffffff",
 ImageTransparency=0.96,
-Size=UDim2.new(1,0,0,20+(aq.Padding*2)),
+Size=UDim2.new(1,0,0,20+(ar.Padding*2)),
 Visible=al.Title and true or false,
 },{
 
@@ -33717,22 +33787,22 @@ FontFace=Font.new(af.Font,Enum.FontWeight.Medium),
 TextXAlignment="Left",
 BackgroundTransparency=1,
 TextTruncate="AtEnd",
-Size=UDim2.new(1,au and-20-(aq.Padding*2),0,0),
+Size=UDim2.new(1,av and-20-(ar.Padding*2),0,0),
 }),
 ag("UIPadding",{
 
-PaddingLeft=UDim.new(0,aq.Padding+3),
-PaddingRight=UDim.new(0,aq.Padding+3),
+PaddingLeft=UDim.new(0,ar.Padding+3),
+PaddingRight=UDim.new(0,ar.Padding+3),
 
 }),
 ag("UIListLayout",{
-Padding=UDim.new(0,aq.Padding),
+Padding=UDim.new(0,ar.Padding),
 FillDirection="Horizontal",
 VerticalAlignment="Center",
 }),
 })
 
-local az,aA=af.NewRoundFrame(aq.Radius,"Squircle",{
+local aA,aB=af.NewRoundFrame(ar.Radius,"Squircle",{
 
 
 
@@ -33740,90 +33810,90 @@ ImageColor3=Color3.fromHex"#212121",
 ImageTransparency=0.035,
 Size=al.Height~=nil
 and UDim2.new(1,0,al.Height.Scale,al.Height.Offset==0 and-40 or al.Height.Offset)
-or UDim2.new(1,0,0,20+(aq.Padding*2)),
+or UDim2.new(1,0,0,20+(ar.Padding*2)),
 AutomaticSize=al.Height~=nil and"None"or"Y",
 Parent=an,
 },{
-av,
+aw,
 ag("Frame",{
 BackgroundTransparency=1,
 Size=UDim2.new(1,0,al.Height~=nil and 1 or 0,0),
 AutomaticSize=al.Height~=nil and"None"or"Y",
 },{
-ax,
-as,
+ay,
+at,
 ag("UIListLayout",{
 Padding=UDim.new(0,0),
 FillDirection="Vertical",
 }),
 }),
-au,
+av,
 },nil,true)
 
-aq.CodeFrame=az
-aq.CodeFrameModule=aA
-aq.OutlineFrame=av
-aq.OutlineFrameModule=aw
-aq.TopbarFrame=ax
-aq.TopbarFrameModule=ay
+ar.CodeFrame=aA
+ar.CodeFrameModule=aB
+ar.OutlineFrame=aw
+ar.OutlineFrameModule=ax
+ar.TopbarFrame=ay
+ar.TopbarFrameModule=az
 
-af.AddSignal(ar:GetPropertyChangedSignal"TextBounds",function()
+af.AddSignal(as:GetPropertyChangedSignal"TextBounds",function()
 if al.Height~=nil then
-as.Size=UDim2.new(1,0,1,al.Title~=nil and-(20+(aq.Padding*2))or nil)
+at.Size=UDim2.new(1,0,1,al.Title~=nil and-(20+(ar.Padding*2))or nil)
 else
-as.Size=
-UDim2.new(1,0,0,(ar.TextBounds.Y/(ap or 1))+((aq.Padding+3)*2))
+at.Size=
+UDim2.new(1,0,0,(as.TextBounds.Y/(ap or 1))+((ar.Padding+3)*2))
 end
 end)
 
-function aq.Set(aB)
-ar.Text=ak.run(aB,al.CodeTheme)
+function ar.Set(b)
+as.Text=ak.run(b,al.CodeTheme)
 end
 
-function aq.Destroy()
-az:Destroy()
-aq=nil
+function ar.Destroy()
+aA:Destroy()
+ar=nil
 end
 
-aq.Set(al.Code)
+ar.Set(al.Code)
 
-if au then
-af.AddSignal(au.InputBegan,function(aB:InputObject)
+if av then
+af.AddSignal(av.InputBegan,function(b:InputObject)
 if
-aB.UserInputType==Enum.UserInputType.MouseButton1
-or aB.UserInputType==Enum.UserInputType.Touch
+b.UserInputType==Enum.UserInputType.MouseButton1
+or b.UserInputType==Enum.UserInputType.Touch
 then
-ai(au.Button,0.05,{ImageTransparency=0.95}):Play()
-ai(au.Button.UIScale,0.05,{Scale=0.9}):Play()
+ai(av.Button,0.05,{ImageTransparency=0.95}):Play()
+ai(av.Button.UIScale,0.05,{Scale=0.9}):Play()
 end
 end)
-af.AddSignal(au.InputEnded,function()
-ai(au.Button,0.08,{ImageTransparency=1}):Play()
-ai(au.Button.UIScale,0.08,{Scale=1}):Play()
+af.AddSignal(av.InputEnded,function()
+ai(av.Button,0.08,{ImageTransparency=1}):Play()
+ai(av.Button.UIScale,0.08,{Scale=1}):Play()
 end)
-af.AddSignal(au.MouseButton1Click,function()
+af.AddSignal(av.MouseButton1Click,function()
 if ao then
 ao()
-local aB=af.Icon"check"
-if aB then
-au.Button.ImageLabel.Image=aB[1]
-au.Button.ImageLabel.ImageRectSize=aB[2].ImageRectSize
-au.Button.ImageLabel.ImageRectOffset=aB[2].ImageRectPosition
+local b=af.Icon"check"
+if b then
+av.Button.ImageLabel.Image=b[1]
+av.Button.ImageLabel.ImageRectSize=b[2].ImageRectSize
+av.Button.ImageLabel.ImageRectOffset=b[2].ImageRectPosition
 end
 
 task.delay(1,function()
-local b=af.Icon"copy"
-if b then
-au.Button.ImageLabel.Image=b[1]
-au.Button.ImageLabel.ImageRectSize=b[2].ImageRectSize
-au.Button.ImageLabel.ImageRectOffset=b[2].ImageRectPosition
+local d=af.Icon"copy"
+if d then
+av.Button.ImageLabel.Image=d[1]
+av.Button.ImageLabel.ImageRectSize=d[2].ImageRectSize
+av.Button.ImageLabel.ImageRectOffset=d[2].ImageRectPosition
 end
 end)
 end
 end)
 end
 
-return aq
+return ar
 end
 
 return aa end function a.W():typeof(__modImpl())local aa=a.cache.W if not aa then aa={c=__modImpl()}a.cache.W=aa end return aa.c end end do local function __modImpl()
@@ -33887,7 +33957,7 @@ Duration=5,
 }
 end
 end
-end,al.NevaUI.UIScale)
+end,al.NevaUI.UIScale,al.NewElements)
 
 function am.SetCode(ap,aq)
 ao.Set(aq)
@@ -33904,7 +33974,7 @@ am=nil
 end
 
 function am.UpdateShape(ap)
-if al.Window.NewElements then
+if al.NewElements then
 local aq=aa:GetElementPosition(
 ap.Elements,
 am.Index,
@@ -34969,19 +35039,19 @@ Name="Top",
 an.Box and af("UIPadding",{
 PaddingTop=UDim.new(
 0,
-am.Window.ElementConfig.UIPadding+(am.Window.NewElements and 4 or 0)
+am.Window.ElementConfig.UIPadding+(am.NewElements and 4 or 0)
 ),
 PaddingLeft=UDim.new(
 0,
-am.Window.ElementConfig.UIPadding+(am.Window.NewElements and 4 or 0)
+am.Window.ElementConfig.UIPadding+(am.NewElements and 4 or 0)
 ),
 PaddingRight=UDim.new(
 0,
-am.Window.ElementConfig.UIPadding+(am.Window.NewElements and 4 or 0)
+am.Window.ElementConfig.UIPadding+(am.NewElements and 4 or 0)
 ),
 PaddingBottom=UDim.new(
 0,
-am.Window.ElementConfig.UIPadding+(am.Window.NewElements and 4 or 0)
+am.Window.ElementConfig.UIPadding+(am.NewElements and 4 or 0)
 ),
 })or nil,
 ao,
@@ -35294,7 +35364,7 @@ af("UIListLayout",{
 FillDirection="Horizontal",
 HorizontalAlignment="Center",
 
-Padding=UDim.new(0,al.Tab and al.Tab.Gap or(al.Window.NewElements and 1 or 6))
+Padding=UDim.new(0,al.Tab and al.Tab.Gap or(al.NewElements and 1 or 6))
 }),
 })
 
@@ -35308,7 +35378,7 @@ ao.Elements,
 al.Window,
 al.NevaUI,
 function(ap,aq)
-local ar=al.Tab and al.Tab.Gap or(al.Window.NewElements and 1 or 6)
+local ar=al.Tab and al.Tab.Gap or(al.NewElements and 1 or 6)
 
 local as={}
 local at=0
@@ -35381,7 +35451,7 @@ af("UIListLayout",{
 FillDirection="Horizontal",
 HorizontalAlignment="Center",
 
-Padding=UDim.new(0,al.Tab and al.Tab.Gap or(al.Window.NewElements and 1 or 6)),
+Padding=UDim.new(0,al.Tab and al.Tab.Gap or(al.NewElements and 1 or 6)),
 }),
 })
 
@@ -35395,7 +35465,7 @@ ao.Elements,
 al.Window,
 al.NevaUI,
 function(ap,aq)
-local ar=al.Tab and al.Tab.Gap or(al.Window.NewElements and 1 or 6)
+local ar=al.Tab and al.Tab.Gap or(al.NewElements and 1 or 6)
 
 local as={}
 local at=0
@@ -35481,7 +35551,7 @@ af("UIListLayout",{
 FillDirection="Vertical",
 HorizontalAlignment="Center",
 
-Padding=UDim.new(0,al.Tab and al.Tab.Gap or(al.Window.NewElements and 1 or 6))
+Padding=UDim.new(0,al.Tab and al.Tab.Gap or(al.NewElements and 1 or 6))
 }),
 })
 
@@ -35809,6 +35879,10 @@ Load=function(aa,af,ai,ak,al,am,an,ao,ap)
 for aq,ar in next,ai do
 aa[aq]=function(as,at)
 at=at or{}
+if at.Style~=nil and at.Style~="Legacy"and at.Style~="Modern"then
+error('Invalid Style "'..tostring(at.Style)..'". Expected "Legacy" or "Modern".',2)
+end
+at.NewElements=at.Style=="Modern"or(at.Style==nil and ak.NewElements==true)
 at.Tab=ap or aa
 at.ParentType=aa.__type
 at.ParentTable=aa
@@ -35896,7 +35970,7 @@ if ap then
 ap.Elements[at.Index]=av
 end
 
-if ak.NewElements then
+if at.NewElements then
 aa:UpdateAllElementShapes(aa)
 end
 

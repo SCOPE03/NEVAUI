@@ -30,7 +30,7 @@ function Element:New(Config)
 		IsFocusing = false,
 
 		Width = Config.Width or 130,
-		TextBoxWidth = Config.Window.NewElements and 40 or 30,
+		TextBoxWidth = Config.NewElements and 40 or 30,
 		ThumbSize = 13,
 		IconSize = 26,
 	}
@@ -139,9 +139,9 @@ function Element:New(Config)
 			Creator.NewRoundFrame(99, "Squircle", {
 				Size = UDim2.new(
 					0,
-					Config.Window.NewElements and (Slider.ThumbSize * 2) or (Slider.ThumbSize + 2),
+					Config.NewElements and (Slider.ThumbSize * 2) or (Slider.ThumbSize + 2),
 					0,
-					Config.Window.NewElements and (Slider.ThumbSize + 4) or (Slider.ThumbSize + 2)
+					Config.NewElements and (Slider.ThumbSize + 4) or (Slider.ThumbSize + 2)
 				),
 				Position = UDim2.new(1, 0, 0.5, 0),
 				AnchorPoint = Vector2.new(0.5, 0.5),
@@ -163,7 +163,7 @@ function Element:New(Config)
 	Slider.UIElements.SliderContainer = New("Frame", {
 		Size = UDim2.new(Slider.Title == nil and 1 or 0, Slider.Title == nil and 0 or Slider.Width, 0, 0),
 		AutomaticSize = "Y",
-		Position = UDim2.new(1, Slider.IsTextbox and (Config.Window.NewElements and -12 - 4 or 0) or 0, 0.5, 0),
+		Position = UDim2.new(1, Slider.IsTextbox and (Config.NewElements and -12 - 4 or 0) or 0, 0.5, 0),
 		AnchorPoint = Vector2.new(1, 0.5),
 		BackgroundTransparency = 1,
 		Parent = Slider.SliderFrame.UIElements.Main,
@@ -304,14 +304,14 @@ function Element:New(Config)
 
 							Config.NevaUI.CurrentInput = nil
 
-							if Config.Window.NewElements then
+							if Config.NewElements then
 								Tween(Slider.UIElements.SliderIcon.Frame.Thumb, 0.2, {
 									ImageTransparency = 0,
 									Size = UDim2.new(
 										0,
-										Config.Window.NewElements and (Slider.ThumbSize * 2) or (Slider.ThumbSize + 2),
+										Config.NewElements and (Slider.ThumbSize * 2) or (Slider.ThumbSize + 2),
 										0,
-										Config.Window.NewElements and (Slider.ThumbSize + 4) or (Slider.ThumbSize + 2)
+										Config.NewElements and (Slider.ThumbSize + 4) or (Slider.ThumbSize + 2)
 									),
 								}, Enum.EasingStyle.Quint, Enum.EasingDirection.InOut):Play()
 							end
@@ -400,12 +400,12 @@ function Element:New(Config)
 			Slider:Set(Value, input)
 
 			-- drag slider
-			if Config.Window.NewElements then
+			if Config.NewElements then
 				Tween(Slider.UIElements.SliderIcon.Frame.Thumb, 0.24, {
 					ImageTransparency = 0.85,
 					Size = UDim2.new(
 						0,
-						(Config.Window.NewElements and (Slider.ThumbSize * 2) or Slider.ThumbSize) + 8,
+						(Config.NewElements and (Slider.ThumbSize * 2) or Slider.ThumbSize) + 8,
 						0,
 						Slider.ThumbSize + 8
 					),

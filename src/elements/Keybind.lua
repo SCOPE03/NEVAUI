@@ -68,7 +68,7 @@ function Element:New(Config)
 		nil,
 		Keybind.KeybindFrame.UIElements.Main,
 		nil,
-		Config.Window.NewElements and 12 or 10
+		Config.NewElements and 12 or 10
 	)
 
 	Keybind.UIElements.Keybind.Size =

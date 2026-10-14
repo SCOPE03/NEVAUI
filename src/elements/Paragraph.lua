@@ -43,7 +43,7 @@ function Element:New(ElementConfig)
 				ButtonsContainer,
 				nil,
 				nil,
-				ElementConfig.Window.NewElements and 999 or 10
+				ElementConfig.NewElements and 999 or 10
 			)
 			ButtonFrame.Size = UDim2.new(1, 0, 0, 38)
 			--ButtonFrame.AutomaticSize = "X"

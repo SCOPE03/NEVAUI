@@ -53,14 +53,14 @@ function Element:New(Config)
 			Input:Set(v, true)
 		end,
 		nil,
-		Config.Window.NewElements and 12 or 10,
+		Config.NewElements and 12 or 10,
 		Input.ClearTextOnFocus
 	)
 
 	if Input.Type ~= "Textarea" then
 		InputComponent.Size = UDim2.new(0, Input.Width, 0, 36)
-		InputComponent.Position = UDim2.new(1, 0, Config.Window.NewElements and 0 or 0.5, 0)
-		InputComponent.AnchorPoint = Vector2.new(1, Config.Window.NewElements and 0 or 0.5)
+		InputComponent.Position = UDim2.new(1, 0, Config.NewElements and 0 or 0.5, 0)
+		InputComponent.AnchorPoint = Vector2.new(1, Config.NewElements and 0 or 0.5)
 	else
 		InputComponent.Size = UDim2.new(1, 0, 0, 42 + 56 + 50)
 	end

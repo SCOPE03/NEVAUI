@@ -162,19 +162,19 @@ function Element:New(Config)
 				Section.Box and New("UIPadding", {
 					PaddingTop = UDim.new(
 						0,
-						Config.Window.ElementConfig.UIPadding + (Config.Window.NewElements and 4 or 0)
+						Config.Window.ElementConfig.UIPadding + (Config.NewElements and 4 or 0)
 					),
 					PaddingLeft = UDim.new(
 						0,
-						Config.Window.ElementConfig.UIPadding + (Config.Window.NewElements and 4 or 0)
+						Config.Window.ElementConfig.UIPadding + (Config.NewElements and 4 or 0)
 					),
 					PaddingRight = UDim.new(
 						0,
-						Config.Window.ElementConfig.UIPadding + (Config.Window.NewElements and 4 or 0)
+						Config.Window.ElementConfig.UIPadding + (Config.NewElements and 4 or 0)
 					),
 					PaddingBottom = UDim.new(
 						0,
-						Config.Window.ElementConfig.UIPadding + (Config.Window.NewElements and 4 or 0)
+						Config.Window.ElementConfig.UIPadding + (Config.NewElements and 4 or 0)
 					),
 				}) or nil,
 				Icon,

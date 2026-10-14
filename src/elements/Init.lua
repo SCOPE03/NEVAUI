@@ -24,6 +24,10 @@ return {
 		for name, module in next, Elements do
 			tbl[name] = function(self, config)
 				config = config or {}
+				if config.Style ~= nil and config.Style ~= "Legacy" and config.Style ~= "Modern" then
+					error('Invalid Style "' .. tostring(config.Style) .. '". Expected "Legacy" or "Modern".', 2)
+				end
+				config.NewElements = config.Style == "Modern" or (config.Style == nil and Window.NewElements == true)
 				config.Tab = Tab or tbl
 				config.ParentType = tbl.__type
 				config.ParentTable = tbl
@@ -111,7 +115,7 @@ return {
 					Tab.Elements[config.Index] = content
 				end
 
-				if Window.NewElements then
+				if config.NewElements then
 					tbl:UpdateAllElementShapes(tbl)
 				end
 

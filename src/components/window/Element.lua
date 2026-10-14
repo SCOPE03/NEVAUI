@@ -98,7 +98,7 @@ return function(Config)
 		ThumbnailFrame = Creator.Image(
 			Element.Thumbnail,
 			Element.Title,
-			Config.Window.NewElements and Element.UICorner - 11 or (Element.UICorner - 4),
+			Config.NewElements and Element.UICorner - 11 or (Element.UICorner - 4),
 			Config.Window.Folder,
 			"Thumbnail",
 			false,
@@ -110,7 +110,7 @@ return function(Config)
 		ImageFrame = Creator.Image(
 			Element.Image,
 			Element.Title,
-			Config.Window.NewElements and Element.UICorner - 11 or (Element.UICorner - 4),
+			Config.NewElements and Element.UICorner - 11 or (Element.UICorner - 4),
 			Config.Window.Folder,
 			"Image",
 			Element.IconThemed,
@@ -189,7 +189,7 @@ return function(Config)
 			New("UIListLayout", {
 				Padding = UDim.new(0, Element.UIPadding),
 				FillDirection = "Horizontal",
-				VerticalAlignment = Config.Window.NewElements and (Element.Justify == "Between" and "Top" or "Center")
+				VerticalAlignment = Config.NewElements and (Element.Justify == "Between" and "Top" or "Center")
 					or "Center",
 				HorizontalAlignment = Element.Justify ~= "Between" and Element.Justify or "Center",
 			}),
@@ -207,15 +207,15 @@ return function(Config)
 				Name = "TitleFrame",
 			}, {
 				New("UIPadding", {
-					PaddingTop = UDim.new(0, (Config.Window.NewElements and Element.UIPadding / 2 or 0) + AddPaddingY),
-					PaddingLeft = UDim.new(0, (Config.Window.NewElements and Element.UIPadding / 2 or 0) + AddPaddingX),
+					PaddingTop = UDim.new(0, (Config.NewElements and Element.UIPadding / 2 or 0) + AddPaddingY),
+					PaddingLeft = UDim.new(0, (Config.NewElements and Element.UIPadding / 2 or 0) + AddPaddingX),
 					PaddingRight = UDim.new(
 						0,
-						(Config.Window.NewElements and Element.UIPadding / 2 or 0) + AddPaddingX
+						(Config.NewElements and Element.UIPadding / 2 or 0) + AddPaddingX
 					),
 					PaddingBottom = UDim.new(
 						0,
-						(Config.Window.NewElements and Element.UIPadding / 2 or 0) + AddPaddingY
+						(Config.NewElements and Element.UIPadding / 2 or 0) + AddPaddingY
 					),
 				}),
 				New("UIListLayout", {
@@ -423,15 +423,15 @@ return function(Config)
 	local Main, MainTable = NewRoundFrame(Element.UICorner, "Squircle", {
 		Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = "Y",
-		ImageTransparency = Element.Color and 0.05 or (not Config.Window.NewElements and 0.93 or nil),
+		ImageTransparency = Element.Color and 0.05 or (not Config.NewElements and 0.93 or nil),
 		--Text = "",
 		--TextTransparency = 1,
 		--AutoButtonColor = false,
 		Parent = Config.Parent,
 		ThemeTag = {
-			ImageColor3 = not Element.Color and (Config.Window.NewElements and "ElementBackground" or "Text") or nil,
+			ImageColor3 = not Element.Color and (Config.NewElements and "ElementBackground" or "Text") or nil,
 			ImageTransparency = not Element.Color
-					and (Config.Window.NewElements and "ElementBackgroundTransparency" or nil)
+					and (Config.NewElements and "ElementBackgroundTransparency" or nil)
 				or nil,
 		},
 		ImageColor3 = Element.Color and (typeof(Element.Color) == "string" and Color3.fromHex(
@@ -691,7 +691,7 @@ return function(Config)
 	end
 
 	function Element.UpdateShape(Tab)
-		if Config.Window.NewElements then
+		if Config.NewElements then
 			local newShape = Creator:GetElementPosition(
 				Tab.Elements,
 				Element.Index,
