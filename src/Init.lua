@@ -197,7 +197,7 @@ end
 function NevaUI:SetTheme(Value)
 	if NevaUI.Themes[Value] then
 		NevaUI.Theme = NevaUI.Themes[Value]
-		Creator.SetTheme(NevaUI.Themes[Value])
+		Creator.SetTheme(NevaUI.Themes[Value], NevaUI.ThemeColors)
 
 		if NevaUI.OnThemeChangeFunction then
 			NevaUI.OnThemeChangeFunction(Value)
@@ -328,9 +328,16 @@ function NevaUI:CreateWindow(Config)
 	local CanLoadWindow = true
 
 	local Theme = NevaUI.Themes[Config.Theme or "Dark"]
+	if not Theme then
+		error('Unknown Theme "' .. tostring(Config.Theme) .. '". Use a theme name from NevaUI:GetThemes().', 2)
+	end
+	if Config.ThemeColors ~= nil and type(Config.ThemeColors) ~= "table" then
+		error("ThemeColors must be a table of theme-token overrides.", 2)
+	end
 
 	--NevaUI.Theme = Theme
-	Creator.SetTheme(Theme)
+	NevaUI.ThemeColors = Config.ThemeColors
+	Creator.SetTheme(Theme, NevaUI.ThemeColors)
 
 	local hwid = gethwid or function()
 		return Players.LocalPlayer.UserId
