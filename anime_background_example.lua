@@ -2,7 +2,9 @@
 -- HTTP backgrounds require HTTP GET plus isfile, writefile, and getcustomasset support.
 
 local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/dist/main.lua"
-local BackgroundUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-cute-anime-background.jpg"
+-- Preview GIF: https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-cute-anime-background-loop.gif
+-- The loop is a gentle pan/zoom; Roblox ImageLabels use its matching sprite sheet below.
+local BackgroundUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-cute-anime-background-sprites.jpg"
 local LogoAsset = "rbxassetid://76738354597155"
 local LoadString = loadstring or load
 
@@ -23,6 +25,12 @@ local Window = NevaUI:CreateWindow({
 	Logo = LogoAsset,
 	IconSize = 38,
 	Background = BackgroundUrl,
+	BackgroundAnimation = {
+		FrameSize = Vector2.new(840, 472),
+		FrameCount = 16,
+		Columns = 4,
+		FPS = 10,
+	},
 	HidePanelBackground = true,
 	Size = UDim2.fromOffset(850, 500),
 	Folder = "NevaUIAnimeExample",

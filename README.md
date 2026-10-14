@@ -127,6 +127,7 @@ local Window = NevaUI:CreateWindow({
 | Option | Type | Default | Description |
 |---|---|---:|---|
 | `Background` | string/number/table | `nil` | Roblox Image asset, HTTP/custom asset, video source, or gradient configuration. |
+| `BackgroundAnimation` | table | `nil` | Plays a sprite sheet on an image background using `FrameSize` (`Vector2`), `FrameCount`, `Columns`, and `FPS`. Raw GIF files do not animate in Roblox `ImageLabel`s. |
 | `BackgroundImageTransparency` | number | `0` | Background image transparency from `0` to `1`. |
 | `BackgroundTransparency` | number | — | Runtime transparency is controlled with `Window:SetBackgroundTransparency()`. |
 | `Theme` | string | `"Dark"` | Built-in or registered theme name. `NewElements` and per-element `Style` choose the control design independently. |
@@ -146,6 +147,18 @@ HidePanelBackground = true
 ```
 
 `121343473918667` is a verified anime Image asset used by the example. Asset `11696860078` is a Decal asset and may return a thumbnail while still failing to render in an `ImageLabel`.
+
+For GIF-like motion, store a sprite sheet in GitHub and set `BackgroundAnimation`. The Roblox `ImageLabel` cycles through sprite-sheet cells; it cannot play a raw `.gif` file directly. The anime example includes a [looping GIF preview](examples/assets/neva-cute-anime-background-loop.gif) and its matching [runtime sprite sheet](examples/assets/neva-cute-anime-background-sprites.jpg).
+
+```lua
+Background = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-cute-anime-background-sprites.jpg",
+BackgroundAnimation = {
+    FrameSize = Vector2.new(840, 472),
+    FrameCount = 16,
+    Columns = 4,
+    FPS = 10,
+},
+```
 
 ### Theme color overrides
 
