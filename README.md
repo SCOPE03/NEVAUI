@@ -10,7 +10,7 @@ local NevaUI = loadstring(game:HttpGet(
 ))()
 
 local Window = NevaUI:CreateWindow({
-    Title = "My Script Hub",
+    Title = "NevaUI",
 })
 ```
 
@@ -23,7 +23,7 @@ All window options are supplied to `NevaUI:CreateWindow({ ... })`.
 ```lua
 local Window = NevaUI:CreateWindow({
     -- Identity
-    Title = "My Script Hub",
+    Title = "NevaUI",
     Author = "by Developer",
     Layout = "Standard", -- "Standard" or "Dashboard"
     Logo = "rbxassetid://134899357436301",
@@ -73,7 +73,7 @@ local Window = NevaUI:CreateWindow({
         Gap = 8,
         Brand = {
             Logo = "rbxassetid://134899357436301", -- Roblox image asset ID
-            Title = "My Script Hub",
+            Title = "NevaUI",
             LogoSize = 24,
             Height = 56,
         },
@@ -83,7 +83,7 @@ local Window = NevaUI:CreateWindow({
         DividerColor = Color3.fromRGB(80, 170, 255),
     },
 
-    -- Fluent-style floating open/close button
+    -- Floating open/close button
     OpenButton = {
         Floating = true,
         OnlyMobile = false,
@@ -256,7 +256,7 @@ Sidebar = {
     Brand = {
         Layout = "Stacked", -- "Horizontal" (default) or "Stacked"
         Logo = "rbxassetid://134899357436301", -- Roblox image asset ID
-        Title = "My Script Hub",
+        Title = "NevaUI",
         LogoSize = 54,
         LogoScaleType = "Fit",
         TitleSize = 24,
@@ -311,7 +311,7 @@ Window:SetSidebarDivider(true)
 
 ## Floating open/close button
 
-Set `OpenButton.Floating = true` to use a Fluent-style floating toggle button. It appears after the window is closed and opens the window when clicked.
+Set `OpenButton.Floating = true` to show a circular floating open/close button. It appears after the window is closed and opens the window when clicked.
 
 | Option | Type | Default | Description |
 |---|---|---:|---|
