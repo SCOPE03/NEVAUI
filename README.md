@@ -165,6 +165,8 @@ HidePanelBackground = true
 
 `NewElements` remains the window-wide default. Elements with style-dependent visuals or layout can override that default with `Style = "Modern"` or `Style = "Legacy"`. If `Style` is omitted, the element follows the window's `NewElements` setting. The modern Toggle uses a compact pill track with a circular thumb; the same style choice is available on buttons and other elements that support the modern layout.
 
+For a runnable test with only the styled controls, see [`style_example.lua`](style_example.lua).
+
 ```lua
 local Window = NevaUI:CreateWindow({
     Title = "Mixed styles",
