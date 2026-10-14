@@ -225,10 +225,12 @@ Sidebar = {
     Padding = 10,
     Gap = 8,
     Brand = {
+        Layout = "Stacked", -- "Horizontal" (default) or "Stacked"
         Logo = "rbxassetid://134899357436301", -- Roblox image asset ID
         Title = "My Script Hub",
-        LogoSize = 24,
-        Height = 56,
+        LogoSize = 54,
+        TitleSize = 24,
+        Height = 140,
     },
     Divider = true,
     DividerThickness = 2,
@@ -242,10 +244,11 @@ Sidebar = {
 | `Width` | number | Standard: `200`; Dashboard: `190` | Sidebar width in pixels. |
 | `Padding` | number | automatic | Inner sidebar padding. |
 | `Gap` | number | automatic | Vertical gap between sidebar items. |
+| `Brand.Layout` | string | `"Horizontal"` | `"Stacked"` centers the logo above the title; `"Horizontal"` keeps them side by side. |
 | `Brand.Logo` | string/number | `nil` | Icon or image displayed in the sidebar brand header. |
-| `Brand.Title` | string | `nil` | Text displayed beside the sidebar logo. |
-| `Brand.LogoSize` | number | `24` | Sidebar brand logo size in pixels. |
-| `Brand.Height` | number | `56` | Height reserved above sidebar search and tabs (clamped to at least `40`). |
+| `Brand.Title` | string | `nil` | Wordmark displayed beside or below the sidebar logo, depending on `Brand.Layout`. |
+| `Brand.LogoSize` | number | Horizontal: `24`; Stacked: `36` | Sidebar brand logo size in pixels. |
+| `Brand.Height` | number | Horizontal: `56`; Stacked: `96` | Height reserved above sidebar search and tabs (clamped to at least `40`). |
 | `Brand.LogoRadius` | number | `0` | Corner radius of the brand image. |
 | `Brand.LogoThemed` | boolean | `false` | Applies theme coloring to the logo where supported. |
 | `Brand.TitleSize` | number | `16` | Brand title font size. |

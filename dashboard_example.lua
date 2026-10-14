@@ -25,11 +25,12 @@ local Window = NevaUI:CreateWindow({
 	Sidebar = {
 		Width = 230,
 		Brand = {
+			Layout = "Stacked",
 			Logo = SampleLogo,
 			Title = "NEVA UI",
-			LogoSize = 36,
-			TitleSize = 28,
-			Height = 72,
+			LogoSize = 54,
+			TitleSize = 24,
+			Height = 140,
 		},
 	},
 })
