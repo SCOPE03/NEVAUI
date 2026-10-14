@@ -30,7 +30,7 @@ function Element:New(Config)
 		-- ThumbnailSize = Config.ThumbnailSize,
 		Window = Config.Window,
 		Parent = Config.Parent,
-		TextOffset = (24 + 24 + 4),
+		TextOffset = Config.NewElements and (24 + 24 + 8) or (24 + 24 + 4),
 		Hover = false,
 		Tab = Config.Tab,
 		Index = Config.Index,
