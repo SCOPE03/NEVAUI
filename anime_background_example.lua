@@ -19,6 +19,7 @@ local NevaUI = Result
 local Window = NevaUI:CreateWindow({
 	Title = "NevaUI",
 	Author = "by NEVA",
+	Layout = "Dashboard",
 	Logo = LogoAsset,
 	IconSize = 38,
 	Background = BackgroundUrl,
@@ -77,12 +78,17 @@ local WelcomeTab = Window:Tab({
 	ShowTabTitle = true,
 })
 
-WelcomeTab:Paragraph({
-	Title = "Anime background showcase",
-	Desc = "The background illustration sits behind the window. The supplied logo appears in the top bar, the large left sidebar brand, and the floating open button.",
+-- Top-level sections are automatically placed into separate Dashboard columns.
+local FirstTable = WelcomeTab:Section({
+	Title = "General",
+	Desc = "First panel on this tab",
+	Icon = "settings",
+	Box = true,
+	BoxBorder = true,
+	Opened = true,
 })
 
-WelcomeTab:Toggle({
+FirstTable:Toggle({
 	Title = "Legacy switch test",
 	Style = "Legacy",
 	Value = true,
@@ -91,7 +97,7 @@ WelcomeTab:Toggle({
 	end,
 })
 
-WelcomeTab:Button({
+FirstTable:Button({
 	Title = "Test notification",
 	Style = "Legacy",
 	Icon = "bell",
@@ -101,5 +107,32 @@ WelcomeTab:Button({
 			Content = "The example button is working.",
 			Duration = 3,
 		})
+	end,
+})
+
+local SecondTable = WelcomeTab:Section({
+	Title = "Appearance",
+	Desc = "Second panel on the same tab",
+	Icon = "palette",
+	Box = true,
+	BoxBorder = true,
+	Opened = true,
+})
+
+SecondTable:Toggle({
+	Title = "Example appearance toggle",
+	Style = "Legacy",
+	Value = false,
+	Callback = function(value)
+		print("Appearance toggle:", value)
+	end,
+})
+
+SecondTable:Button({
+	Title = "Test second panel",
+	Style = "Legacy",
+	Icon = "check",
+	Callback = function()
+		print("Second panel button is working.")
 	end,
 })
