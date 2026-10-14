@@ -30842,71 +30842,81 @@ Cols=10,
 }
 
 if ak then
-local an=ac("Frame",{
+local an=(al and al.ToggleColor)or Color3.fromRGB(164,151,223)
+local ao=Color3.fromRGB(49,49,55)
+local ap=Color3.fromRGB(250,249,255)
+local aq=Color3.fromRGB(128,128,136)
+
+local ar=ac("Frame",{
 Size=UDim2.new(0,58,0,30),
 BackgroundTransparency=1,
 Parent=ai,
 })
-local ao=ac("Frame",{
+local as=ac("Frame",{
 Name="ToggleFrame",
 Size=UDim2.new(0,56,0,28),
 AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.new(0.5,0,0.5,0),
-BackgroundColor3=Color3.fromRGB(70,70,76),
+BackgroundColor3=ao,
 BackgroundTransparency=0,
-ThemeTag={BackgroundColor3="Toggle"},
 },{
 ac("UICorner",{CornerRadius=UDim.new(1,0)}),
 })
-ao.Parent=an
+as.Parent=ar
 
-local ap=ac("Frame",{
+local at=ac("Frame",{
 Name="Frame",
 Size=UDim2.new(0,22,0,22),
 Position=UDim2.new(0,3,0.5,0),
 AnchorPoint=Vector2.new(0,0.5),
-BackgroundColor3=Color3.fromRGB(205,205,212),
+BackgroundColor3=aq,
 BorderSizePixel=0,
 ZIndex=2,
 },{
 ac("UICorner",{CornerRadius=UDim.new(1,0)}),
 })
-ap.Parent=ao
+at.Parent=as
 
-local aq=ac("TextButton",{
+local au=ac("TextButton",{
 Name="Hitbox",
 Size=UDim2.new(1,0,1,0),
 BackgroundTransparency=1,
 Text="",
 ZIndex=3,
 },nil)
-aq.Parent=ao
+au.Parent=as
 
-local function ApplyState(ar,as)
-local at=ar and"Toggle"or"Text"
-local au=UDim2.new(0,ar and 31 or 3,0.5,0)
-if as then
-ad(ap,0.18,{Position=au},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-ad(ao,0.18,{BackgroundTransparency=ar and 0 or 0.82}):Play()
-ap.BackgroundColor3=ar and Color3.new(1,1,1)or Color3.fromRGB(205,205,212)
+local function ApplyState(av,aw)
+local ax=av and an or ao
+local ay=av and ap or aq
+local az=UDim2.new(0,av and 31 or 3,0.5,0)
+if aw then
+ad(at,0.18,{
+Position=az,
+BackgroundColor3=ay,
+},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
+ad(as,0.18,{
+BackgroundColor3=ax,
+BackgroundTransparency=0,
+}):Play()
 else
-ap.Position=au
-ao.BackgroundTransparency=ar and 0 or 0.82
-ap.BackgroundColor3=ar and Color3.new(1,1,1)or Color3.fromRGB(205,205,212)
+at.Position=az
+at.BackgroundColor3=ay
+as.BackgroundColor3=ax
+as.BackgroundTransparency=0
 end
-ab.SetThemeTag(ao,{BackgroundColor3=at})
 end
 
-function am.Set(ar,as,at,au)
-ApplyState(as,at~=false)
-if at~=false and aj then
+function am.Set(av,aw,ax,ay)
+ApplyState(aw,ax~=false)
+if ax~=false and aj then
 task.spawn(function()
-ab.SafeCallback(aj,as)
+ab.SafeCallback(aj,aw)
 end)
 end
 end
 
-return an,am
+return ar,am
 end
 
 function am.GetGlassFrame(an,ao:number):(string,Vector2,Vector2)
