@@ -25,9 +25,8 @@ local Tab = Window:Tab({
 
 Tab:Toggle({
 	Title = "Modern toggle",
-	Desc = 'Style = "Modern" — pill track with a circular thumb.',
+	Desc = 'Style = "Modern" — square-cornered track with a rectangular sliding thumb; no labels.',
 	Style = "Modern",
-	ToggleColor = Color3.fromRGB(164, 151, 223),
 	Value = true,
 	Callback = function(value)
 		print("Modern toggle:", value)

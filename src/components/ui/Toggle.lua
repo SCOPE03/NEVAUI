@@ -35,21 +35,23 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 			Position = UDim2.new(0.5, 0, 0.5, 0),
 			BackgroundColor3 = InactiveColor,
 			BackgroundTransparency = 0,
-		}, {
-			New("UICorner", { CornerRadius = UDim.new(1, 0) }),
 		})
 		Track.Parent = ToggleContainer
 
 		local Knob = New("Frame", {
 			Name = "Frame",
-			Size = UDim2.new(0, 18, 0, 18),
-			Position = UDim2.new(0, 5, 0.5, 0),
+			Size = UDim2.new(0, 26, 0, 24),
+			Position = UDim2.new(0, 2, 0.5, 0),
 			AnchorPoint = Vector2.new(0, 0.5),
 			BackgroundColor3 = InactiveThumbColor,
 			BorderSizePixel = 0,
 			ZIndex = 2,
 		}, {
-			New("UICorner", { CornerRadius = UDim.new(1, 0) }),
+			New("UIStroke", {
+				Color = Color3.fromRGB(32, 32, 36),
+				Transparency = 0.5,
+				Thickness = 1,
+			}),
 		})
 		Knob.Parent = Track
 
@@ -65,7 +67,7 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 		local function ApplyState(isOn, animated)
 			local trackColor = isOn and ActiveColor or InactiveColor
 			local thumbColor = isOn and ActiveThumbColor or InactiveThumbColor
-			local targetPosition = UDim2.new(0, isOn and 37 or 5, 0.5, 0)
+			local targetPosition = UDim2.new(0, isOn and 32 or 2, 0.5, 0)
 			if animated then
 				Tween(Knob, 0.18, {
 					Position = targetPosition,
