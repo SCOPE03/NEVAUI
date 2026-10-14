@@ -14,7 +14,7 @@ local Window = NevaUI:CreateWindow({
 })
 ```
 
-For a complete working example, see [`sidebar_example.lua`](sidebar_example.lua). It demonstrates the background image, script-hub logo, floating open button, sidebar styling, dividers, and runtime controls.
+For a complete working example, see [`sidebar_example.lua`](sidebar_example.lua). It demonstrates the background image, script-hub logo, floating open button, sidebar styling, dividers, and runtime controls. For the opt-in two-column Dashboard layout, see [`dashboard_example.lua`](dashboard_example.lua).
 
 ## Complete `CreateWindow` configuration
 
@@ -25,8 +25,9 @@ local Window = NevaUI:CreateWindow({
     -- Identity
     Title = "My Script Hub",
     Author = "by Developer",
+    Layout = "Standard", -- "Standard" or "Dashboard"
     Logo = "rbxassetid://134899357436301",
-    -- Icon is the legacy compatibility alias; use Logo instead.
+    -- Logo appears in the top bar/open button. Icon is its legacy alias.
     IconSize = 22,
     IconRadius = 0,
     IconThemed = false,
@@ -70,6 +71,12 @@ local Window = NevaUI:CreateWindow({
         Width = 230,
         Padding = 10,
         Gap = 8,
+        Brand = {
+            Logo = "sparkles", -- icon name or Roblox image asset
+            Title = "My Script Hub",
+            LogoSize = 24,
+            Height = 56,
+        },
         Divider = true,
         DividerThickness = 2,
         DividerTransparency = 0.72,
@@ -107,8 +114,8 @@ local Window = NevaUI:CreateWindow({
 |---|---|---:|---|
 | `Title` | string | `"UI Library"` | Window title. |
 | `Author` | string | `nil` | Small author text beside the title. |
-| `Logo` | string/number | `nil` | Window logo. Accepts an icon name or Roblox Image asset. |
-| `Icon` | string/number | `nil` | Compatibility alias for `Logo`; `Logo` takes priority. |
+| `Logo` | string/number | `nil` | Icon or image in the top bar and floating open button. Use `Sidebar.Brand.Logo` for the navigation rail. |
+| `Icon` | string/number | `nil` | Compatibility alias for `Logo`; `Logo` takes priority. `Logo` remains in the top bar/open button. |
 | `IconSize` | number | `22` | Logo size in pixels. |
 | `IconRadius` | number | `0` | Logo corner radius. |
 | `IconThemed` | boolean | `false` | Allows icon colors to follow the active theme. |
@@ -140,8 +147,8 @@ HidePanelBackground = true
 
 | Option | Type | Default | Description |
 |---|---|---:|---|
-| `Size` | `UDim2` | `UDim2.fromOffset(580, 460)` | Initial window size. |
-| `MinSize` | `Vector2` | `Vector2.new(560, 350)` | Minimum resize dimensions. |
+| `Size` | `UDim2` | Standard: `580×460`; Dashboard: `820×460` | Initial window size. |
+| `MinSize` | `Vector2` | Standard: `560×350`; Dashboard: `680×360` | Minimum resize dimensions. |
 | `MaxSize` | `Vector2` | `Vector2.new(850, 560)` | Maximum resize dimensions. |
 | `Resizable` | boolean | `true` | Enables window resizing. |
 | `AutoScale` | boolean | `true` | Enables automatic UI scaling. |
@@ -155,8 +162,9 @@ HidePanelBackground = true
 | `Topbar.Height` | number | `52` | Topbar height. |
 | `Topbar.ButtonsType` | string | `"Default"` | Use `"Default"` or `"Mac"` topbar buttons. |
 | `TopBarButtonIconSize` | number | automatic | Size of topbar button icons. |
+| `Layout` | string | `"Standard"` | Use `"Dashboard"` for two-column tab content; existing layout remains the default. |
 | `ElementsRadius` | number | automatic | Radius used by content elements. |
-| `NewElements` | boolean | `false` | Uses the newer element styling where available. |
+| `NewElements` | boolean | layout-dependent | Uses newer element styling where available. Defaults to `true` in Dashboard mode and `false` in Standard mode. An explicit value overrides the default. |
 | `IgnoreAlerts` | boolean | `false` | Suppresses close/alert dialogs where supported. |
 | `HideSearchBar` | boolean | `true` | Hides the sidebar search bar when `true`. |
 | `ScrollBarEnabled` | boolean | `false` | Enables the sidebar scroll indicator. |
@@ -197,6 +205,14 @@ Tab:Slider({
 
 `Style` accepts exactly `"Legacy"` or `"Modern"`; any other value raises an error when the element is created. Existing projects keep their current appearance unless they already enable `NewElements` or add an element-level override.
 
+## Dashboard layout
+
+Set `Layout = "Dashboard"` to keep the existing tab navigation while distributing top-level tab controls into two auto-height columns. Nested controls stay inside their parent group. The Dashboard layout defaults to modern element styling unless `NewElements` is explicitly set. `Layout = "Standard"` preserves the current single-column layout.
+
+The optional `Sidebar.Brand` header works with either layout, placing the brand above the navigation rail. The main Dashboard content remains in the two-column area to the right.
+
+See [`dashboard_example.lua`](dashboard_example.lua) for a runnable configuration.
+
 ## Sidebar configuration
 
 The preferred sidebar configuration is the nested `Sidebar` table:
@@ -206,6 +222,12 @@ Sidebar = {
     Width = 230,
     Padding = 10,
     Gap = 8,
+    Brand = {
+        Logo = "sparkles", -- icon name or Roblox image asset
+        Title = "My Script Hub",
+        LogoSize = 24,
+        Height = 56,
+    },
     Divider = true,
     DividerThickness = 2,
     DividerTransparency = 0.72,
@@ -215,9 +237,16 @@ Sidebar = {
 
 | Option | Type | Default | Description |
 |---|---|---:|---|
-| `Width` | number | `200` | Sidebar width in pixels. |
+| `Width` | number | Standard: `200`; Dashboard: `190` | Sidebar width in pixels. |
 | `Padding` | number | automatic | Inner sidebar padding. |
 | `Gap` | number | automatic | Vertical gap between sidebar items. |
+| `Brand.Logo` | string/number | `nil` | Icon or image displayed in the sidebar brand header. |
+| `Brand.Title` | string | `nil` | Text displayed beside the sidebar logo. |
+| `Brand.LogoSize` | number | `24` | Sidebar brand logo size in pixels. |
+| `Brand.Height` | number | `56` | Height reserved above sidebar search and tabs (clamped to at least `40`). |
+| `Brand.LogoRadius` | number | `0` | Corner radius of the brand image. |
+| `Brand.LogoThemed` | boolean | `false` | Applies theme coloring to the logo where supported. |
+| `Brand.TitleSize` | number | `16` | Brand title font size. |
 | `Divider` | boolean | `true` | Shows the vertical divider. |
 | `DividerThickness` | number | `1` | Divider width. |
 | `DividerTransparency` | number | `0.85` | Divider transparency. |

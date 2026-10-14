@@ -59,7 +59,7 @@ function TabModule.New(Config, UIScale)
 		ContainerFrame = nil,
 		UICorner = Window.UICorner - (Window.UIPadding / 2),
 
-		Gap = Window.NewElements and 1 or 6,
+		Gap = Window.Layout == "Dashboard" and 10 or (Window.NewElements and 1 or 6),
 
 		TabPaddingX = 4 + (Window.UIPadding / 2),
 		TabPaddingY = 3 + (Window.UIPadding / 2),
@@ -250,18 +250,8 @@ function TabModule.New(Config, UIScale)
 		--Tab.UIElements.Icon = Icon
 	end
 
-	Tab.UIElements.ContainerFrame = New("ScrollingFrame", {
-		Size = UDim2.new(1, 0, 1, Tab.ShowTabTitle and -((Window.UIPadding * 2.4) + 12) or 0),
-		BackgroundTransparency = 1,
-		ScrollBarThickness = 0,
-		ElasticBehavior = "Never",
-		CanvasSize = UDim2.new(0, 0, 0, 0),
-		AnchorPoint = Vector2.new(0, 1),
-		Position = UDim2.new(0, 0, 1, 0),
-		AutomaticCanvasSize = "Y",
-		--Visible = false,
-		ScrollingDirection = "Y",
-	}, {
+	local DashboardColumns
+	local ContainerFrameChildren = {
 		New("UIPadding", {
 			PaddingTop = UDim.new(0, not Window.HidePanelBackground and 20 or 10),
 			PaddingLeft = UDim.new(0, not Window.HidePanelBackground and 20 or 10),
@@ -273,7 +263,64 @@ function TabModule.New(Config, UIScale)
 			Padding = UDim.new(0, Tab.Gap),
 			HorizontalAlignment = "Center",
 		}),
-	})
+	}
+
+	if Window.Layout == "Dashboard" then
+		local ColumnGap = 12
+		local function CreateDashboardColumn(Name)
+			return New("Frame", {
+				Name = Name,
+				Size = UDim2.new(0.5, -ColumnGap / 2, 0, 0),
+				AutomaticSize = "Y",
+				BackgroundTransparency = 1,
+			}, {
+				New("UIListLayout", {
+					SortOrder = "LayoutOrder",
+					Padding = UDim.new(0, Tab.Gap),
+					FillDirection = "Vertical",
+					HorizontalAlignment = "Center",
+					VerticalAlignment = "Top",
+				}),
+			})
+		end
+
+		local ColumnOne = CreateDashboardColumn("DashboardColumnOne")
+		local ColumnTwo = CreateDashboardColumn("DashboardColumnTwo")
+		DashboardColumns = { ColumnOne, ColumnTwo }
+		local DashboardRoot = New("Frame", {
+			Name = "DashboardRoot",
+			Size = UDim2.new(1, 0, 0, 0),
+			AutomaticSize = "Y",
+			BackgroundTransparency = 1,
+			LayoutOrder = 1,
+		}, {
+			ColumnOne,
+			ColumnTwo,
+			New("UIListLayout", {
+				SortOrder = "LayoutOrder",
+				Padding = UDim.new(0, ColumnGap),
+				FillDirection = "Horizontal",
+				HorizontalAlignment = "Center",
+				VerticalAlignment = "Top",
+			}),
+		})
+		table.insert(ContainerFrameChildren, DashboardRoot)
+		Tab.UIElements.DashboardColumns = DashboardColumns
+		Tab.UIElements.DashboardRoot = DashboardRoot
+	end
+
+	Tab.UIElements.ContainerFrame = New("ScrollingFrame", {
+		Size = UDim2.new(1, 0, 1, Tab.ShowTabTitle and -((Window.UIPadding * 2.4) + 12) or 0),
+		BackgroundTransparency = 1,
+		ScrollBarThickness = 0,
+		ElasticBehavior = "Never",
+		CanvasSize = UDim2.new(0, 0, 0, 0),
+		AnchorPoint = Vector2.new(0, 1),
+		Position = UDim2.new(0, 0, 1, 0),
+		AutomaticCanvasSize = "Y",
+		--Visible = false,
+		ScrollingDirection = "Y",
+	}, ContainerFrameChildren)
 
 	-- Tab.UIElements.ContainerFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 	--     Tab.UIElements.ContainerFrame.CanvasSize = UDim2.new(0,0,0,Tab.UIElements.ContainerFrame.UIListLayout.AbsoluteContentSize.Y+Window.UIPadding*2)
@@ -518,6 +565,7 @@ function TabModule.New(Config, UIScale)
 		local Empty = New("Frame", {
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1, 0, 1, -Window.UIElements.Main.Main.Topbar.AbsoluteSize.Y),
+			LayoutOrder = 0,
 			Parent = Tab.UIElements.ContainerFrame,
 		}, {
 			New("UIListLayout", {
@@ -567,11 +615,23 @@ function TabModule.New(Config, UIScale)
 		--     Empty.TextLabel.Size = UDim2.new(0,Empty.TextLabel.TextBounds.X,0,Empty.TextLabel.TextBounds.Y)
 		-- end)
 
-		local CreationConn
-		CreationConn = Creator.AddSignal(Tab.UIElements.ContainerFrame.ChildAdded, function()
+		local CreationConnections = {}
+		local function HideEmptyPage()
+			if not Empty.Visible then
+				return
+			end
 			Empty.Visible = false
-			CreationConn:Disconnect()
-		end)
+			for _, connection in ipairs(CreationConnections) do
+				connection:Disconnect()
+			end
+		end
+		local EmptyPageParents = Tab.UIElements.DashboardColumns or { Tab.UIElements.ContainerFrame }
+		for _, parent in ipairs(EmptyPageParents) do
+			table.insert(CreationConnections, Creator.AddSignal(parent.ChildAdded, HideEmptyPage))
+		end
+		if #Tab.Elements > 0 then
+			HideEmptyPage()
+		end
 	end)
 
 	return Tab
