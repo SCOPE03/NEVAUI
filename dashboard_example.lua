@@ -20,14 +20,16 @@ local Window = NevaUI:CreateWindow({
 	Layout = "Dashboard",
 	NewElements = false, -- Keep the original toggle and control designs in this example.
 	Logo = SampleLogo, -- Shows in the top bar and open button.
+	IconSize = 30,
 	Size = UDim2.fromOffset(820, 460),
 	Sidebar = {
-		Width = 190,
+		Width = 230,
 		Brand = {
 			Logo = SampleLogo,
 			Title = "NEVA UI",
-			LogoSize = 24,
-			Height = 56,
+			LogoSize = 36,
+			TitleSize = 28,
+			Height = 72,
 		},
 	},
 })
