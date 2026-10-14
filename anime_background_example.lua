@@ -1,11 +1,11 @@
--- NevaUI anime background, large left logo, and floating open button example.
+-- NevaUI animated background, large left logo, and floating open button example.
 -- HTTP backgrounds require HTTP GET plus isfile, writefile, and getcustomasset support.
 
 local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/dist/main.lua"
--- Source GIF: https://tenor.com/view/%E0%B9%80%E0%B8%A5%E0%B8%B5%E0%B8%A2%E0%B8%88%E0%B8%AD-gif-4592205362424568698
--- GitHub GIF copy: https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-4592205362424568698-background.gif
+-- Source GIF: https://tenor.com/view/chad-sigma-xtreme-xtremeverse-power-gif-11831658867899348818
+-- GitHub GIF copy: https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-chad-sigma-11831658867899348818-background.gif
 -- Roblox ImageLabels use the matching sprite sheet; they do not play raw GIF files.
-local BackgroundUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-4592205362424568698-background-sprites.png"
+local BackgroundUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-chad-sigma-11831658867899348818-background-sprites.png"
 local LogoAsset = "rbxassetid://76738354597155"
 local LoadString = loadstring or load
 
@@ -27,9 +27,9 @@ local Window = NevaUI:CreateWindow({
 	IconSize = 38,
 	Background = BackgroundUrl,
 	BackgroundAnimation = {
-		FrameSize = Vector2.new(498, 498),
-		FrameCount = 2,
-		Columns = 2,
+		FrameSize = Vector2.new(256, 256),
+		FrameCount = 30,
+		Columns = 6,
 		FPS = 16.6667,
 	},
 	HidePanelBackground = true,
@@ -38,16 +38,16 @@ local Window = NevaUI:CreateWindow({
 	Theme = "Dark",
 	NewElements = false,
 	ThemeColors = {
-		PanelBackground = Color3.fromRGB(23, 22, 27),
+		PanelBackground = Color3.fromRGB(30, 30, 31),
 		PanelBackgroundTransparency = 0.16,
-		SidebarBackground = Color3.fromRGB(18, 19, 25),
+		SidebarBackground = Color3.fromRGB(22, 22, 23),
 		SidebarBackgroundTransparency = 0.08,
-		TabBackgroundActive = Color3.fromRGB(76, 54, 56),
+		TabBackgroundActive = Color3.fromRGB(66, 66, 68),
 		TabBackgroundActiveTransparency = 0.12,
-		ElementBackground = Color3.fromRGB(33, 31, 34),
-		Text = Color3.fromRGB(244, 240, 238),
-		Toggle = Color3.fromRGB(242, 163, 139),
-		ToggleBar = Color3.fromRGB(83, 75, 78),
+		ElementBackground = Color3.fromRGB(40, 40, 42),
+		Text = Color3.fromRGB(239, 239, 239),
+		Toggle = Color3.fromRGB(198, 198, 198),
+		ToggleBar = Color3.fromRGB(88, 88, 90),
 	},
 	Sidebar = {
 		Width = 256,
@@ -73,9 +73,9 @@ local Window = NevaUI:CreateWindow({
 		Size = 64,
 		Position = UDim2.new(1, -48, 1, -86),
 		Draggable = true,
-		BackgroundColor3 = Color3.fromRGB(25, 23, 27),
+		BackgroundColor3 = Color3.fromRGB(28, 28, 30),
 		BackgroundTransparency = 0.08,
-		Color = Color3.fromRGB(242, 163, 139),
+		Color = Color3.fromRGB(198, 198, 198),
 		StrokeTransparency = 0.14,
 		StrokeThickness = 2,
 	},

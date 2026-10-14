@@ -16,7 +16,7 @@ local Window = NevaUI:CreateWindow({
 
 For a complete working example, see [`sidebar_example.lua`](sidebar_example.lua). It demonstrates the background image, script-hub logo, floating open button, sidebar styling, dividers, and runtime controls. For the opt-in two-column Dashboard layout, see [`dashboard_example.lua`](dashboard_example.lua).
 
-For an original anime background, large left-side brand logo, and floating open button, see [`anime_background_example.lua`](anime_background_example.lua).
+For an animated background, large left-side brand logo, and floating open button, see [`anime_background_example.lua`](anime_background_example.lua).
 
 ## Complete `CreateWindow` configuration
 
@@ -148,14 +148,14 @@ HidePanelBackground = true
 
 `121343473918667` is a verified Roblox Image asset. Asset `11696860078` is a Decal asset and may return a thumbnail while still failing to render in an `ImageLabel`.
 
-For GIF-like motion, store a sprite sheet in GitHub and set `BackgroundAnimation`. Roblox `ImageLabel`s cannot play a raw `.gif` file directly, so the example includes the [original Tenor page](https://tenor.com/view/%E0%B9%80%E0%B8%A5%E0%B8%B5%E0%B8%A2%E0%B8%88%E0%B8%AD-gif-4592205362424568698), a [GitHub-hosted GIF copy](examples/assets/neva-tenor-4592205362424568698-background.gif), and the matching [runtime sprite sheet](examples/assets/neva-tenor-4592205362424568698-background-sprites.png).
+For GIF-like motion, store a sprite sheet in GitHub and set `BackgroundAnimation`. Roblox `ImageLabel`s cannot play a raw `.gif` file directly, so the example includes the [original Tenor page](https://tenor.com/view/chad-sigma-xtreme-xtremeverse-power-gif-11831658867899348818), a [GitHub-hosted GIF copy](examples/assets/neva-tenor-chad-sigma-11831658867899348818-background.gif), and the matching [runtime sprite sheet](examples/assets/neva-tenor-chad-sigma-11831658867899348818-background-sprites.png).
 
 ```lua
-Background = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-4592205362424568698-background-sprites.png",
+Background = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-chad-sigma-11831658867899348818-background-sprites.png",
 BackgroundAnimation = {
-    FrameSize = Vector2.new(498, 498),
-    FrameCount = 2,
-    Columns = 2,
+    FrameSize = Vector2.new(256, 256),
+    FrameCount = 30,
+    Columns = 6,
     FPS = 16.6667,
 },
 ```
@@ -416,9 +416,9 @@ The sidebar example includes:
 - Sidebar width, padding, gap, and divider configuration
 - Runtime divider control
 
-The anime-background example includes:
+The animated-background example includes:
 
-- Original background art: [`neva-cute-anime-background.jpg`](examples/assets/neva-cute-anime-background.jpg)
+- Background GIF and sprite sheet: [`neva-tenor-chad-sigma-11831658867899348818-background-sprites.png`](examples/assets/neva-tenor-chad-sigma-11831658867899348818-background-sprites.png)
 - Large left sidebar logo: `rbxassetid://76738354597155`
 - Floating open button using the same logo
 - Legacy control styling by default
