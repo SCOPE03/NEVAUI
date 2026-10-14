@@ -24,13 +24,13 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 		local InactiveThumbColor = Color3.fromRGB(128, 128, 136)
 
 		local ToggleContainer = New("Frame", {
-			Size = UDim2.new(0, 64, 0, 32),
+			Size = UDim2.new(0, 56, 0, 28),
 			BackgroundTransparency = 1,
 			Parent = Parent,
 		})
 		local Track = New("Frame", {
 			Name = "ToggleFrame",
-			Size = UDim2.new(0, 60, 0, 28),
+			Size = UDim2.new(0, 52, 0, 24),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.new(0.5, 0, 0.5, 0),
 			BackgroundColor3 = InactiveColor,
@@ -40,7 +40,7 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 
 		local Knob = New("Frame", {
 			Name = "Frame",
-			Size = UDim2.new(0, 26, 0, 24),
+			Size = UDim2.new(0, 20, 0, 20),
 			Position = UDim2.new(0, 2, 0.5, 0),
 			AnchorPoint = Vector2.new(0, 0.5),
 			BackgroundColor3 = InactiveThumbColor,
@@ -67,7 +67,7 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 		local function ApplyState(isOn, animated)
 			local trackColor = isOn and ActiveColor or InactiveColor
 			local thumbColor = isOn and ActiveThumbColor or InactiveThumbColor
-			local targetPosition = UDim2.new(0, isOn and 32 or 2, 0.5, 0)
+			local targetPosition = UDim2.new(0, isOn and 30 or 2, 0.5, 0)
 			if animated then
 				Tween(Knob, 0.18, {
 					Position = targetPosition,
