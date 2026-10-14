@@ -146,17 +146,17 @@ BackgroundImageTransparency = 0.15
 HidePanelBackground = true
 ```
 
-`121343473918667` is a verified anime Image asset used by the example. Asset `11696860078` is a Decal asset and may return a thumbnail while still failing to render in an `ImageLabel`.
+`121343473918667` is a verified Roblox Image asset. Asset `11696860078` is a Decal asset and may return a thumbnail while still failing to render in an `ImageLabel`.
 
-For GIF-like motion, store a sprite sheet in GitHub and set `BackgroundAnimation`. The Roblox `ImageLabel` cycles through sprite-sheet cells; it cannot play a raw `.gif` file directly. The anime example includes a [looping GIF preview](examples/assets/neva-cute-anime-background-loop.gif) and its matching [runtime sprite sheet](examples/assets/neva-cute-anime-background-sprites.jpg).
+For GIF-like motion, store a sprite sheet in GitHub and set `BackgroundAnimation`. Roblox `ImageLabel`s cannot play a raw `.gif` file directly, so the example includes the [original Tenor page](https://tenor.com/view/%E0%B9%80%E0%B8%A5%E0%B8%B5%E0%B8%A2%E0%B8%88%E0%B8%AD-gif-4592205362424568698), a [GitHub-hosted GIF copy](examples/assets/neva-tenor-4592205362424568698-background.gif), and the matching [runtime sprite sheet](examples/assets/neva-tenor-4592205362424568698-background-sprites.png).
 
 ```lua
-Background = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-cute-anime-background-sprites.jpg",
+Background = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-4592205362424568698-background-sprites.png",
 BackgroundAnimation = {
-    FrameSize = Vector2.new(840, 472),
-    FrameCount = 16,
-    Columns = 4,
-    FPS = 10,
+    FrameSize = Vector2.new(498, 498),
+    FrameCount = 2,
+    Columns = 2,
+    FPS = 16.6667,
 },
 ```
 

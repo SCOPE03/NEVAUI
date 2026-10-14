@@ -2,9 +2,10 @@
 -- HTTP backgrounds require HTTP GET plus isfile, writefile, and getcustomasset support.
 
 local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/dist/main.lua"
--- Preview GIF: https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-cute-anime-background-loop.gif
--- The loop is a gentle pan/zoom; Roblox ImageLabels use its matching sprite sheet below.
-local BackgroundUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-cute-anime-background-sprites.jpg"
+-- Source GIF: https://tenor.com/view/%E0%B9%80%E0%B8%A5%E0%B8%B5%E0%B8%A2%E0%B8%88%E0%B8%AD-gif-4592205362424568698
+-- GitHub GIF copy: https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-4592205362424568698-background.gif
+-- Roblox ImageLabels use the matching sprite sheet; they do not play raw GIF files.
+local BackgroundUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/examples/assets/neva-tenor-4592205362424568698-background-sprites.png"
 local LogoAsset = "rbxassetid://76738354597155"
 local LoadString = loadstring or load
 
@@ -26,10 +27,10 @@ local Window = NevaUI:CreateWindow({
 	IconSize = 38,
 	Background = BackgroundUrl,
 	BackgroundAnimation = {
-		FrameSize = Vector2.new(840, 472),
-		FrameCount = 16,
-		Columns = 4,
-		FPS = 10,
+		FrameSize = Vector2.new(498, 498),
+		FrameCount = 2,
+		Columns = 2,
+		FPS = 16.6667,
 	},
 	HidePanelBackground = true,
 	Size = UDim2.fromOffset(850, 500),
