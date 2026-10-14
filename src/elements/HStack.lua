@@ -21,7 +21,7 @@ function Element:New(Config)
 			FillDirection = "Horizontal",
 			HorizontalAlignment = "Center",
 			--VerticalAlignment = "Center",
-			Padding = UDim.new(0, Config.Tab and Config.Tab.Gap or (Config.Window.NewElements and 1 or 6)),
+			Padding = UDim.new(0, Config.Tab and Config.Tab.Gap or (Config.NewElements and 1 or 6)),
 		}),
 	})
 
@@ -35,7 +35,7 @@ function Element:New(Config)
 		Config.Window,
 		Config.NevaUI,
 		function(CurrentElement, AllElements)
-			local Gap = Config.Tab and Config.Tab.Gap or (Config.Window.NewElements and 1 or 6)
+			local Gap = Config.Tab and Config.Tab.Gap or (Config.NewElements and 1 or 6)
 
 			local StretchableElements = {}
 			local TotalFixedWidth = 0

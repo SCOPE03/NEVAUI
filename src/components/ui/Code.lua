@@ -6,10 +6,12 @@ local Tween = Creator.Tween
 
 local Highlighter = require("../../modules/Highlighter")
 
-function Code.New(Code, Window, Parent, Callback, UIScale)
+function Code.New(Code, Window, Parent, Callback, UIScale, NewElements)
+	NewElements = NewElements == nil and Window.NewElements or NewElements
 	local CodeModule = {
-		Radius = Window.ElementConfig.UICorner,
-		Padding = Window.NewElements and Window.ElementConfig.UIPadding + 4 or Window.ElementConfig.UIPadding,
+		Radius = Window.ElementsRadius or (NewElements and 23 or 16),
+		Padding = NewElements and (Window.NewElements and Window.ElementConfig.UIPadding + 4 or 14)
+			or Window.ElementConfig.UIPadding,
 
 		CodeFrame = nil,
 	}

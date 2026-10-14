@@ -17,6 +17,74 @@ function Toggle.New(Value, Icon, IconSize, Parent, Callback, NewElement, Config)
 		},
 	}
 
+	if NewElement then
+		local ToggleContainer = New("Frame", {
+			Size = UDim2.new(0, 58, 0, 30),
+			BackgroundTransparency = 1,
+			Parent = Parent,
+		})
+		local Track = New("Frame", {
+			Name = "ToggleFrame",
+			Size = UDim2.new(0, 56, 0, 28),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.new(0.5, 0, 0.5, 0),
+			BackgroundColor3 = Color3.fromRGB(70, 70, 76),
+			BackgroundTransparency = 0,
+			ThemeTag = { BackgroundColor3 = "Toggle" },
+		}, {
+			New("UICorner", { CornerRadius = UDim.new(1, 0) }),
+		})
+		Track.Parent = ToggleContainer
+
+		local Knob = New("Frame", {
+			Name = "Frame",
+			Size = UDim2.new(0, 22, 0, 22),
+			Position = UDim2.new(0, 3, 0.5, 0),
+			AnchorPoint = Vector2.new(0, 0.5),
+			BackgroundColor3 = Color3.fromRGB(205, 205, 212),
+			BorderSizePixel = 0,
+			ZIndex = 2,
+		}, {
+			New("UICorner", { CornerRadius = UDim.new(1, 0) }),
+		})
+		Knob.Parent = Track
+
+		local Hitbox = New("TextButton", {
+			Name = "Hitbox",
+			Size = UDim2.new(1, 0, 1, 0),
+			BackgroundTransparency = 1,
+			Text = "",
+			ZIndex = 3,
+		}, nil)
+		Hitbox.Parent = Track
+
+		local function ApplyState(isOn, animated)
+			local trackColor = isOn and "Toggle" or "Text"
+			local targetPosition = UDim2.new(0, isOn and 31 or 3, 0.5, 0)
+			if animated then
+				Tween(Knob, 0.18, { Position = targetPosition }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+				Tween(Track, 0.18, { BackgroundTransparency = isOn and 0 or 0.82 }):Play()
+				Knob.BackgroundColor3 = isOn and Color3.new(1, 1, 1) or Color3.fromRGB(205, 205, 212)
+			else
+				Knob.Position = targetPosition
+				Track.BackgroundTransparency = isOn and 0 or 0.82
+				Knob.BackgroundColor3 = isOn and Color3.new(1, 1, 1) or Color3.fromRGB(205, 205, 212)
+			end
+			Creator.SetThemeTag(Track, { BackgroundColor3 = trackColor })
+		end
+
+		function Toggle:Set(Toggled, isCallback, isAnim)
+			ApplyState(Toggled, isCallback ~= false)
+			if isCallback ~= false and Callback then
+				task.spawn(function()
+					Creator.SafeCallback(Callback, Toggled)
+				end)
+			end
+		end
+
+		return ToggleContainer, Toggle
+	end
+
 	function Toggle:GetGlassFrame(T: number): (string, Vector2, Vector2)
 		local S = Toggle.GlassSpritesheet
 		local Frame: number

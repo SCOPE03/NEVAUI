@@ -161,6 +161,42 @@ HidePanelBackground = true
 | `HideSearchBar` | boolean | `true` | Hides the sidebar search bar when `true`. |
 | `ScrollBarEnabled` | boolean | `false` | Enables the sidebar scroll indicator. |
 
+## Per-element styles
+
+`NewElements` remains the window-wide default. Elements with style-dependent visuals or layout can override that default with `Style = "Modern"` or `Style = "Legacy"`. If `Style` is omitted, the element follows the window's `NewElements` setting. The modern Toggle uses a compact pill track with a circular thumb; the same style choice is available on buttons and other elements that support the modern layout.
+
+For a runnable test with only the styled controls, see [`style_example.lua`](style_example.lua).
+
+```lua
+local Window = NevaUI:CreateWindow({
+    Title = "Mixed styles",
+    NewElements = false, -- default style for elements without an override
+})
+local Tab = Window:Tab({ Title = "Controls" })
+
+Tab:Toggle({
+    Title = "Modern switch",
+    Style = "Modern", -- overrides the window default
+    Callback = function(enabled)
+        print("Enabled:", enabled)
+    end,
+})
+
+Tab:Button({
+    Title = "Keep this button legacy",
+    Style = "Legacy",
+    Callback = function() end,
+})
+
+Tab:Slider({
+    Title = "Modern slider",
+    Style = "Modern",
+    Value = { Min = 0, Max = 100, Default = 50 },
+})
+```
+
+`Style` accepts exactly `"Legacy"` or `"Modern"`; any other value raises an error when the element is created. Existing projects keep their current appearance unless they already enable `NewElements` or add an element-level override.
+
 ## Sidebar configuration
 
 The preferred sidebar configuration is the nested `Sidebar` table:
@@ -287,13 +323,14 @@ Window:OnDestroy(function() end)
 The complete example is available here:
 
 - [`sidebar_example.lua`](sidebar_example.lua)
-- [Latest published executor example](https://raw.githubusercontent.com/SCOPE03/NEVAUI/2dc6262/sidebar_example.lua)
+- [Latest executor example](https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/sidebar_example.lua)
 
 It includes:
 
 - Background image: `rbxassetid://121343473918667`
 - Script-hub logo: `rbxassetid://134899357436301`
 - Floating open/close button
+- Per-element Legacy/Modern style overrides, including the modern pill toggle
 - Draggable positioning
 - Sidebar width, padding, gap, and divider configuration
 - Runtime divider control

@@ -1,7 +1,7 @@
 -- NevaUI Sidebar Configuration Example
 -- Demonstrates all configurable sidebar options and runtime controls.
 
-local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/8dfd24f/dist/main.lua"
+local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/dist/main.lua"
 local LoadString = loadstring or load
 local NevaUI
 
@@ -17,8 +17,9 @@ end
 NevaUI = Result
 
 local Window = NevaUI:CreateWindow({
-	Title = "Sidebar Showcase",
-	Author = "by NEVA",
+		Title = "Sidebar Showcase",
+		Author = "by NEVA",
+		NewElements = false, -- element-level Style values below override this default.
 	-- Script-hub logo: the topbar and floating open button use this logo.
 	Logo = "rbxassetid://134899357436301",
 	-- Use an Image asset, not a Decal asset. HidePanelBackground lets it show through.
@@ -103,6 +104,64 @@ ControlsTab:Toggle({
 ControlsTab:Paragraph({
 	Title = "Current configuration",
 	Desc = "Width: 230 | Padding: 10 | Gap: 8 | Divider thickness: 2 | Transparency: 0.72",
+})
+
+local StylesTab = Window:Tab({
+	Title = "Element Styles",
+	Icon = "paintbrush",
+	ShowTabTitle = true,
+})
+
+StylesTab:Paragraph({
+	Title = "Per-element style overrides",
+	Desc = 'The window defaults to Legacy. Set Style = "Modern" or Style = "Legacy" on individual elements to mix the two designs.',
+})
+
+StylesTab:Toggle({
+	Title = "Modern pill switch",
+	Desc = 'Style = "Modern" — compact pill track and circular thumb.',
+	Style = "Modern",
+	Value = true,
+	Callback = function(value)
+		print("Modern switch:", value)
+	end,
+})
+
+StylesTab:Toggle({
+	Title = "Legacy switch",
+	Desc = 'Style = "Legacy" — keeps the classic control.',
+	Style = "Legacy",
+	Value = false,
+	Callback = function(value)
+		print("Legacy switch:", value)
+	end,
+})
+
+StylesTab:Button({
+	Title = "Modern button",
+	Style = "Modern",
+	Icon = "sparkles",
+	Callback = function()
+		NevaUI:Notify({ Title = "Modern button", Content = "Modern element style selected.", Duration = 3 })
+	end,
+})
+
+StylesTab:Button({
+	Title = "Legacy button",
+	Style = "Legacy",
+	Icon = "mouse-pointer-click",
+	Callback = function()
+		NevaUI:Notify({ Title = "Legacy button", Content = "Legacy element style selected.", Duration = 3 })
+	end,
+})
+
+StylesTab:Slider({
+	Title = "Modern slider",
+	Style = "Modern",
+	Value = { Min = 0, Max = 100, Default = 50 },
+	Callback = function(value)
+		print("Modern slider:", value)
+	end,
 })
 
 local LayoutTab = Window:Tab({

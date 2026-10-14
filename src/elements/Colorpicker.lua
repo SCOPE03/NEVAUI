@@ -791,7 +791,7 @@ function Element:New(Config)
 
 	local CanCallback = true
 
-	--if Config.Window.NewElements then Element.UICorner = 14 end
+	--if Config.NewElements then Element.UICorner = 14 end
 
 	Colorpicker.ColorpickerFrame = require("../components/window/Element")({
 		Title = Colorpicker.Title,

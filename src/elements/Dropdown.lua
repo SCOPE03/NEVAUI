@@ -72,15 +72,15 @@ function Element:New(Config)
 
 	if Dropdown.Callback then
 		Dropdown.UIElements.Dropdown =
-			CreateLabel("", nil, Dropdown.DropdownFrame.UIElements.Main, nil, Config.Window.NewElements and 12 or 10)
+			CreateLabel("", nil, Dropdown.DropdownFrame.UIElements.Main, nil, Config.NewElements and 12 or 10)
 
 		Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.TextTruncate = "AtEnd"
 		Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.Size =
 			UDim2.new(1, Dropdown.UIElements.Dropdown.Frame.Frame.TextLabel.Size.X.Offset - 18 - 12 - 12, 0, 0)
 
 		Dropdown.UIElements.Dropdown.Size = UDim2.new(0, Dropdown.Width, 0, 36)
-		Dropdown.UIElements.Dropdown.Position = UDim2.new(1, 0, Config.Window.NewElements and 0 or 0.5, 0)
-		Dropdown.UIElements.Dropdown.AnchorPoint = Vector2.new(1, Config.Window.NewElements and 0 or 0.5)
+		Dropdown.UIElements.Dropdown.Position = UDim2.new(1, 0, Config.NewElements and 0 or 0.5, 0)
+		Dropdown.UIElements.Dropdown.AnchorPoint = Vector2.new(1, Config.NewElements and 0 or 0.5)
 
 		-- New("UIScale", {
 		--     Parent = Dropdown.UIElements.Dropdown,

@@ -70,7 +70,7 @@ function Element:New(Config)
 			Toggle.IconSize,
 			Toggle.ToggleFrame.UIElements.Main,
 			Toggle.Callback,
-			Config.Window.NewElements,
+			Config.NewElements,
 			Config
 		)
 	elseif Toggle.Type == "Checkbox" then
@@ -86,8 +86,8 @@ function Element:New(Config)
 		error("Unknown Toggle Type: " .. tostring(Toggle.Type))
 	end
 
-	ToggleFrame.AnchorPoint = Vector2.new(1, Config.Window.NewElements and 0 or 0.5)
-	ToggleFrame.Position = UDim2.new(1, 0, Config.Window.NewElements and 0 or 0.5, 0)
+	ToggleFrame.AnchorPoint = Vector2.new(1, Config.NewElements and 0 or 0.5)
+	ToggleFrame.Position = UDim2.new(1, 0, Config.NewElements and 0 or 0.5, 0)
 
 	function Toggle:Set(v, isCallback, isAnim)
 		if CanCallback then
@@ -97,11 +97,11 @@ function Element:New(Config)
 		end
 	end
 
-	Toggle:Set(Toggled, false, Config.Window.NewElements)
+	Toggle:Set(Toggled, false, Config.NewElements)
 
 	local CurInput = Config.NevaUI.GenerateGUID()
 
-	if Config.Window.NewElements and ToggleFunc.Animate then
+	if Config.NewElements and ToggleFunc.Animate then
 		if Toggle.Type == "Toggle" then
 			Creator.AddSignal(ToggleFrame.ToggleFrame.Hitbox.InputBegan, function(Input)
 				if
@@ -128,11 +128,11 @@ function Element:New(Config)
 	else
 		if Toggle.Type == "Toggle" then
 			Creator.AddSignal(ToggleFrame.ToggleFrame.Hitbox.MouseButton1Click, function()
-				Toggle:Set(not Toggle.Value, nil, Config.Window.NewElements)
+				Toggle:Set(not Toggle.Value, nil, Config.NewElements)
 			end)
 		elseif Toggle.Type == "Checkbox" then
 			Creator.AddSignal(ToggleFrame.MouseButton1Click, function()
-				Toggle:Set(not Toggle.Value, nil, Config.Window.NewElements)
+				Toggle:Set(not Toggle.Value, nil, Config.NewElements)
 			end)
 		end
 	end
