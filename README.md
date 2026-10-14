@@ -127,6 +127,8 @@ local Window = NevaUI:CreateWindow({
 | `Background` | string/number/table | `nil` | Roblox Image asset, HTTP/custom asset, video source, or gradient configuration. |
 | `BackgroundImageTransparency` | number | `0` | Background image transparency from `0` to `1`. |
 | `BackgroundTransparency` | number | — | Runtime transparency is controlled with `Window:SetBackgroundTransparency()`. |
+| `Theme` | string | `"Dark"` | Built-in or registered theme name. `NewElements` and per-element `Style` choose the control design independently. |
+| `ThemeColors` | table | `nil` | Partial theme-token overrides. Unspecified tokens continue using the selected theme. |
 | `ShadowTransparency` | number | `0.6` | Window shadow transparency. |
 | `Radius` | number | `16` | Window corner radius. |
 | `Transparent` | boolean | `false` | Uses the library transparency value for the main window surface. |
@@ -142,6 +144,33 @@ HidePanelBackground = true
 ```
 
 `121343473918667` is a verified anime Image asset used by the example. Asset `11696860078` is a Decal asset and may return a thumbnail while still failing to render in an `ImageLabel`.
+
+### Theme color overrides
+
+Keep the named theme and override only the colors you want. Values can be `Color3` values or `"#RRGGBB"` strings; transparency tokens use numbers from `0` to `1`.
+
+```lua
+Theme = "Dark",
+ThemeColors = {
+    Background = Color3.fromRGB(16, 16, 16),
+    PanelBackground = Color3.fromRGB(22, 22, 24), -- main tab/page surface
+    PanelBackgroundTransparency = 0.08,
+    SidebarBackground = Color3.fromRGB(14, 14, 16),
+    SidebarBackgroundTransparency = 0,
+    TabBackground = Color3.fromRGB(28, 28, 31),
+    TabBackgroundHoverTransparency = 0.25,
+    TabBackgroundActive = Color3.fromRGB(42, 40, 48),
+    TabBackgroundActiveTransparency = 0.1,
+    ElementBackground = Color3.fromRGB(31, 31, 34),
+    Toggle = Color3.fromRGB(165, 153, 212),
+    ToggleBar = Color3.fromRGB(67, 67, 72),
+    Text = Color3.fromRGB(245, 245, 247),
+}
+```
+
+`ThemeColors` is merged onto a copy of the selected theme, so built-in theme tables are not modified. If `SidebarBackground` is set without `SidebarBackgroundTransparency`, the sidebar becomes opaque; set a transparency explicitly when you want a different value. Theme overrides also stay applied when calling `NevaUI:SetTheme()`.
+
+Common tokens include `Background`, `PanelBackground`, `PanelBackgroundTransparency`, `SidebarBackground`, `TabBackground`, `TabBackgroundActive`, `TabBackgroundActiveTransparency`, `ElementBackground`, `ElementTitle`, `Text`, `Icon`, `Button`, `Toggle`, `ToggleBar`, `Slider`, and `Checkbox`. Other theme/fallback tokens can also be overridden for outlines, placeholders, hover states, and control descriptions.
 
 ### Size and behavior options
 
@@ -229,6 +258,7 @@ Sidebar = {
         Logo = "rbxassetid://134899357436301", -- Roblox image asset ID
         Title = "My Script Hub",
         LogoSize = 54,
+        LogoScaleType = "Fit",
         TitleSize = 24,
         Height = 140,
     },
@@ -247,7 +277,8 @@ Sidebar = {
 | `Brand.Layout` | string | `"Horizontal"` | `"Stacked"` centers the logo above the title; `"Horizontal"` keeps them side by side. |
 | `Brand.Logo` | string/number | `nil` | Icon or image displayed in the sidebar brand header. |
 | `Brand.Title` | string | `nil` | Wordmark displayed beside or below the sidebar logo, depending on `Brand.Layout`. |
-| `Brand.LogoSize` | number | Horizontal: `24`; Stacked: `36` | Sidebar brand logo size in pixels. |
+| `Brand.LogoSize` | number | Horizontal: `24`; Stacked: `36` | Sidebar brand logo size in pixels. The rendered size is clamped to fit the header and sidebar width. |
+| `Brand.LogoScaleType` | string | `"Fit"` | `"Fit"` contains the whole image in its bounds; `"Crop"` fills the bounds and may trim its edges. |
 | `Brand.Height` | number | Horizontal: `56`; Stacked: `96` | Height reserved above sidebar search and tabs (clamped to at least `40`). |
 | `Brand.LogoRadius` | number | `0` | Corner radius of the brand image. |
 | `Brand.LogoThemed` | boolean | `false` | Applies theme coloring to the logo where supported. |

@@ -24744,6 +24744,8 @@ PanelBackground="White",
 PanelBackgroundTransparency=0.95,
 
 WindowBackground="Background",
+SidebarBackground="Background",
+SidebarBackgroundTransparency=1,
 
 WindowShadow="Black",
 
@@ -25070,13 +25072,24 @@ end
 return z
 end
 
-function p.SetTheme(r)
-local u=p.Theme
+function p.SetTheme(r,u)
+local v=p.Theme
+if u then
+r=table.clone(r)
+for x,z in pairs(u)do
+if x~="Name"then
+r[x]=z
+end
+end
+if u.SidebarBackground~=nil and u.SidebarBackgroundTransparency==nil then
+r.SidebarBackgroundTransparency=0
+end
+end
 p.Theme=r
 p.UpdateTheme(nil,false)
 
-for v,x in next,p.ThemeChangeCallbacks do
-p.SafeCallback(x,r,u)
+for x,z in next,p.ThemeChangeCallbacks do
+p.SafeCallback(z,r,v)
 end
 end
 
@@ -37549,6 +37562,12 @@ and ax.Layout~="Stacked"
 then
 error('Invalid Sidebar.Brand.Layout "'..tostring(ax.Layout)..'". Expected "Horizontal" or "Stacked".',2)
 end
+if ax.LogoScaleType~=nil
+and ax.LogoScaleType~="Fit"
+and ax.LogoScaleType~="Crop"
+then
+error('Invalid Sidebar.Brand.LogoScaleType "'..tostring(ax.LogoScaleType)..'". Expected "Fit" or "Crop".',2)
+end
 local ay=ax.Logo~=nil
 or(type(ax.Title)=="string"and ax.Title~="")
 local az=ay
@@ -37805,7 +37824,20 @@ if aA.SidebarBrandHeight>0 then
 local p={}
 local r=math.min(
 aA.SidebarBrand.LogoSize or(aA.SidebarBrand.Layout=="Stacked"and 36 or 24),
-aA.SidebarBrandHeight-12
+aA.SidebarBrandHeight-12,
+math.max(0,aA.SideBarWidth-(aA.SidebarPadding*2)),
+aA.SidebarBrand.Layout=="Stacked"
+and type(aA.SidebarBrand.Title)=="string"
+and aA.SidebarBrand.Title~=""
+and math.max(
+0,
+aA.SidebarBrandHeight
+-(aA.SidebarPadding*2)
+-(aA.SidebarBrand.TitleSize or 16)
+-8
+-aA.SidebarGap
+)
+or aA.SidebarBrandHeight-12
 )
 if aA.SidebarBrand.Logo then
 local u=an.Image(
@@ -37821,6 +37853,11 @@ aA.SidebarBrand.LogoThemed or false,
 u.Name="Logo"
 u.LayoutOrder=1
 u.Size=UDim2.new(0,r,0,r)
+if u:FindFirstChildWhichIsA"ImageLabel"then
+u:FindFirstChildWhichIsA"ImageLabel".ScaleType=aA.SidebarBrand.LogoScaleType=="Crop"
+and Enum.ScaleType.Crop
+or Enum.ScaleType.Fit
+end
 u.ZIndex=7
 for v,x in ipairs(u:GetDescendants())do
 if x:IsA"GuiObject"then
@@ -37874,6 +37911,7 @@ Size=UDim2.new(1,0,0,aA.SidebarBrandHeight),
 Position=UDim2.new(0,0,0,0),
 AnchorPoint=Vector2.new(0,0),
 BackgroundTransparency=1,
+ClipsDescendants=true,
 ZIndex=6,
 },p)
 aA.UIElements.SidebarBrand=m
@@ -37908,6 +37946,10 @@ aA.User.Enabled and-aA.Topbar.Height-42-(aA.UIPadding*2)or-aA.Topbar.Height
 ),
 Position=UDim2.new(0,0,0,aA.Topbar.Height),
 BackgroundTransparency=1,
+ThemeTag={
+BackgroundColor3="SidebarBackground",
+BackgroundTransparency="SidebarBackgroundTransparency",
+},
 Visible=true,
 },p)
 
@@ -40123,7 +40165,7 @@ end
 function aa.SetTheme(az,aA)
 if aa.Themes[aA]then
 aa.Theme=aa.Themes[aA]
-as.SetTheme(aa.Themes[aA])
+as.SetTheme(aa.Themes[aA],aa.ThemeColors)
 
 if aa.OnThemeChangeFunction then
 aa.OnThemeChangeFunction(aA)
@@ -40254,9 +40296,16 @@ end
 local aC=true
 
 local aD=aa.Themes[aA.Theme or"Dark"]
+if not aD then
+error('Unknown Theme "'..tostring(aA.Theme)..'". Use a theme name from NevaUI:GetThemes().',2)
+end
+if aA.ThemeColors~=nil and type(aA.ThemeColors)~="table"then
+error("ThemeColors must be a table of theme-token overrides.",2)
+end
 
 
-as.SetTheme(aD)
+aa.ThemeColors=aA.ThemeColors
+as.SetTheme(aD,aa.ThemeColors)
 
 local aE=gethwid or function()
 return ak.LocalPlayer.UserId

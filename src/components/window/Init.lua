@@ -35,6 +35,12 @@ return function(Config)
 	then
 		error('Invalid Sidebar.Brand.Layout "' .. tostring(SidebarBrandConfig.Layout) .. '". Expected "Horizontal" or "Stacked".', 2)
 	end
+	if SidebarBrandConfig.LogoScaleType ~= nil
+		and SidebarBrandConfig.LogoScaleType ~= "Fit"
+		and SidebarBrandConfig.LogoScaleType ~= "Crop"
+	then
+		error('Invalid Sidebar.Brand.LogoScaleType "' .. tostring(SidebarBrandConfig.LogoScaleType) .. '". Expected "Fit" or "Crop".', 2)
+	end
 	local HasSidebarBrand = SidebarBrandConfig.Logo ~= nil
 		or (type(SidebarBrandConfig.Title) == "string" and SidebarBrandConfig.Title ~= "")
 	local SidebarBrandHeight = HasSidebarBrand
@@ -291,7 +297,20 @@ return function(Config)
 		local BrandContent = {}
 		local BrandLogoSize = math.min(
 			Window.SidebarBrand.LogoSize or (Window.SidebarBrand.Layout == "Stacked" and 36 or 24),
-			Window.SidebarBrandHeight - 12
+			Window.SidebarBrandHeight - 12,
+			math.max(0, Window.SideBarWidth - (Window.SidebarPadding * 2)),
+			Window.SidebarBrand.Layout == "Stacked"
+				and type(Window.SidebarBrand.Title) == "string"
+				and Window.SidebarBrand.Title ~= ""
+				and math.max(
+					0,
+					Window.SidebarBrandHeight
+						- (Window.SidebarPadding * 2)
+						- (Window.SidebarBrand.TitleSize or 16)
+						- 8
+						- Window.SidebarGap
+				)
+				or Window.SidebarBrandHeight - 12
 		)
 		if Window.SidebarBrand.Logo then
 			local BrandLogo = Creator.Image(
@@ -307,6 +326,11 @@ return function(Config)
 			BrandLogo.Name = "Logo"
 			BrandLogo.LayoutOrder = 1
 			BrandLogo.Size = UDim2.new(0, BrandLogoSize, 0, BrandLogoSize)
+			if BrandLogo:FindFirstChildWhichIsA("ImageLabel") then
+				BrandLogo:FindFirstChildWhichIsA("ImageLabel").ScaleType = Window.SidebarBrand.LogoScaleType == "Crop"
+					and Enum.ScaleType.Crop
+					or Enum.ScaleType.Fit
+			end
 			BrandLogo.ZIndex = 7
 			for _, BrandDescendant in ipairs(BrandLogo:GetDescendants()) do
 				if BrandDescendant:IsA("GuiObject") then
@@ -360,6 +384,7 @@ return function(Config)
 			Position = UDim2.new(0, 0, 0, 0),
 			AnchorPoint = Vector2.new(0, 0),
 			BackgroundTransparency = 1,
+			ClipsDescendants = true,
 			ZIndex = 6,
 		}, BrandContent)
 		Window.UIElements.SidebarBrand = SidebarBrandFrame
@@ -394,6 +419,10 @@ return function(Config)
 		),
 		Position = UDim2.new(0, 0, 0, Window.Topbar.Height),
 		BackgroundTransparency = 1,
+		ThemeTag = {
+			BackgroundColor3 = "SidebarBackground",
+			BackgroundTransparency = "SidebarBackgroundTransparency",
+		},
 		Visible = true,
 	}, SideBarContainerChildren)
 

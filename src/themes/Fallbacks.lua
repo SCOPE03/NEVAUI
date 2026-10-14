@@ -17,6 +17,8 @@ return function(Creator)
 		PanelBackgroundTransparency = 0.95,
 
 		WindowBackground = "Background",
+		SidebarBackground = "Background",
+		SidebarBackgroundTransparency = 1,
 
 		WindowShadow = "Black",
 		--WindowShadowTransparency = .7,

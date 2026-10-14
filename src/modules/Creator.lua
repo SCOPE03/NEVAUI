@@ -212,8 +212,19 @@ function Creator.Gradient(stops, props)
 	return gradientData
 end
 
-function Creator.SetTheme(Theme)
+function Creator.SetTheme(Theme, ThemeColors)
 	local PreviousTheme = Creator.Theme
+	if ThemeColors then
+		Theme = table.clone(Theme)
+		for ThemeKey, ThemeValue in pairs(ThemeColors) do
+			if ThemeKey ~= "Name" then
+				Theme[ThemeKey] = ThemeValue
+			end
+		end
+		if ThemeColors.SidebarBackground ~= nil and ThemeColors.SidebarBackgroundTransparency == nil then
+			Theme.SidebarBackgroundTransparency = 0
+		end
+	end
 	Creator.Theme = Theme
 	Creator.UpdateTheme(nil, false)
 
