@@ -251,6 +251,7 @@ function TabModule.New(Config, UIScale)
 	end
 
 	local DashboardColumns
+	local DashboardHeader
 	local ContainerFrameChildren = {
 		New("UIPadding", {
 			PaddingTop = UDim.new(0, not Window.HidePanelBackground and 20 or 10),
@@ -267,6 +268,23 @@ function TabModule.New(Config, UIScale)
 
 	if Window.Layout == "Dashboard" then
 		local ColumnGap = 12
+		DashboardHeader = New("Frame", {
+			Name = "DashboardHeader",
+			Size = UDim2.new(1, 0, 0, 0),
+			AutomaticSize = "Y",
+			BackgroundTransparency = 1,
+			Visible = false,
+			LayoutOrder = 1,
+		}, {
+			New("UIListLayout", {
+				SortOrder = "LayoutOrder",
+				Padding = UDim.new(0, Tab.Gap),
+				FillDirection = "Vertical",
+				HorizontalAlignment = "Center",
+				VerticalAlignment = "Top",
+			}),
+		})
+
 		local function CreateDashboardColumn(Name)
 			return New("Frame", {
 				Name = Name,
@@ -287,12 +305,12 @@ function TabModule.New(Config, UIScale)
 		local ColumnOne = CreateDashboardColumn("DashboardColumnOne")
 		local ColumnTwo = CreateDashboardColumn("DashboardColumnTwo")
 		DashboardColumns = { ColumnOne, ColumnTwo }
-		local DashboardRoot = New("Frame", {
-			Name = "DashboardRoot",
+		local DashboardColumnsFrame = New("Frame", {
+			Name = "DashboardColumnsFrame",
 			Size = UDim2.new(1, 0, 0, 0),
 			AutomaticSize = "Y",
 			BackgroundTransparency = 1,
-			LayoutOrder = 1,
+			LayoutOrder = 2,
 		}, {
 			ColumnOne,
 			ColumnTwo,
@@ -304,8 +322,27 @@ function TabModule.New(Config, UIScale)
 				VerticalAlignment = "Top",
 			}),
 		})
+		local DashboardRoot = New("Frame", {
+			Name = "DashboardRoot",
+			Size = UDim2.new(1, 0, 0, 0),
+			AutomaticSize = "Y",
+			BackgroundTransparency = 1,
+			LayoutOrder = 1,
+		}, {
+			DashboardHeader,
+			DashboardColumnsFrame,
+			New("UIListLayout", {
+				SortOrder = "LayoutOrder",
+				Padding = UDim.new(0, Tab.Gap),
+				FillDirection = "Vertical",
+				HorizontalAlignment = "Center",
+				VerticalAlignment = "Top",
+			}),
+		})
 		table.insert(ContainerFrameChildren, DashboardRoot)
+		Tab.UIElements.DashboardHeader = DashboardHeader
 		Tab.UIElements.DashboardColumns = DashboardColumns
+		Tab.UIElements.DashboardElementCount = 0
 		Tab.UIElements.DashboardRoot = DashboardRoot
 	end
 

@@ -35902,8 +35902,15 @@ at.Index=#aa.Elements+1
 at.GlobalIndex=#ak.AllElements+1
 local au=af
 if ak.Layout=="Dashboard"and ap and aa==ap and ap.UIElements.DashboardColumns then
-local av=((#aa.Elements)%#ap.UIElements.DashboardColumns)+1
-au=ap.UIElements.DashboardColumns[av]
+if at.Placement=="Header"then
+au=ap.UIElements.DashboardHeader
+au.Visible=true
+else
+local av=ap.UIElements.DashboardElementCount or 0
+local aw=(av%#ap.UIElements.DashboardColumns)+1
+au=ap.UIElements.DashboardColumns[aw]
+ap.UIElements.DashboardElementCount=av+1
+end
 end
 at.Parent=au
 at.Window=ak
@@ -36277,7 +36284,8 @@ at=-30
 end
 
 local aw
-local ax={
+local ax
+local ay={
 al("UIPadding",{
 PaddingTop=UDim.new(0,not Window.HidePanelBackground and 20 or 10),
 PaddingLeft=UDim.new(0,not Window.HidePanelBackground and 20 or 10),
@@ -36292,11 +36300,28 @@ HorizontalAlignment="Center",
 }
 
 if Window.Layout=="Dashboard"then
-local ay=12
-local function CreateDashboardColumn(az)
+local az=12
+ax=al("Frame",{
+Name="DashboardHeader",
+Size=UDim2.new(1,0,0,0),
+AutomaticSize="Y",
+BackgroundTransparency=1,
+Visible=false,
+LayoutOrder=1,
+},{
+al("UIListLayout",{
+SortOrder="LayoutOrder",
+Padding=UDim.new(0,ar.Gap),
+FillDirection="Vertical",
+HorizontalAlignment="Center",
+VerticalAlignment="Top",
+}),
+})
+
+local function CreateDashboardColumn(aA)
 return al("Frame",{
-Name=az,
-Size=UDim2.new(0.5,-ay/2,0,0),
+Name=aA,
+Size=UDim2.new(0.5,-az/2,0,0),
 AutomaticSize="Y",
 BackgroundTransparency=1,
 },{
@@ -36310,29 +36335,48 @@ VerticalAlignment="Top",
 })
 end
 
-local az=CreateDashboardColumn"DashboardColumnOne"
-local aA=CreateDashboardColumn"DashboardColumnTwo"
-aw={az,aA}
-local aB=al("Frame",{
+local aA=CreateDashboardColumn"DashboardColumnOne"
+local aB=CreateDashboardColumn"DashboardColumnTwo"
+aw={aA,aB}
+local b=al("Frame",{
+Name="DashboardColumnsFrame",
+Size=UDim2.new(1,0,0,0),
+AutomaticSize="Y",
+BackgroundTransparency=1,
+LayoutOrder=2,
+},{
+aA,
+aB,
+al("UIListLayout",{
+SortOrder="LayoutOrder",
+Padding=UDim.new(0,az),
+FillDirection="Horizontal",
+HorizontalAlignment="Center",
+VerticalAlignment="Top",
+}),
+})
+local d=al("Frame",{
 Name="DashboardRoot",
 Size=UDim2.new(1,0,0,0),
 AutomaticSize="Y",
 BackgroundTransparency=1,
 LayoutOrder=1,
 },{
-az,
-aA,
+ax,
+b,
 al("UIListLayout",{
 SortOrder="LayoutOrder",
-Padding=UDim.new(0,ay),
-FillDirection="Horizontal",
+Padding=UDim.new(0,ar.Gap),
+FillDirection="Vertical",
 HorizontalAlignment="Center",
 VerticalAlignment="Top",
 }),
 })
-table.insert(ax,aB)
+table.insert(ay,d)
+ar.UIElements.DashboardHeader=ax
 ar.UIElements.DashboardColumns=aw
-ar.UIElements.DashboardRoot=aB
+ar.UIElements.DashboardElementCount=0
+ar.UIElements.DashboardRoot=d
 end
 
 ar.UIElements.ContainerFrame=al("ScrollingFrame",{
@@ -36346,7 +36390,7 @@ Position=UDim2.new(0,0,1,0),
 AutomaticCanvasSize="Y",
 
 ScrollingDirection="Y",
-},ax)
+},ay)
 
 
 
@@ -36436,30 +36480,30 @@ NevaUI
 )
 end
 
-local ay
 local az
 local aA
-local aB=false
+local aB
+local b=false
 
 
 if ar.Desc then
 ak.AddSignal(ar.UIElements.Main.InputBegan,function()
-aB=true
-az=task.spawn(function()
+b=true
+aA=task.spawn(function()
 task.wait(0.35)
-if aB and not ay then
-ay=am(ar.Desc,ao.ToolTipParent,true)
-ay.Container.AnchorPoint=Vector2.new(0.5,0.5)
+if b and not az then
+az=am(ar.Desc,ao.ToolTipParent,true)
+az.Container.AnchorPoint=Vector2.new(0.5,0.5)
 
 local function updatePosition()
-if ay then
-ay.Container.Position=UDim2.new(0,ai.X,0,ai.Y-4)
+if az then
+az.Container.Position=UDim2.new(0,ai.X,0,ai.Y-4)
 end
 end
 
 updatePosition()
-aA=ai.Move:Connect(updatePosition)
-ay:Open()
+aB=ai.Move:Connect(updatePosition)
+az:Open()
 end
 end)
 end)
@@ -36475,18 +36519,18 @@ end
 end)
 ak.AddSignal(ar.UIElements.Main.InputEnded,function()
 if ar.Desc then
-aB=false
-if az then
-task.cancel(az)
-az=nil
-end
+b=false
 if aA then
-aA:Disconnect()
+task.cancel(aA)
 aA=nil
 end
-if ay then
-ay:Close()
-ay=nil
+if aB then
+aB:Disconnect()
+aB=nil
+end
+if az then
+az:Close()
+az=nil
 end
 end
 
@@ -36497,13 +36541,13 @@ ImageTransparency="TabBorderTransparency",
 end
 end)
 
-function ar.ScrollToTheElement(b,d)
+function ar.ScrollToTheElement(d,f)
 ar.UIElements.ContainerFrame.ScrollingEnabled=false
 
 ak.Tween(ar.UIElements.ContainerFrame,0.45,{
 CanvasPosition=Vector2.new(
 0,
-ar.Elements[d].ElementFrame.AbsolutePosition.Y
+ar.Elements[f].ElementFrame.AbsolutePosition.Y
 -ar.UIElements.ContainerFrame.AbsolutePosition.Y
 -ar.UIElements.ContainerFrame.UIPadding.PaddingTop.Offset
 ),
@@ -36512,8 +36556,8 @@ ar.Elements[d].ElementFrame.AbsolutePosition.Y
 task.spawn(function()
 task.wait(0.48)
 
-if ar.Elements[d].Highlight then
-ar.Elements[d]:Highlight()
+if ar.Elements[f].Highlight then
+ar.Elements[f]:Highlight()
 end
 ar.UIElements.ContainerFrame.ScrollingEnabled=true
 end)
@@ -36523,72 +36567,72 @@ end
 
 
 
-local b=a.af()
+local d=a.af()
 
-b.Load(
+d.Load(
 ar,
 ar.UIElements.ContainerFrame,
-b.Elements,
+d.Elements,
 Window,
 NevaUI,
 nil,
-b,
+d,
 aq,
 ar
 )
 
-function ar.LockAll(d)
-
-for f,g in next,Window.AllElements do
-if g.Tab and g.Tab.Index and g.Tab.Index==ar.Index and g.Lock then
-g:Lock()
-end
-end
-end
-function ar.UnlockAll(d)
-for f,g in next,Window.AllElements do
-if g.Tab and g.Tab.Index and g.Tab.Index==ar.Index and g.Unlock then
-g:Unlock()
-end
-end
-end
-function ar.GetLocked(d)
-local f={}
+function ar.LockAll(f)
 
 for g,h in next,Window.AllElements do
-if h.Tab and h.Tab.Index and h.Tab.Index==ar.Index and h.Locked==true then
-table.insert(f,h)
+if h.Tab and h.Tab.Index and h.Tab.Index==ar.Index and h.Lock then
+h:Lock()
 end
 end
-
-return f
 end
-function ar.GetUnlocked(d)
-local f={}
-
+function ar.UnlockAll(f)
 for g,h in next,Window.AllElements do
-if h.Tab and h.Tab.Index and h.Tab.Index==ar.Index and h.Locked==false then
-table.insert(f,h)
+if h.Tab and h.Tab.Index and h.Tab.Index==ar.Index and h.Unlock then
+h:Unlock()
+end
+end
+end
+function ar.GetLocked(f)
+local g={}
+
+for h,i in next,Window.AllElements do
+if i.Tab and i.Tab.Index and i.Tab.Index==ar.Index and i.Locked==true then
+table.insert(g,i)
 end
 end
 
-return f
+return g
+end
+function ar.GetUnlocked(f)
+local g={}
+
+for h,i in next,Window.AllElements do
+if i.Tab and i.Tab.Index and i.Tab.Index==ar.Index and i.Locked==false then
+table.insert(g,i)
+end
 end
 
-function ar.Select(d)
+return g
+end
+
+function ar.Select(f)
 return ao:SelectTab(ar.Index)
 end
 
 task.spawn(function()
-local d
+local f
 if ar.CustomEmptyPage.Icon then
-d=
+f=
 ak.Image(ar.CustomEmptyPage.Icon,ar.CustomEmptyPage.Icon,0,"Temp","EmptyPage",true)
-d.Size=
+f.Size=
 UDim2.fromOffset(ar.CustomEmptyPage.IconSize or 48,ar.CustomEmptyPage.IconSize or 48)
 end
 
-local f=al("Frame",{
+local g=al("Frame",{
 BackgroundTransparency=1,
 Size=UDim2.new(1,0,1,-Window.UIElements.Main.Main.Topbar.AbsoluteSize.Y),
 LayoutOrder=0,
@@ -36612,7 +36656,7 @@ FillDirection="Vertical",
 
 
 
-d,
+f,
 ar.CustomEmptyPage.Title and al("TextLabel",{
 AutomaticSize="XY",
 Text=ar.CustomEmptyPage.Title,
@@ -36641,19 +36685,19 @@ FontFace=Font.new(ak.Font,Enum.FontWeight.Regular),
 
 
 
-local g={}
+local h={}
 local function HideEmptyPage()
-if not f.Visible then
+if not g.Visible then
 return
 end
-f.Visible=false
-for h,i in ipairs(g)do
-i:Disconnect()
-end
-end
-local h=ar.UIElements.DashboardColumns or{ar.UIElements.ContainerFrame}
+g.Visible=false
 for i,l in ipairs(h)do
-table.insert(g,ak.AddSignal(l.ChildAdded,HideEmptyPage))
+l:Disconnect()
+end
+end
+local i=ar.UIElements.DashboardColumns or{ar.UIElements.ContainerFrame}
+for l,m in ipairs(i)do
+table.insert(h,ak.AddSignal(m.ChildAdded,HideEmptyPage))
 end
 if#ar.Elements>0 then
 HideEmptyPage()
@@ -37769,6 +37813,12 @@ aA.SidebarBrand.LogoThemed or false,
 u.Name="Logo"
 u.LayoutOrder=1
 u.Size=UDim2.new(0,r,0,r)
+u.ZIndex=7
+for v,x in ipairs(u:GetDescendants())do
+if x:IsA"GuiObject"then
+x.ZIndex=7
+end
+end
 table.insert(p,u)
 end
 if aA.SidebarBrand.Title and aA.SidebarBrand.Title~=""then
@@ -37782,6 +37832,7 @@ aA.SidebarBrand.Logo and-(r+aA.SidebarGap)or 0,
 0
 ),
 BackgroundTransparency=1,
+ZIndex=7,
 Text=aA.SidebarBrand.Title,
 TextSize=aA.SidebarBrand.TitleSize or 16,
 TextWrapped=false,
@@ -37807,7 +37858,10 @@ PaddingRight=UDim.new(0,aA.SidebarPadding),
 m=ao("Frame",{
 Name="SidebarBrand",
 Size=UDim2.new(1,0,0,aA.SidebarBrandHeight),
+Position=UDim2.new(0,0,0,0),
+AnchorPoint=Vector2.new(0,0),
 BackgroundTransparency=1,
+ZIndex=6,
 },p)
 aA.UIElements.SidebarBrand=m
 end
@@ -37830,7 +37884,7 @@ AnchorPoint=Vector2.new(0,1),
 aA.UIElements.SideBar,
 }
 if m then
-table.insert(p,1,m)
+table.insert(p,m)
 end
 aA.UIElements.SideBarContainer=ao("Frame",{
 Size=UDim2.new(

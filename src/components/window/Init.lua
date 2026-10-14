@@ -299,6 +299,12 @@ return function(Config)
 			BrandLogo.Name = "Logo"
 			BrandLogo.LayoutOrder = 1
 			BrandLogo.Size = UDim2.new(0, BrandLogoSize, 0, BrandLogoSize)
+			BrandLogo.ZIndex = 7
+			for _, BrandDescendant in ipairs(BrandLogo:GetDescendants()) do
+				if BrandDescendant:IsA("GuiObject") then
+					BrandDescendant.ZIndex = 7
+				end
+			end
 			table.insert(BrandContent, BrandLogo)
 		end
 		if Window.SidebarBrand.Title and Window.SidebarBrand.Title ~= "" then
@@ -312,6 +318,7 @@ return function(Config)
 					0
 				),
 				BackgroundTransparency = 1,
+				ZIndex = 7,
 				Text = Window.SidebarBrand.Title,
 				TextSize = Window.SidebarBrand.TitleSize or 16,
 				TextWrapped = false,
@@ -337,7 +344,10 @@ return function(Config)
 		SidebarBrandFrame = New("Frame", {
 			Name = "SidebarBrand",
 			Size = UDim2.new(1, 0, 0, Window.SidebarBrandHeight),
+			Position = UDim2.new(0, 0, 0, 0),
+			AnchorPoint = Vector2.new(0, 0),
 			BackgroundTransparency = 1,
+			ZIndex = 6,
 		}, BrandContent)
 		Window.UIElements.SidebarBrand = SidebarBrandFrame
 	end
@@ -360,7 +370,7 @@ return function(Config)
 		Window.UIElements.SideBar,
 	}
 	if SidebarBrandFrame then
-		table.insert(SideBarContainerChildren, 1, SidebarBrandFrame)
+		table.insert(SideBarContainerChildren, SidebarBrandFrame)
 	end
 	Window.UIElements.SideBarContainer = New("Frame", {
 		Size = UDim2.new(
