@@ -235,7 +235,7 @@ display name are accepted, so `"CottonCandy"` and `"Cotton Candy"` both work.
 | `CottonCandy` | Pink and cyan accents on a violet background. |
 | `Mellowsi` | Muted coffee and gold tones. |
 | `Rainbow` | Animated gradient surfaces across the whole window. |
-| `Luna` | Glassmorphic dark violet surfaces with a soft `#75a4ce` primary, mint toggles and pill-shaped rail tabs. Pair it with a `SidebarSelector` gradient for the full effect. |
+| `NevaGlass` | Glassmorphic dark violet surfaces with a soft `#75a4ce` primary, mint toggles and pill-shaped rail tabs. Pair it with a `SidebarSelector` gradient for the full effect. |
 
 Switch theme at runtime:
 
@@ -244,10 +244,10 @@ for Name in next, NevaUI:GetThemes() do
     print(Name)
 end
 
-NevaUI:SetTheme("Luna")
+NevaUI:SetTheme("NevaGlass")
 ```
 
-`examples/luna_example.lua` builds a complete interface with the `Luna` theme,
+`examples/neva_glass_example.lua` builds a complete interface with the `NevaGlass` theme,
 a right-side icon rail, a gradient sidebar selector, and working theme and
 config tabs.
 

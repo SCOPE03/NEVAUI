@@ -38,7 +38,7 @@ for key, theme in next, themes do
 end
 print("themes exercised: " .. themeCount)
 check(themeCount >= 17, "expected at least 17 themes, found " .. themeCount)
-check(themes["Luna"] ~= nil, "Luna theme is not registered")
+check(themes["NevaGlass"] ~= nil, "NevaGlass theme is not registered")
 
 -- Display names with spaces must resolve to the same theme as the registry key.
 for key, theme in next, themes do
@@ -97,12 +97,12 @@ do
 end
 
 -- 2. Theme switching must actually repaint a live window.
-NevaUI:SetTheme("Luna")
+NevaUI:SetTheme("NevaGlass")
 local Window = NevaUI:CreateWindow({
         Title = "Theme Test",
         Author = "test",
         Size = UDim2.fromOffset(600, 440),
-        Theme = "Luna",
+        Theme = "NevaGlass",
         Folder = "NevaUIThemeTest",
         Resizable = true,
 })
@@ -120,7 +120,7 @@ check(
         colorKey(beforeColor) ~= colorKey(afterColor),
         "window background did not change when the theme changed"
 )
-NevaUI:SetTheme("Luna")
+NevaUI:SetTheme("NevaGlass")
 
 -- 3. Every element type the example uses must construct.
 local Tab = Window:Tab({ Title = "Elements", Icon = "lucide:box" })

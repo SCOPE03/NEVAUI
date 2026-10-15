@@ -1,8 +1,8 @@
 --[[
-        NevaUI — Luna style example
+        NevaUI — NevaGlass style example
 
         A glassmorphic, gradient-accented interface built entirely with NevaUI.
-        It uses the built-in "Luna" theme, a right-side icon rail and every
+        It uses the built-in "NevaGlass" theme, a right-side icon rail and every
         standard element: buttons, toggles, sections, dividers, sliders, colour
         pickers, inputs, dropdowns, keybinds, labels and paragraphs. The Theme
         and Config tabs are fully working, so this doubles as a usable base.
@@ -34,10 +34,10 @@ local Accent = NevaUI:Gradient({
 local Window = NevaUI:CreateWindow({
         Title = "NevaUI Example Window",
         Author = "A Gray Subtitle",
-        Theme = "Luna",
+        Theme = "NevaGlass",
         Logo = "rbxassetid://82795327169782",
         IconSize = 24,
-        Folder = "LunaStyle",
+        Folder = "NevaGlassStyle",
 
         Size = UDim2.fromOffset(660, 480),
         MinSize = Vector2.new(560, 360),
@@ -74,7 +74,7 @@ local Window = NevaUI:CreateWindow({
 })
 
 Window:Tag({
-        Title = "Luna Style",
+        Title = "NevaGlass Style",
         Icon = "solar:star-bold",
         Color = Color3.fromRGB(117, 164, 206),
         Border = true,

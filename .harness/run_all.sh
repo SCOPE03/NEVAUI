@@ -11,7 +11,7 @@ FILES=(
   style_example.lua
   main.client.lua
   main2.client.lua
-  examples/luna_example.lua
+  examples/neva_glass_example.lua
   tests/ProgressBar.lua
   tests/200Elements.lua
   main.lua
