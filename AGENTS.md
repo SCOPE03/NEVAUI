@@ -43,25 +43,20 @@ each theme's `Name` is a display name (`"Cotton Candy"`, `"Monokai Pro"`).
 unknown value rather than failing silently. `.harness/theme_test.luau` covers
 this (run in both modes; 85 checks).
 
-## Vendored code (`vendor/`)
+## NevaGlass style
 
-`vendor/luna/` holds the Luna Interface Suite, BSD-3-Clause, kept byte-for-byte
-identical to upstream. Keep vendored files unmodified so they can be refreshed
-by re-downloading; record provenance, license text and upstream credits
-alongside them.
-
-Luna's `source.lua` is only the logic half of that library. The visual tree is
-loaded from a Roblox asset (`game:GetObjects("rbxassetid://86467455075715")`,
-line 1864) and then indexed as `LunaUI.SmartWindow`, `Main.Elements.Interactions`,
-`Main.Navigation.Tabs`. Only six `Instance.new` calls exist in the whole file and
-none build UI. So it cannot be evaluated without that asset, and no Lua-side
-adaptation can supply it — do not promise `LoadVendor`-style loading for it
-without first obtaining the UI tree. See `vendor/luna/README.md`.
+`NevaGlass` (in `src/themes/Init.lua`) is NevaUI's glassmorphic dark-violet
+style: a `#75a4ce → #7bc9c9 → #e08aaf` gradient accent, `#201e26`/`#1e2128`
+element surfaces, and pill-shaped rail tabs. It is a native NevaUI theme built
+on the same token set as every other theme, so it is configurable through the
+normal paths: `Theme = "NevaGlass"` on the window, `NevaUI:SetTheme`, and
+`ThemeColors` overrides. `examples/neva_glass_example.lua` shows a full
+interface built on it, including runtime theme and rail switching.
 
 ## Conventions
 
 * Tabs in Lua source are tabs, not spaces.
-* Never name a theme or example "Luna". The user asked for Neva-branded naming;
-  the Luna-derived theme is `NevaGlass`.
+* Keep naming Neva-branded. Do not reference third-party library names in the
+  public surface, examples, or docs.
 * Keep the public API additive; examples and the theme dropdown enumerate
   `GetThemes()` directly.

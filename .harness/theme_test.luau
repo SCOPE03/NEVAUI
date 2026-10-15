@@ -67,7 +67,7 @@ check(
         "GetThemes()[GetCurrentTheme()] must resolve to a theme"
 )
 
--- Mirrors the theme dropdown in examples/luna_example.lua: values come from
+-- Mirrors the theme dropdown in examples/neva_glass_example.lua: values come from
 -- GetThemes() and GetCurrentTheme() must be one of them.
 do
         local names = {}
