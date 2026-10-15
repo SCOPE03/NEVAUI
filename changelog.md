@@ -1,3 +1,11 @@
+# 1.6.67
+
+## Changelog
+
+- reworked sidebar tab rendering into a single state machine (idle, hover, pressed, active) so the background, label and icon stay in sync and hovering away no longer leaves a tab stuck lit
+- added per-state sidebar tab theme tokens: `TabBackgroundTransparency`, `TabBackgroundHover`, `TabBackgroundHoverTransparency`, `TabBackgroundPressed`, `TabBackgroundPressedTransparency`, `TabBackgroundActiveHover`, `TabBackgroundActiveHoverTransparency`, `TabBackgroundActivePressed`, `TabBackgroundActivePressedTransparency`, `TabTextTransparencyHover`, `TabIconTransparencyHover` and `TabBorderTransparencyHover`
+- updated the anime/chad-sigma examples with a soft Fluent-style pill rail
+
 # 1.6.66
 
 ## Changelog

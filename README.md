@@ -170,9 +170,13 @@ ThemeColors = {
     SidebarBackground = Color3.fromRGB(14, 14, 16),
     SidebarBackgroundTransparency = 0,
     TabBackground = Color3.fromRGB(28, 28, 31),
-    TabBackgroundHoverTransparency = 0.25,
+    TabBackgroundTransparency = 0.8,
+    TabBackgroundHover = Color3.fromRGB(48, 46, 56),
+    TabBackgroundHoverTransparency = 0.35,
     TabBackgroundActive = Color3.fromRGB(42, 40, 48),
     TabBackgroundActiveTransparency = 0.1,
+    TabBackgroundActiveHover = Color3.fromRGB(58, 54, 68),
+    TabBackgroundActiveHoverTransparency = 0.02,
     ElementBackground = Color3.fromRGB(31, 31, 34),
     Toggle = Color3.fromRGB(165, 153, 212),
     ToggleBar = Color3.fromRGB(67, 67, 72),
@@ -183,6 +187,28 @@ ThemeColors = {
 `ThemeColors` is merged onto a copy of the selected theme, so built-in theme tables are not modified. If `SidebarBackground` is set without `SidebarBackgroundTransparency`, the sidebar becomes opaque; set a transparency explicitly when you want a different value. Theme overrides also stay applied when calling `NevaUI:SetTheme()`.
 
 Common tokens include `Background`, `PanelBackground`, `PanelBackgroundTransparency`, `SidebarBackground`, `SidebarSelector`, `TabBackground`, `TabBackgroundActive`, `TabBackgroundActiveTransparency`, `ElementBackground`, `ElementTitle`, `Text`, `Icon`, `Button`, `Toggle`, `ToggleBar`, `Slider`, and `Checkbox`. Other theme/fallback tokens can also be overridden for outlines, placeholders, hover states, and control descriptions.
+
+#### Sidebar tab states
+
+Sidebar tabs render through a small state machine, so each state has its own
+tokens. Override them to make the rail feel like a soft, Fluent-style pill
+instead of the flat legacy highlight:
+
+| Token | Description |
+|---|---|
+| `TabBackground` / `TabBackgroundTransparency` | Idle tab background. The default transparency is `1`, so idle tabs are invisible until you set one. |
+| `TabBackgroundHover` / `TabBackgroundHoverTransparency` | Tab under the cursor. |
+| `TabBackgroundPressed` / `TabBackgroundPressedTransparency` | Tab while the mouse button is held. |
+| `TabBackgroundActive` / `TabBackgroundActiveTransparency` | The selected tab. |
+| `TabBackgroundActiveHover` / `TabBackgroundActiveHoverTransparency` | The selected tab while hovered. Defaults to the active values, so set these for a lift effect. |
+| `TabBackgroundActivePressed` / `TabBackgroundActivePressedTransparency` | The selected tab while pressed. Defaults to the active values. |
+| `TabTextTransparency`, `TabTextTransparencyHover`, `TabTextTransparencyActive` | Tab label transparency per state. |
+| `TabIconTransparency`, `TabIconTransparencyHover`, `TabIconTransparencyActive` | Tab icon transparency per state. |
+| `TabBorderTransparency`, `TabBorderTransparencyHover`, `TabBorderTransparencyActive` | Outline transparency per state (used when a tab is created with `Border = true`). |
+
+The active and pressed states always win over hover, so a selected tab keeps
+its accent while the pointer is over it. Set `TabBackgroundTransparency`
+below `1` to give every idle tab a visible pill.
 
 ### Size and behavior options
 

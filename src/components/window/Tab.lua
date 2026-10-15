@@ -57,6 +57,8 @@ function TabModule.New(Config, UIScale)
 			or { Icon = "lucide:frown", IconSize = 48, Title = "This tab is Empty", Desc = nil },
 		Border = Config.Border,
 		Selected = false,
+		Hovering = false,
+		Pressed = false,
 		Index = nil,
 		Parent = Config.Parent,
 		UIElements = {},
@@ -483,37 +485,136 @@ function TabModule.New(Config, UIScale)
 		end)
 	end
 
-	Creator.AddSignal(Tab.UIElements.Main.MouseEnter, function()
-		if not Tab.Locked then
-			Creator.SetThemeTag(Tab.UIElements.Main.Frame, {
-				ImageTransparency = "TabBackgroundHoverTransparency",
-				ImageColor3 = "TabBackgroundHover",
-			}, 0.1)
+	-- Tabs share one state machine (idle/hover/pressed, selected or not) so the
+	-- background, label and icon always agree. Driving them from a single place
+	-- also fixes the old bug where hovering a tab and moving away left it lit,
+	-- because only InputEnded (not MouseLeave) restored the idle look.
+	local TabStateTokens = {
+		idle = {
+			Background = "TabBackground",
+			BackgroundTransparency = "TabBackgroundTransparency",
+			TextTransparency = "TabTextTransparency",
+			IconTransparency = "TabIconTransparency",
+			BorderTransparency = "TabBorderTransparency",
+		},
+		hover = {
+			Background = "TabBackgroundHover",
+			BackgroundTransparency = "TabBackgroundHoverTransparency",
+			TextTransparency = "TabTextTransparencyHover",
+			IconTransparency = "TabIconTransparencyHover",
+			BorderTransparency = "TabBorderTransparencyHover",
+		},
+		pressed = {
+			Background = "TabBackgroundPressed",
+			BackgroundTransparency = "TabBackgroundPressedTransparency",
+			TextTransparency = "TabTextTransparencyActive",
+			IconTransparency = "TabIconTransparencyActive",
+			BorderTransparency = "TabBorderTransparencyActive",
+		},
+		active = {
+			Background = "TabBackgroundActive",
+			BackgroundTransparency = "TabBackgroundActiveTransparency",
+			TextTransparency = "TabTextTransparencyActive",
+			IconTransparency = "TabIconTransparencyActive",
+			BorderTransparency = "TabBorderTransparencyActive",
+		},
+		activeHover = {
+			Background = "TabBackgroundActiveHover",
+			BackgroundTransparency = "TabBackgroundActiveHoverTransparency",
+			TextTransparency = "TabTextTransparencyActive",
+			IconTransparency = "TabIconTransparencyActive",
+			BorderTransparency = "TabBorderTransparencyActive",
+		},
+		activePressed = {
+			Background = "TabBackgroundActivePressed",
+			BackgroundTransparency = "TabBackgroundActivePressedTransparency",
+			TextTransparency = "TabTextTransparencyActive",
+			IconTransparency = "TabIconTransparencyActive",
+			BorderTransparency = "TabBorderTransparencyActive",
+		},
+	}
+
+	local function ApplyTabState(Duration)
+		if Tab.Locked then
+			return
 		end
+		local State = "idle"
+		if Tab.Selected then
+			State = Tab.Pressed and "activePressed" or (Tab.Hovering and "activeHover" or "active")
+		elseif Tab.Pressed then
+			State = "pressed"
+		elseif Tab.Hovering then
+			State = "hover"
+		end
+		local Tokens = TabStateTokens[State]
+		Creator.SetThemeTag(Tab.UIElements.Main, {
+			ImageColor3 = Tokens.Background,
+			ImageTransparency = Tokens.BackgroundTransparency,
+		}, Duration or 0.12)
+		if Tab.Border and Tab.UIElements.Main.Outline then
+			Creator.SetThemeTag(Tab.UIElements.Main.Outline, {
+				ImageTransparency = Tokens.BorderTransparency,
+			}, Duration or 0.12)
+		end
+		Creator.SetThemeTag(Tab.UIElements.Main.Frame.TextLabel, {
+			TextTransparency = Tokens.TextTransparency,
+		}, Duration or 0.12)
+		if Tab.UIElements.Icon and not Tab.IconColor then
+			Creator.SetThemeTag(Tab.UIElements.Icon.ImageLabel, {
+				ImageTransparency = Tokens.IconTransparency,
+			}, Duration or 0.12)
+		end
+	end
+
+	-- Expose the applier so SelectTab can refresh every tab through the same path.
+	Tab.RefreshState = ApplyTabState
+
+	local function ClearTooltip()
+		if not Tab.Desc then
+			return
+		end
+		IsHovering = false
+		if hoverTimer then
+			task.cancel(hoverTimer)
+			hoverTimer = nil
+		end
+		if MouseConn then
+			MouseConn:Disconnect()
+			MouseConn = nil
+		end
+		if ToolTip then
+			ToolTip:Close()
+			ToolTip = nil
+		end
+	end
+
+	Creator.AddSignal(Tab.UIElements.Main.MouseEnter, function()
+		Tab.Hovering = true
+		ApplyTabState()
+	end)
+	Creator.AddSignal(Tab.UIElements.Main.MouseLeave, function()
+		Tab.Hovering = false
+		Tab.Pressed = false
+		ApplyTabState()
+		ClearTooltip()
+	end)
+	Creator.AddSignal(Tab.UIElements.Main.MouseButton1Down, function()
+		Tab.Pressed = true
+		ApplyTabState(0.08)
+	end)
+	Creator.AddSignal(Tab.UIElements.Main.MouseButton1Up, function()
+		Tab.Pressed = false
+		ApplyTabState(0.08)
 	end)
 	Creator.AddSignal(Tab.UIElements.Main.InputEnded, function()
-		if Tab.Desc then
-			IsHovering = false
-			if hoverTimer then
-				task.cancel(hoverTimer)
-				hoverTimer = nil
-			end
-			if MouseConn then
-				MouseConn:Disconnect()
-				MouseConn = nil
-			end
-			if ToolTip then
-				ToolTip:Close()
-				ToolTip = nil
-			end
-		end
-
-		if not Tab.Locked then
-			Creator.SetThemeTag(Tab.UIElements.Main.Frame, {
-				ImageTransparency = "TabBorderTransparency",
-			}, 0.1)
-		end
+		Tab.Pressed = false
+		ApplyTabState()
+		ClearTooltip()
 	end)
+
+	-- Render the initial (idle) look through the same path so a freshly created
+	-- tab already matches the theme instead of the hardcoded starting values.
+	ApplyTabState(0)
 
 	function Tab:ScrollToTheElement(elemindex)
 		Tab.UIElements.ContainerFrame.ScrollingEnabled = false
@@ -686,48 +787,20 @@ function TabModule:OnChange(func)
 end
 
 function TabModule:SelectTab(TabIndex)
-	if not TabModule.Tabs[TabIndex].Locked then
+	local Target = TabModule.Tabs[TabIndex]
+	if Target and not Target.Locked then
 		TabModule.SelectedTab = TabIndex
 
+		-- Flip the selection flags first, then let every tab re-render itself
+		-- through the shared state machine so idle, hover and active agree.
 		for _, TabObject in next, TabModule.Tabs do
-			if not TabObject.Locked then
-				Creator.SetThemeTag(TabObject.UIElements.Main, {
-					ImageTransparency = "TabBorderTransparency",
-				}, 0.15)
-				if TabObject.Border then
-					Creator.SetThemeTag(TabObject.UIElements.Main.Outline, {
-						ImageTransparency = "TabBorderTransparency",
-					}, 0.15)
-				end
-				Creator.SetThemeTag(TabObject.UIElements.Main.Frame.TextLabel, {
-					TextTransparency = "TabTextTransparency",
-				}, 0.15)
-				if TabObject.UIElements.Icon and not TabObject.IconColor then
-					Creator.SetThemeTag(TabObject.UIElements.Icon.ImageLabel, {
-						ImageTransparency = "TabIconTransparency",
-					}, 0.15)
-				end
-				TabObject.Selected = false
+			TabObject.Selected = TabObject == Target
+		end
+		for _, TabObject in next, TabModule.Tabs do
+			if TabObject.RefreshState then
+				TabObject.RefreshState(0.15)
 			end
 		end
-		Creator.SetThemeTag(TabModule.Tabs[TabIndex].UIElements.Main, {
-			ImageColor3 = "TabBackgroundActive",
-			ImageTransparency = "TabBackgroundActiveTransparency",
-		}, 0.15)
-		if TabModule.Tabs[TabIndex].Border then
-			Creator.SetThemeTag(TabModule.Tabs[TabIndex].UIElements.Main.Outline, {
-				ImageTransparency = "TabBorderTransparencyActive",
-			}, 0.15)
-		end
-		Creator.SetThemeTag(TabModule.Tabs[TabIndex].UIElements.Main.Frame.TextLabel, {
-			TextTransparency = "TabTextTransparencyActive",
-		}, 0.15)
-		if TabModule.Tabs[TabIndex].UIElements.Icon and not TabModule.Tabs[TabIndex].IconColor then
-			Creator.SetThemeTag(TabModule.Tabs[TabIndex].UIElements.Icon.ImageLabel, {
-				ImageTransparency = "TabIconTransparencyActive",
-			}, 0.15)
-		end
-		TabModule.Tabs[TabIndex].Selected = true
 
 		task.spawn(function()
 			for _, ContainerObject in next, TabModule.Containers do

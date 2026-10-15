@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /
     |__/|__/_/_//_/\_,_/\____/___/
 
-    v1.6.66  |  2026-10-14  |  NevaUI Roblox UI Library
+    v1.6.67  |  2026-10-15  |  NevaUI Roblox UI Library
 
     To view the source code, see the `src/` folder on the official GitHub repository.
 
@@ -24760,18 +24760,28 @@ WindowTopbarButtonIcon="Icon",
 WindowSearchBarBackground="Dialog",
 
 TabBackground="Hover",
+TabBackgroundTransparency=1,
 TabBackgroundHover="Hover",
-TabBackgroundHoverTransparency=0.97,
+TabBackgroundHoverTransparency=0.85,
+TabBackgroundPressed="Hover",
+TabBackgroundPressedTransparency=0.78,
 TabBackgroundActive="Hover",
 TabBackgroundActiveTransparency=0.93,
+TabBackgroundActiveHover="TabBackgroundActive",
+TabBackgroundActiveHoverTransparency="TabBackgroundActiveTransparency",
+TabBackgroundActivePressed="TabBackgroundActive",
+TabBackgroundActivePressedTransparency="TabBackgroundActiveTransparency",
 TabText="Text",
 TabTextTransparency=0.3,
+TabTextTransparencyHover=0.1,
 TabTextTransparencyActive=0,
 TabTitle="Text",
 TabIcon="Icon",
 TabIconTransparency=0.4,
+TabIconTransparencyHover=0.2,
 TabIconTransparencyActive=0.1,
 TabBorderTransparency=1,
+TabBorderTransparencyHover=0.9,
 TabBorderTransparencyActive=0.75,
 TabBorder="White",
 
@@ -26748,7 +26758,7 @@ New=a.load'p'.New
 return[[
 {
     "name": "nevaui",
-    "version": "1.6.66",
+    "version": "1.6.67",
     "main": "./dist/main.lua",
     "repository": "https://github.com/SCOPE03/NEVAUI",
     "discord": "https://discord.gg/ycajkk7Mc7",
@@ -36104,6 +36114,8 @@ CustomEmptyPage=(ap.CustomEmptyPage and next(ap.CustomEmptyPage)~=nil)and ap.Cus
 or{Icon="lucide:frown",IconSize=48,Title="This tab is Empty",Desc=nil},
 Border=ap.Border,
 Selected=false,
+Hovering=false,
+Pressed=false,
 Index=nil,
 Parent=ap.Parent,
 UIElements={},
@@ -36530,16 +36542,94 @@ end)
 end)
 end
 
-ak.AddSignal(ar.UIElements.Main.MouseEnter,function()
-if not ar.Locked then
-ak.SetThemeTag(ar.UIElements.Main.Frame,{
-ImageTransparency="TabBackgroundHoverTransparency",
-ImageColor3="TabBackgroundHover",
-},0.1)
+
+
+
+
+local f={
+idle={
+Background="TabBackground",
+BackgroundTransparency="TabBackgroundTransparency",
+TextTransparency="TabTextTransparency",
+IconTransparency="TabIconTransparency",
+BorderTransparency="TabBorderTransparency",
+},
+hover={
+Background="TabBackgroundHover",
+BackgroundTransparency="TabBackgroundHoverTransparency",
+TextTransparency="TabTextTransparencyHover",
+IconTransparency="TabIconTransparencyHover",
+BorderTransparency="TabBorderTransparencyHover",
+},
+pressed={
+Background="TabBackgroundPressed",
+BackgroundTransparency="TabBackgroundPressedTransparency",
+TextTransparency="TabTextTransparencyActive",
+IconTransparency="TabIconTransparencyActive",
+BorderTransparency="TabBorderTransparencyActive",
+},
+active={
+Background="TabBackgroundActive",
+BackgroundTransparency="TabBackgroundActiveTransparency",
+TextTransparency="TabTextTransparencyActive",
+IconTransparency="TabIconTransparencyActive",
+BorderTransparency="TabBorderTransparencyActive",
+},
+activeHover={
+Background="TabBackgroundActiveHover",
+BackgroundTransparency="TabBackgroundActiveHoverTransparency",
+TextTransparency="TabTextTransparencyActive",
+IconTransparency="TabIconTransparencyActive",
+BorderTransparency="TabBorderTransparencyActive",
+},
+activePressed={
+Background="TabBackgroundActivePressed",
+BackgroundTransparency="TabBackgroundActivePressedTransparency",
+TextTransparency="TabTextTransparencyActive",
+IconTransparency="TabIconTransparencyActive",
+BorderTransparency="TabBorderTransparencyActive",
+},
+}
+
+local function ApplyTabState(g)
+if ar.Locked then
+return
 end
-end)
-ak.AddSignal(ar.UIElements.Main.InputEnded,function()
-if ar.Desc then
+local h="idle"
+if ar.Selected then
+h=ar.Pressed and"activePressed"or(ar.Hovering and"activeHover"or"active")
+elseif ar.Pressed then
+h="pressed"
+elseif ar.Hovering then
+h="hover"
+end
+local i=f[h]
+ak.SetThemeTag(ar.UIElements.Main,{
+ImageColor3=i.Background,
+ImageTransparency=i.BackgroundTransparency,
+},g or 0.12)
+if ar.Border and ar.UIElements.Main.Outline then
+ak.SetThemeTag(ar.UIElements.Main.Outline,{
+ImageTransparency=i.BorderTransparency,
+},g or 0.12)
+end
+ak.SetThemeTag(ar.UIElements.Main.Frame.TextLabel,{
+TextTransparency=i.TextTransparency,
+},g or 0.12)
+if ar.UIElements.Icon and not ar.IconColor then
+ak.SetThemeTag(ar.UIElements.Icon.ImageLabel,{
+ImageTransparency=i.IconTransparency,
+},g or 0.12)
+end
+end
+
+
+ar.RefreshState=ApplyTabState
+
+local function ClearTooltip()
+if not ar.Desc then
+return
+end
 d=false
 if aB then
 task.cancel(aB)
@@ -36555,20 +36645,41 @@ aA=nil
 end
 end
 
-if not ar.Locked then
-ak.SetThemeTag(ar.UIElements.Main.Frame,{
-ImageTransparency="TabBorderTransparency",
-},0.1)
-end
+ak.AddSignal(ar.UIElements.Main.MouseEnter,function()
+ar.Hovering=true
+ApplyTabState()
+end)
+ak.AddSignal(ar.UIElements.Main.MouseLeave,function()
+ar.Hovering=false
+ar.Pressed=false
+ApplyTabState()
+ClearTooltip()
+end)
+ak.AddSignal(ar.UIElements.Main.MouseButton1Down,function()
+ar.Pressed=true
+ApplyTabState(0.08)
+end)
+ak.AddSignal(ar.UIElements.Main.MouseButton1Up,function()
+ar.Pressed=false
+ApplyTabState(0.08)
+end)
+ak.AddSignal(ar.UIElements.Main.InputEnded,function()
+ar.Pressed=false
+ApplyTabState()
+ClearTooltip()
 end)
 
-function ar.ScrollToTheElement(f,g)
+
+
+ApplyTabState(0)
+
+function ar.ScrollToTheElement(g,h)
 ar.UIElements.ContainerFrame.ScrollingEnabled=false
 
 ak.Tween(ar.UIElements.ContainerFrame,0.45,{
 CanvasPosition=Vector2.new(
 0,
-ar.Elements[g].ElementFrame.AbsolutePosition.Y
+ar.Elements[h].ElementFrame.AbsolutePosition.Y
 -ar.UIElements.ContainerFrame.AbsolutePosition.Y
 -ar.UIElements.ContainerFrame.UIPadding.PaddingTop.Offset
 ),
@@ -36577,8 +36688,8 @@ ar.Elements[g].ElementFrame.AbsolutePosition.Y
 task.spawn(function()
 task.wait(0.48)
 
-if ar.Elements[g].Highlight then
-ar.Elements[g]:Highlight()
+if ar.Elements[h].Highlight then
+ar.Elements[h]:Highlight()
 end
 ar.UIElements.ContainerFrame.ScrollingEnabled=true
 end)
@@ -36588,72 +36699,72 @@ end
 
 
 
-local f=a.load'af'
+local g=a.load'af'
 
-f.Load(
+g.Load(
 ar,
 ar.UIElements.ContainerFrame,
-f.Elements,
+g.Elements,
 Window,
 NevaUI,
 nil,
-f,
+g,
 aq,
 ar
 )
 
-function ar.LockAll(g)
-
-for h,i in next,Window.AllElements do
-if i.Tab and i.Tab.Index and i.Tab.Index==ar.Index and i.Lock then
-i:Lock()
-end
-end
-end
-function ar.UnlockAll(g)
-for h,i in next,Window.AllElements do
-if i.Tab and i.Tab.Index and i.Tab.Index==ar.Index and i.Unlock then
-i:Unlock()
-end
-end
-end
-function ar.GetLocked(g)
-local h={}
+function ar.LockAll(h)
 
 for i,l in next,Window.AllElements do
-if l.Tab and l.Tab.Index and l.Tab.Index==ar.Index and l.Locked==true then
-table.insert(h,l)
+if l.Tab and l.Tab.Index and l.Tab.Index==ar.Index and l.Lock then
+l:Lock()
 end
 end
-
-return h
 end
-function ar.GetUnlocked(g)
-local h={}
-
+function ar.UnlockAll(h)
 for i,l in next,Window.AllElements do
-if l.Tab and l.Tab.Index and l.Tab.Index==ar.Index and l.Locked==false then
-table.insert(h,l)
+if l.Tab and l.Tab.Index and l.Tab.Index==ar.Index and l.Unlock then
+l:Unlock()
+end
+end
+end
+function ar.GetLocked(h)
+local i={}
+
+for l,m in next,Window.AllElements do
+if m.Tab and m.Tab.Index and m.Tab.Index==ar.Index and m.Locked==true then
+table.insert(i,m)
 end
 end
 
-return h
+return i
+end
+function ar.GetUnlocked(h)
+local i={}
+
+for l,m in next,Window.AllElements do
+if m.Tab and m.Tab.Index and m.Tab.Index==ar.Index and m.Locked==false then
+table.insert(i,m)
+end
 end
 
-function ar.Select(g)
+return i
+end
+
+function ar.Select(h)
 return ao:SelectTab(ar.Index)
 end
 
 task.spawn(function()
-local g
+local h
 if ar.CustomEmptyPage.Icon then
-g=
+h=
 ak.Image(ar.CustomEmptyPage.Icon,ar.CustomEmptyPage.Icon,0,"Temp","EmptyPage",true)
-g.Size=
+h.Size=
 UDim2.fromOffset(ar.CustomEmptyPage.IconSize or 48,ar.CustomEmptyPage.IconSize or 48)
 end
 
-local h=al("Frame",{
+local i=al("Frame",{
 BackgroundTransparency=1,
 Size=UDim2.new(1,0,1,-Window.UIElements.Main.Main.Topbar.AbsoluteSize.Y),
 LayoutOrder=0,
@@ -36677,7 +36788,7 @@ FillDirection="Vertical",
 
 
 
-g,
+h,
 ar.CustomEmptyPage.Title and al("TextLabel",{
 AutomaticSize="XY",
 Text=ar.CustomEmptyPage.Title,
@@ -36706,19 +36817,19 @@ FontFace=Font.new(ak.Font,Enum.FontWeight.Regular),
 
 
 
-local i={}
+local l={}
 local function HideEmptyPage()
-if not h.Visible then
+if not i.Visible then
 return
 end
-h.Visible=false
-for l,m in ipairs(i)do
-m:Disconnect()
-end
-end
-local l=ar.UIElements.DashboardColumns or{ar.UIElements.ContainerFrame}
+i.Visible=false
 for m,p in ipairs(l)do
-table.insert(i,ak.AddSignal(p.ChildAdded,HideEmptyPage))
+p:Disconnect()
+end
+end
+local m=ar.UIElements.DashboardColumns or{ar.UIElements.ContainerFrame}
+for p,r in ipairs(m)do
+table.insert(l,ak.AddSignal(r.ChildAdded,HideEmptyPage))
 end
 if#ar.Elements>0 then
 HideEmptyPage()
@@ -36733,62 +36844,34 @@ ao.OnChangeFunc=aq
 end
 
 function ao.SelectTab(ap,aq)
-if not ao.Tabs[aq].Locked then
+local ar=ao.Tabs[aq]
+if ar and not ar.Locked then
 ao.SelectedTab=aq
 
-for ar,as in next,ao.Tabs do
-if not as.Locked then
-ak.SetThemeTag(as.UIElements.Main,{
-ImageTransparency="TabBorderTransparency",
-},0.15)
-if as.Border then
-ak.SetThemeTag(as.UIElements.Main.Outline,{
-ImageTransparency="TabBorderTransparency",
-},0.15)
+
+
+for as,at in next,ao.Tabs do
+at.Selected=at==ar
 end
-ak.SetThemeTag(as.UIElements.Main.Frame.TextLabel,{
-TextTransparency="TabTextTransparency",
-},0.15)
-if as.UIElements.Icon and not as.IconColor then
-ak.SetThemeTag(as.UIElements.Icon.ImageLabel,{
-ImageTransparency="TabIconTransparency",
-},0.15)
-end
-as.Selected=false
+for as,at in next,ao.Tabs do
+if at.RefreshState then
+at.RefreshState(0.15)
 end
 end
-ak.SetThemeTag(ao.Tabs[aq].UIElements.Main,{
-ImageColor3="TabBackgroundActive",
-ImageTransparency="TabBackgroundActiveTransparency",
-},0.15)
-if ao.Tabs[aq].Border then
-ak.SetThemeTag(ao.Tabs[aq].UIElements.Main.Outline,{
-ImageTransparency="TabBorderTransparencyActive",
-},0.15)
-end
-ak.SetThemeTag(ao.Tabs[aq].UIElements.Main.Frame.TextLabel,{
-TextTransparency="TabTextTransparencyActive",
-},0.15)
-if ao.Tabs[aq].UIElements.Icon and not ao.Tabs[aq].IconColor then
-ak.SetThemeTag(ao.Tabs[aq].UIElements.Icon.ImageLabel,{
-ImageTransparency="TabIconTransparencyActive",
-},0.15)
-end
-ao.Tabs[aq].Selected=true
 
 task.spawn(function()
-for ar,as in next,ao.Containers do
-as.AnchorPoint=Vector2.new(0,0.05)
-as.Visible=false
+for as,at in next,ao.Containers do
+at.AnchorPoint=Vector2.new(0,0.05)
+at.Visible=false
 end
 ao.Containers[aq].Visible=true
-local ar=game:GetService"TweenService"
+local as=game:GetService"TweenService"
 
-local as=TweenInfo.new(0.15,Enum.EasingStyle.Quart,Enum.EasingDirection.Out)
-local at=ar:Create(ao.Containers[aq],as,{
+local at=TweenInfo.new(0.15,Enum.EasingStyle.Quart,Enum.EasingDirection.Out)
+local au=as:Create(ao.Containers[aq],at,{
 AnchorPoint=Vector2.new(0,0),
 })
-at:Play()
+au:Play()
 end)
 
 ao.OnChangeFunc(aq)
