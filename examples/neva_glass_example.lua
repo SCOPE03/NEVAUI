@@ -11,6 +11,9 @@
 ]]
 
 local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/dist/main.lua"
+-- Brand and backdrop assets, shared with the anime background example.
+local BackgroundImage = "rbxassetid://117316815074414"
+local LogoAsset = "rbxassetid://85413415772370"
 local LoadString = loadstring or load
 
 local Success, Result = pcall(function()
@@ -31,13 +34,24 @@ local Accent = NevaUI:Gradient({
         ["100"] = { Color = Color3.fromRGB(224, 138, 175), Transparency = 0 },
 }, { Rotation = 45 })
 
+-- OpenButton.Color wants a flat Color3 or ColorSequence, not a gradient table, so use
+-- the first gradient stop as the button's accent.
+local AccentColor = Color3.fromRGB(117, 164, 206)
+
 local Window = NevaUI:CreateWindow({
         Title = "NevaUI Example Window",
         Author = "A Gray Subtitle",
         Theme = "NevaGlass",
-        Logo = "rbxassetid://82795327169782",
+        Logo = LogoAsset,
         IconSize = 24,
         Folder = "NevaGlassStyle",
+
+        -- Full-window backdrop. The asset is mostly transparent, so the game world
+        -- shows through and the window surface is dimmed further below.
+        Background = BackgroundImage,
+        BackgroundImageTransparency = 0.55,
+        Transparent = true,
+        HidePanelBackground = true,
 
         Size = UDim2.fromOffset(660, 480),
         MinSize = Vector2.new(560, 360),
@@ -62,6 +76,10 @@ local Window = NevaUI:CreateWindow({
                 DividerColor = Color3.fromRGB(117, 164, 206),
                 Brand = {
                         Layout = "Horizontal",
+                        Logo = LogoAsset,
+                        LogoSize = 32,
+                        LogoScaleType = "Fit",
+                        LogoRadius = 8,
                         Title = "NevaUI",
                         TitleSize = 19,
                         Height = 56,
@@ -74,6 +92,26 @@ local Window = NevaUI:CreateWindow({
         Topbar = {
                 Height = 50,
                 ButtonsType = "Mac",
+        },
+
+        -- Floating logo button: click it to reopen the window after closing, and drag
+        -- it anywhere on screen.
+        OpenButton = {
+                Floating = true,
+                OnlyMobile = false,
+                OnlyIcon = true,
+                Icon = LogoAsset,
+                Size = 56,
+                Position = UDim2.new(1, -44, 1, -80),
+                Draggable = true,
+                BackgroundColor3 = Color3.fromRGB(22, 21, 26),
+                BackgroundTransparency = 0.15,
+                Color = AccentColor,
+                StrokeTransparency = 0.2,
+                StrokeThickness = 2,
+                -- Clicking the button closes the window while it is open, so the same
+                -- button opens and closes the interface.
+                CloseOnClick = true,
         },
 
         ThemeColors = {

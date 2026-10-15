@@ -24,6 +24,8 @@ FILES=(
   tests/ProgressBar.lua
   tests/200Elements.lua
   tests/SidebarLayout.lua
+  tests/OpenButtonToggle.lua
+  tests/OpenButtonDefault.lua
   main.lua
 )
 pass=0; fail=0

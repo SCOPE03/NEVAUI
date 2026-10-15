@@ -235,6 +235,9 @@ function OpenButton.New(Window)
 			StrokeColor = OpenButtonConfig.StrokeColor,
 			StrokeTransparency = OpenButtonConfig.StrokeTransparency,
 			ShowDragHandle = OpenButtonConfig.ShowDragHandle == true,
+			-- When true the button acts as a toggle: it stays on screen while the
+			-- window is open and a click closes the window again.
+			CloseOnClick = OpenButtonConfig.CloseOnClick == true,
 		}
 
         -- wtf lol
@@ -320,6 +323,9 @@ function OpenButton.New(Window)
         Button.UIStroke.Thickness = OpenButtonModule.StrokeThickness
 
         OpenButtonMain:SetScale(OpenButtonModule.Scale)
+
+        OpenButtonMain.CloseOnClick = OpenButtonModule.CloseOnClick
+        OpenButtonMain.Floating = OpenButtonModule.Floating
     end
 
     return OpenButtonMain

@@ -29818,6 +29818,9 @@ BackgroundTransparency=ar.BackgroundTransparency,
 StrokeColor=ar.StrokeColor,
 StrokeTransparency=ar.StrokeTransparency,
 ShowDragHandle=ar.ShowDragHandle==true,
+
+
+CloseOnClick=ar.CloseOnClick==true,
 }
 
 
@@ -29903,6 +29906,9 @@ ao.TextButton.UICorner.CornerRadius=UDim.new(av.CornerRadius.Scale,av.CornerRadi
 ao.UIStroke.Thickness=av.StrokeThickness
 
 ag:SetScale(av.Scale)
+
+ag.CloseOnClick=av.CloseOnClick
+ag.Floating=av.Floating
 end
 
 return ag
@@ -39731,7 +39737,9 @@ end
 end
 
 if b.OpenButtonMain and b.IsOpenButtonEnabled then
-b.OpenButtonMain:Visible(false)
+
+
+b.OpenButtonMain:Visible(b.OpenButtonMain.CloseOnClick==true)
 end
 
 
@@ -40017,7 +40025,11 @@ if b.OpenButtonMain and b.OpenButtonMain.Button then
 an.AddSignal(b.OpenButtonMain.Button.TextButton.MouseButton1Click,function()
 
 
+if b.OpenButtonMain.CloseOnClick then
+b:Toggle()
+else
 b:Open()
+end
 end)
 end
 
@@ -40033,18 +40045,20 @@ end
 end
 end)
 
-task.spawn(function()
-
-b:Open()
-end)
-
 function b.EditOpenButton(aF,aG)
 return b.OpenButtonMain:Edit(aG)
 end
 
+
+
 if b.OpenButton and typeof(b.OpenButton)=="table"then
 b:EditOpenButton(b.OpenButton)
 end
+
+task.spawn(function()
+
+b:Open()
+end)
 
 local aF=a.ag()
 local aG=a.ah()

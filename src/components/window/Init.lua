@@ -1858,7 +1858,9 @@ return function(Config)
 			end
 
 			if Window.OpenButtonMain and Window.IsOpenButtonEnabled then
-				Window.OpenButtonMain:Visible(false)
+				-- A CloseOnClick button doubles as a toggle, so it stays on screen
+				-- while the window is open instead of hiding.
+				Window.OpenButtonMain:Visible(Window.OpenButtonMain.CloseOnClick == true)
 			end
 
 			--[[Config.NevaUI.UIScaleObj.Scale -= 1 - 0.85
@@ -2142,9 +2144,13 @@ return function(Config)
 
 	if Window.OpenButtonMain and Window.OpenButtonMain.Button then
 		Creator.AddSignal(Window.OpenButtonMain.Button.TextButton.MouseButton1Click, function()
-			-- OpenButtonContainer.Visible = false
-			--Window.OpenButtonMain:Visible(false)
-			Window:Open()
+			-- CloseOnClick turns the button into a toggle: close while open, reopen
+			-- while closed.
+			if Window.OpenButtonMain.CloseOnClick then
+				Window:Toggle()
+			else
+				Window:Open()
+			end
 		end)
 	end
 
@@ -2160,18 +2166,20 @@ return function(Config)
 		end
 	end)
 
-	task.spawn(function()
-		--task.wait(1.38583)
-		Window:Open()
-	end)
-
 	function Window:EditOpenButton(OpenButtonConfig)
 		return Window.OpenButtonMain:Edit(OpenButtonConfig)
 	end
 
+	-- Apply the button config before the window opens: Open() decides whether the
+	-- button stays on screen (CloseOnClick) or hides, so the flag must be set first.
 	if Window.OpenButton and typeof(Window.OpenButton) == "table" then
 		Window:EditOpenButton(Window.OpenButton)
 	end
+
+	task.spawn(function()
+		--task.wait(1.38583)
+		Window:Open()
+	end)
 
 	local TabModuleMain = require("./Tab")
 	local SectionModule = require("./Section")
