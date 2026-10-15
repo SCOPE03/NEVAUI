@@ -5,6 +5,9 @@
 - reworked sidebar tab rendering into a single state machine (idle, hover, pressed, active) so the background, label and icon stay in sync and hovering away no longer leaves a tab stuck lit
 - added per-state sidebar tab theme tokens: `TabBackgroundTransparency`, `TabBackgroundHover`, `TabBackgroundHoverTransparency`, `TabBackgroundPressed`, `TabBackgroundPressedTransparency`, `TabBackgroundActiveHover`, `TabBackgroundActiveHoverTransparency`, `TabBackgroundActivePressed`, `TabBackgroundActivePressedTransparency`, `TabTextTransparencyHover`, `TabIconTransparencyHover` and `TabBorderTransparencyHover`
 - updated the anime/chad-sigma examples with a soft Fluent-style pill rail
+- fixed the right-hand sidebar rail floating mid-window instead of sitting flush against the right edge
+- fixed dropdowns treating a table value's `Icon` field as an image path, which errored for theme entries
+- hardened `Creator.SanitizeFilename` against non-string input
 
 # 1.6.66
 

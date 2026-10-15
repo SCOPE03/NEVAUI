@@ -751,6 +751,12 @@ end
 Icons.Init(New, "Icon")
 
 function Creator.SanitizeFilename(url)
+	-- Callers can hand us anything (theme tables expose Icon as a Color3), and a
+	-- non-string here used to surface as "attempt to call missing method 'match'".
+	if typeof(url) ~= "string" then
+		return "asset"
+	end
+
 	local filename = url:match("([^/]+)$") or url
 
 	filename = filename:gsub("%.[^%.]+$", "")

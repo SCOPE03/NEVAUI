@@ -177,6 +177,15 @@ local __runExample = assert(__realLoadString(__MODULES[{json.dumps("src/__exampl
 setfenv(__runExample, env)
 -- Run on a scheduled thread so top-level task.wait yields instead of erroring.
 env.__spawn(__runExample)
+
+if #env.__errors > 0 then
+        print("EXAMPLE FAILED: {example_name}")
+        for _, e in ipairs(env.__errors) do
+                print("  [error] " .. e)
+        end
+        error("example raised " .. #env.__errors .. " error(s)")
+end
+
 print("EXAMPLE RAN OK: {example_name}")
 """
 
@@ -247,6 +256,14 @@ setfenv(__runExample, env)
 
 -- Run on a scheduled thread so top-level task.wait yields instead of erroring.
 env.__spawn(__runExample)
+
+if #env.__errors > 0 then
+        print("EXAMPLE FAILED: {example.name}")
+        for _, e in ipairs(env.__errors) do
+                print("  [error] " .. e)
+        end
+        error("example raised " .. #env.__errors .. " error(s)")
+end
 
 print("EXAMPLE RAN OK: {example.name}")
 """

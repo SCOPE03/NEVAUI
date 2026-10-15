@@ -25622,6 +25622,12 @@ end
 l.Init(r,"Icon")
 
 function p.SanitizeFilename(v)
+
+
+if typeof(v)~="string"then
+return"asset"
+end
+
 local x=v:match"([^/]+)$"or v
 
 x=x:gsub("%.[^%.]+$","")
@@ -33031,7 +33037,9 @@ Locked=typeof(ax)=="table"and ax.Locked or false,
 UIElements={},
 }
 local az
-if ay.Icon then
+
+
+if typeof(ay.Icon)=="string"then
 az=ak.Image(ay.Icon,ay.Icon,0,ao.Window.Folder,"Dropdown",true)
 az.Size=
 UDim2.new(0,ay.IconSize or aq.TabIcon,0,ay.IconSize or aq.TabIcon)
@@ -38527,7 +38535,7 @@ J.Position=UDim2.new(0,b.UIPadding/2,0,b.Topbar.Height+N)
 else
 G.Size=b:GetSidebarContainerSize()
 if M then
-G.Position=UDim2.new(1,-b.SideBarWidth,0,b.Topbar.Height)
+G.Position=UDim2.new(1,0,0,b.Topbar.Height)
 G.AnchorPoint=Vector2.new(1,0)
 H.Size=UDim2.new(1,-b.SideBarWidth,1,-b.Topbar.Height)
 H.Position=UDim2.new(0,0,1,0)

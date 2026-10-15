@@ -23,12 +23,20 @@ FILES=(
   examples/neva_glass_example.lua
   tests/ProgressBar.lua
   tests/200Elements.lua
+  tests/SidebarLayout.lua
   main.lua
 )
 pass=0; fail=0
 for f in "${FILES[@]}"; do
   printf '%-42s ' "$f"
-  out=$(timeout 150 python3 .harness/run_harness.py "$f" --source 2>&1 | tail -3 | tr '\n' ' ')
+  # Examples that pull the library over HttpGet must run in bundle mode; the
+  # source-mode stub serves an empty body, which leaves NevaUI nil.
+  if grep -q "HttpGet" "$f" 2>/dev/null; then
+    mode=""
+  else
+    mode="--source"
+  fi
+  out=$(timeout 150 python3 .harness/run_harness.py "$f" $mode 2>&1 | tail -3 | tr '\n' ' ')
   if echo "$out" | grep -q "EXAMPLE RAN OK"; then
     echo "PASS"; pass=$((pass + 1))
   else

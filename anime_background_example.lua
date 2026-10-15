@@ -256,10 +256,18 @@ RailPanel:Toggle({
         end,
 })
 
+-- GetThemes() returns the whole registry (key -> theme table), so collect the
+-- keys into a list. Passing the dictionary itself fed tables into the dropdown.
+local ThemeNames = {}
+for Name in next, NevaUI:GetThemes() do
+        table.insert(ThemeNames, Name)
+end
+table.sort(ThemeNames)
+
 RailPanel:Dropdown({
         Title = "Theme",
-        Values = NevaUI:GetThemes(),
-        Value = "Dark",
+        Values = ThemeNames,
+        Value = NevaUI:GetCurrentTheme(),
         Callback = function(value)
                 NevaUI:SetTheme(value)
         end,

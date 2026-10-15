@@ -24,6 +24,17 @@ bash .harness/run_all.sh                                # every example, source 
   drains a queue under a resume budget) so endless clock/render loops terminate
   instead of hanging.
 * Always rebuild after editing `src/`: the bundle-mode tests read `dist/main.lua`.
+* Most examples load the library from a hardcoded GitHub URL
+  (`raw.githubusercontent.com/SCOPE03/NEVAUI/main/dist/main.lua`), NOT the
+  local tree. In the harness `game:HttpGet` is intercepted and served
+  `dist/main.lua`, so a local build is what runs. In a real executor those
+  examples still fetch the *published* bundle, so a fix is invisible until
+  `dist/main.lua` is committed and pushed. When a user reports a bug that
+  looks fixed locally, check whether they are running the published bundle.
+* `run_all.sh` picks the mode per file: examples that call `game:HttpGet` load the
+  library themselves, so they run in bundle mode; everything else runs source mode.
+* The harness fails on any error recorded in the stub. Earlier it printed
+  "EXAMPLE RAN OK" unconditionally, which masked 8 of 13 broken examples.
 
 ### Stub fidelity gotchas
 
@@ -34,6 +45,18 @@ These were real sources of false failures; keep them accurate:
 * `Color3` needs `Lerp` and `ToHex`.
 * `HttpService:JSONDecode` must actually parse JSON. Returning `{}` made
   `NevaUI.Version` silently nil.
+* The signal list must cover every signal NevaUI connects to (`TouchPinch` was
+  missing, which broke `main2.client.lua`).
+* Executor globals scripts probe for (`printidentity`, `getidentity`) must exist.
+* `Vector3` needs arithmetic metamethods (`__add`/`__sub`/`__mul`/`__div`) and
+  `Magnitude`; camera framing in `src/elements/Viewport.lua` depends on them.
+* `Instance:IsA` walks the real class ancestry, so `Part:IsA("BasePart")` is true.
+* `Part`/`Model` carry Vector3 `Size`/`Position`/`CFrame` and implement
+  `GetBoundingBox`/`GetPivot`, since they are 3D instances, not GUI objects.
+
+`tests/SidebarLayout.lua` pins the rail geometry for Left/Right/Top: a
+right-anchored rail must use `Position.X.Scale = 1` with no horizontal offset.
+It fails if the old floating-rail offset is reintroduced.
 
 ## Theme system
 
@@ -58,5 +81,7 @@ interface built on it, including runtime theme and rail switching.
 * Tabs in Lua source are tabs, not spaces.
 * Keep naming Neva-branded. Do not reference third-party library names in the
   public surface, examples, or docs.
-* Keep the public API additive; examples and the theme dropdown enumerate
-  `GetThemes()` directly.
+* Keep the public API additive.
+* `GetThemes()` returns the whole registry (key -> theme table), not a list. To
+  populate a dropdown, collect the keys into an array first; passing the
+  dictionary directly feeds tables into the element.

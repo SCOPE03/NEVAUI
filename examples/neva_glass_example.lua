@@ -2,10 +2,10 @@
         NevaUI — NevaGlass style example
 
         A glassmorphic, gradient-accented interface built entirely with NevaUI.
-        It uses the built-in "NevaGlass" theme, a right-side icon rail and every
-        standard element: buttons, toggles, sections, dividers, sliders, colour
-        pickers, inputs, dropdowns, keybinds, labels and paragraphs. The Theme
-        and Config tabs are fully working, so this doubles as a usable base.
+        It uses the built-in "NevaGlass" theme and every standard element:
+        buttons, toggles, sections, dividers, sliders, colour pickers, inputs,
+        dropdowns, keybinds, labels and paragraphs. The Theme and Config tabs are
+        fully working, so this doubles as a usable base.
 
         Press the toggle key to show or hide the interface.
 ]]

@@ -662,7 +662,7 @@ return function(Config)
 		else
 			Container.Size = Window:GetSidebarContainerSize()
 			if IsRight then
-				Container.Position = UDim2.new(1, -Window.SideBarWidth, 0, Window.Topbar.Height)
+				Container.Position = UDim2.new(1, 0, 0, Window.Topbar.Height)
 				Container.AnchorPoint = Vector2.new(1, 0)
 				MainBar.Size = UDim2.new(1, -Window.SideBarWidth, 1, -Window.Topbar.Height)
 				MainBar.Position = UDim2.new(0, 0, 1, 0)

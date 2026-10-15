@@ -72,7 +72,67 @@ function Vector2.new(x, y)
 end
 
 local Vector3 = {}
-function Vector3.new(x, y, z) return { X = x or 0, Y = y or 0, Z = z or 0 } end
+local vector3Mt = {}
+-- Vector arithmetic is used by camera framing code, so model it.
+vector3Mt.__index = function(t, k)
+        if k == "Magnitude" then
+                return math.sqrt(t.X * t.X + t.Y * t.Y + t.Z * t.Z)
+        end
+        if k == "Unit" then
+                local m = math.sqrt(t.X * t.X + t.Y * t.Y + t.Z * t.Z)
+                if m == 0 then return Vector3.new(0, 0, 0) end
+                return Vector3.new(t.X / m, t.Y / m, t.Z / m)
+        end
+        if k == "Dot" then
+                return function(_, o) return t.X * o.X + t.Y * o.Y + t.Z * o.Z end
+        end
+        if k == "Cross" then
+                return function(_, o)
+                        return Vector3.new(
+                                t.Y * o.Z - t.Z * o.Y,
+                                t.Z * o.X - t.X * o.Z,
+                                t.X * o.Y - t.Y * o.X
+                        )
+                end
+        end
+end
+vector3Mt.__add = function(a, b) return Vector3.new(a.X + b.X, a.Y + b.Y, a.Z + b.Z) end
+vector3Mt.__sub = function(a, b) return Vector3.new(a.X - b.X, a.Y - b.Y, a.Z - b.Z) end
+vector3Mt.__mul = function(a, b)
+        if type(a) == "number" then return Vector3.new(a * b.X, a * b.Y, a * b.Z) end
+        if type(b) == "number" then return Vector3.new(a.X * b, a.Y * b, a.Z * b) end
+        return Vector3.new(a.X * b.X, a.Y * b.Y, a.Z * b.Z)
+end
+vector3Mt.__div = function(a, b)
+        if type(b) == "number" then return Vector3.new(a.X / b, a.Y / b, a.Z / b) end
+        return Vector3.new(a.X / b.X, a.Y / b.Y, a.Z / b.Z)
+end
+vector3Mt.__eq = function(a, b) return a.X == b.X and a.Y == b.Y and a.Z == b.Z end
+vector3Mt.__tostring = function(t)
+        return string.format("%g, %g, %g", t.X, t.Y, t.Z)
+end
+function Vector3.new(x, y, z)
+        return setmetatable({ X = x or 0, Y = y or 0, Z = z or 0 }, vector3Mt)
+end
+Vector3.zero = Vector3.new(0, 0, 0)
+Vector3.one = Vector3.new(1, 1, 1)
+
+local CFrame = {}
+-- Only the constructor and the fields NevaUI reads are modelled.
+function CFrame.new(pos, lookAt)
+        local position = pos or Vector3.new(0, 0, 0)
+        local frame = {
+                Position = position,
+                LookVector = Vector3.new(0, 0, -1),
+                X = position.X, Y = position.Y, Z = position.Z,
+        }
+        frame.__lookAt = lookAt
+        return frame
+end
+CFrame.identity = CFrame.new(Vector3.new(0, 0, 0))
+CFrame.Angles = function() return CFrame.new(Vector3.new(0, 0, 0)) end
+CFrame.fromEulerAnglesXYZ = CFrame.Angles
+CFrame.fromAxisAngle = function() return CFrame.new(Vector3.new(0, 0, 0)) end
 
 local ColorSequenceKeypoint = { new = function(t, c) return { Time = t, Value = c } end }
 local ColorSequence = {
@@ -131,6 +191,23 @@ end
 -- Instance
 local instanceMt = {}
 local VALID_CLASSES = {}
+
+-- Minimal ancestry so IsA("BasePart")/IsA("GuiObject") behave like Roblox.
+local CLASS_PARENTS = {
+        Part = { "BasePart", "PVInstance" },
+        Model = { "PVInstance" },
+        Frame = { "GuiObject", "GuiBase2d" },
+        ScrollingFrame = { "GuiObject", "GuiBase2d" },
+        TextLabel = { "GuiObject", "GuiBase2d" },
+        TextButton = { "GuiObject", "GuiBase2d" },
+        ImageLabel = { "GuiObject", "GuiBase2d" },
+        ImageButton = { "GuiObject", "GuiBase2d" },
+        TextBox = { "GuiObject", "GuiBase2d" },
+        CanvasGroup = { "GuiObject", "GuiBase2d" },
+        ViewportFrame = { "GuiObject", "GuiBase2d" },
+        VideoFrame = { "GuiObject", "GuiBase2d" },
+        BasePart = { "PVInstance" },
+}
 for _, n in ipairs({
         "Frame", "ScrollingFrame", "TextLabel", "TextButton", "ImageLabel", "ImageButton",
         "TextBox", "UIListLayout", "UIGridLayout", "UIPadding", "UICorner", "UIStroke",
@@ -199,6 +276,7 @@ local SIGNALS = {
         "Changed", "FocusLost", "Focused", "ReturnPressed", "Activated",
         "ChildAdded", "ChildRemoved", "DescendantAdded", "AncestryChanged",
         "Destroying", "MouseWheelForward", "MouseWheelBackward", "TouchTap",
+        "TouchPinch", "TouchLongPress", "TouchStarted", "TouchMoved", "TouchEnded",
 }
 
 instanceMt.__index = function(t, k)
@@ -236,6 +314,15 @@ local function makeInstance(className)
         end
         self._props.ClassName = className
         self._props.Name = className
+
+        -- 3D instances use Vector3 geometry, not the GUI UDim2 defaults.
+        if className == "Part" or className == "MeshPart" or className == "Model" then
+                self._props.Size = Vector3.new(4, 1, 2)
+                self._props.Position = Vector3.new(0, 0, 0)
+                self._props.CFrame = CFrame.new(Vector3.new(0, 0, 0))
+                self._props.Anchored = false
+                self._props.CanCollide = true
+        end
 
         for _, sig in ipairs(SIGNALS) do
                 self._props[sig] = Signal.new()
@@ -287,7 +374,40 @@ local function makeInstance(className)
                 if f then return f end
                 error("WaitForChild timed out: " .. tostring(name))
         end
-        m.IsA = function(_, cls) return rawget(self, "_props").ClassName == cls end
+        m.IsA = function(_, cls)
+                local actual = rawget(self, "_props").ClassName
+                if actual == cls then return true end
+                -- Walk the ancestry so Part:IsA("BasePart") behaves like Roblox.
+                local parents = CLASS_PARENTS[actual]
+                while parents do
+                        for _, p in ipairs(parents) do
+                                if p == cls then return true end
+                        end
+                        local nextParents = {}
+                        for _, p in ipairs(parents) do
+                                for _, gp in ipairs(CLASS_PARENTS[p] or {}) do
+                                        table.insert(nextParents, gp)
+                                end
+                        end
+                        parents = #nextParents > 0 and nextParents or nil
+                end
+                return false
+        end
+        m.GetBoundingBox = function()
+                local size = rawget(self, "_props").Size or Vector3.new(4, 1, 2)
+                local position = rawget(self, "_props").Position or Vector3.new(0, 0, 0)
+                if type(size.X) ~= "number" then size = Vector3.new(4, 1, 2) end
+                if type(position.X) ~= "number" then position = Vector3.new(0, 0, 0) end
+                return CFrame.new(position), size
+        end
+        m.GetPivot = function()
+                local position = rawget(self, "_props").Position or Vector3.new(0, 0, 0)
+                if type(position.X) == "number" then
+                        return CFrame.new(position)
+                end
+                return CFrame.new(Vector3.new(0, 0, 0))
+        end
+        m.PivotTo = function() end
         m.Clone = function() return makeInstance(rawget(self, "_props").ClassName) end
         m.Destroy = function()
                 local p = rawget(self, "_props").Parent
@@ -556,6 +676,7 @@ env.UDim = UDim
 env.UDim2 = UDim2
 env.Vector2 = Vector2
 env.Vector3 = Vector3
+env.CFrame = CFrame
 env.Color3 = Color3
 env.ColorSequence = ColorSequence
 env.ColorSequenceKeypoint = ColorSequenceKeypoint
@@ -581,12 +702,22 @@ end
 local __ResumeBudget = 2000
 local __Draining = false
 local __Queue = {}
+local __Errors = {}
 
 local function __Resume(co, ...)
         if __ResumeBudget <= 0 then return false end
         __ResumeBudget -= 1
-        return coroutine.resume(co, ...)
+        local ok, err = coroutine.resume(co, ...)
+        if not ok then
+                -- Swallowing this hides every error raised inside a spawned thread,
+                -- which makes failures look like silent no-ops.
+                local trace = debug and debug.traceback and debug.traceback(co) or ""
+                table.insert(__Errors, tostring(err) .. "\n" .. trace)
+        end
+        return ok, err
 end
+
+env.__errors = __Errors
 
 local function __Drain()
         if __Draining then return end
@@ -627,6 +758,9 @@ env.wait = env.task.wait
 env.spawn = env.task.spawn
 env.delay = env.task.delay
 env.tick = os.time
+-- Executor globals real scripts commonly probe for.
+env.printidentity = function() return 2 end
+env.getidentity = function() return 2 end
 env.time = os.time
 env.isfolder = function() return true end
 env.isfile = function() return false end

@@ -300,7 +300,9 @@ function DropdownMenu.New(Config, Dropdown, Element, Type)
 					UIElements = {},
 				}
 				local TabIcon
-				if TabMain.Icon then
+				-- Only a string is an image path. Theme tables expose Icon as a Color3,
+				-- and passing that through used to error inside SanitizeFilename.
+				if typeof(TabMain.Icon) == "string" then
 					TabIcon = Creator.Image(TabMain.Icon, TabMain.Icon, 0, Config.Window.Folder, "Dropdown", true)
 					TabIcon.Size =
 						UDim2.new(0, TabMain.IconSize or Element.TabIcon, 0, TabMain.IconSize or Element.TabIcon)
