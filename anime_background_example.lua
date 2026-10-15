@@ -47,6 +47,8 @@ local Window = NevaUI:CreateWindow({
                 ToggleBar = Color3.fromRGB(92, 70, 70),
         },
         Sidebar = {
+                Position = "Left",
+                Type = "Default",
                 Width = 256,
                 Padding = 12,
                 Gap = 8,

@@ -51,14 +51,24 @@ local Window = NevaUI:CreateWindow({
                 -- URL = "https://example.com/key", -- set this to show a "Get key" button
         },
 
-        -- Right-side icon rail keeps the content area wide.
+        -- Left rail with a brand block, matching the reference layout.
         Sidebar = {
-                Position = "Right",
+                Position = "Left",
                 Type = "Default",
-                Width = 190,
-                Padding = 8,
-                Gap = 6,
-                Divider = false,
+                Width = 210,
+                Padding = 10,
+                Gap = 8,
+                Divider = true,
+                DividerColor = Color3.fromRGB(117, 164, 206),
+                Brand = {
+                        Layout = "Horizontal",
+                        Title = "NevaUI",
+                        TitleSize = 19,
+                        Height = 56,
+                },
+                TabHeight = 34,
+                TabRadius = 10,
+                IconSize = 20,
         },
 
         Topbar = {

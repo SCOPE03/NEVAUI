@@ -1,6 +1,15 @@
 #!/bin/bash
 # Runs every example/test in the repo in source mode and reports pass/fail.
-cd /workspace/project/NEVAUI || exit 1
+cd "$(dirname "$0")/.." || exit 1
+
+# darklua is only needed for bundle-mode runs; prefer whatever is on PATH.
+for candidate in "$DARKLUA" /workspace/bin/darklua /usr/local/bin/darklua; do
+  if [ -n "$candidate" ] && [ -x "$candidate" ]; then
+    export PATH="$(dirname "$candidate"):$PATH"
+    break
+  fi
+done
+
 FILES=(
   Example.lua
   anime_background_example.lua

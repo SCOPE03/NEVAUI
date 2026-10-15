@@ -5,14 +5,39 @@ The Luau CLI has no `io`/`load`/`dofile`, so the three pieces are embedded as
 strings and evaluated with setfenv, mirroring how an executor runs a script.
 """
 import json
+import os
 import pathlib
+import shutil
 import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STUB = ROOT / ".harness" / "roblox_stub.luau"
 BUNDLE = ROOT / "dist" / "main.lua"
-LUAU = pathlib.Path("/tmp/luau")
+
+
+def _find_luau() -> pathlib.Path:
+    """Locate the luau interpreter, tolerating ephemeral /tmp installs."""
+    candidates = [
+        os.environ.get("LUAU"),
+        str(ROOT / ".harness" / "bin" / "luau"),
+        "/workspace/bin/luau",
+        "/usr/local/bin/luau",
+        "/tmp/luau",
+    ]
+    for candidate in candidates:
+        if candidate and pathlib.Path(candidate).exists():
+            return pathlib.Path(candidate)
+    found = shutil.which("luau")
+    if found:
+        return pathlib.Path(found)
+    raise SystemExit(
+        "luau interpreter not found. Install it and set LUAU=/path/to/luau, "
+        "or place it at .harness/bin/luau."
+    )
+
+
+LUAU = _find_luau()
 
 
 def long_string(text: str, name: str) -> str:
