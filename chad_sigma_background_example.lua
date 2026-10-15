@@ -4,7 +4,7 @@
 
 local LibraryUrl = "https://raw.githubusercontent.com/SCOPE03/NEVAUI/main/dist/main.lua"
 local BackgroundImage = "rbxassetid://117316815074414"
-local LogoAsset = "rbxassetid://76738354597155"
+local LogoAsset = "rbxassetid://85413415772370"
 local LoadString = loadstring or load
 
 local Success, Result = pcall(function()
@@ -26,7 +26,10 @@ local Window = NevaUI:CreateWindow({
         Logo = LogoAsset,
         IconSize = 38,
         Background = BackgroundImage,
-        BackgroundImageTransparency = 0.15,
+        -- Slightly translucent window: the background image and the window
+        -- surface both let the game show through a little.
+        BackgroundImageTransparency = 0.3,
+        Transparent = true,
         HidePanelBackground = true,
         Size = UDim2.fromOffset(850, 500),
         Folder = "NevaUIAnimeExample",
