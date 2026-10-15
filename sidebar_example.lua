@@ -44,6 +44,12 @@ local Window = NevaUI:CreateWindow({
 
 	-- All new sidebar configuration options.
 	Sidebar = {
+		-- Position: "Left" (default), "Right" or "Top". A Top rail is a horizontal
+		-- tab strip under the top bar.
+		Position = "Left",
+		-- Type: "Default", "Icon" (labels hidden), "Compact" (tighter rows) or
+		-- "Segmented" (tabs butted together into one control).
+		Type = "Default",
 		Width = 230,
 		Padding = 10,
 		Gap = 8,
@@ -80,7 +86,7 @@ local OverviewTab = Window:Tab({
 
 OverviewTab:Paragraph({
 	Title = "Configurable Sidebar",
-	Desc = "This example demonstrates width, padding, gap, divider visibility, divider thickness, divider transparency, divider color, and the runtime divider API.",
+	Desc = "This example demonstrates position, type, width, padding, gap, divider visibility, divider thickness, divider transparency, divider color, and the runtime rail API.",
 	Image = "solar:sidebar-minimalistic-bold",
 })
 
@@ -103,7 +109,38 @@ ControlsTab:Toggle({
 
 ControlsTab:Paragraph({
 	Title = "Current configuration",
-	Desc = "Width: 230 | Padding: 10 | Gap: 8 | Divider thickness: 2 | Transparency: 0.72",
+	Desc = "Position: Left | Type: Default | Width: 230 | Padding: 10 | Gap: 8 | Divider thickness: 2 | Transparency: 0.72",
+})
+
+-- The rail can move and change presentation at runtime. Every tab, the content
+-- panel and the sliding selector are measured again for the new axis.
+ControlsTab:Dropdown({
+	Title = "Sidebar position",
+	Desc = "Move the navigation rail.",
+	Values = { "Left", "Right", "Top" },
+	Value = "Left",
+	Callback = function(value)
+		Window:SetSidebarPosition(value)
+	end,
+})
+
+ControlsTab:Dropdown({
+	Title = "Sidebar type",
+	Desc = "Change how the rail presents its tabs.",
+	Values = { "Default", "Icon", "Compact", "Segmented" },
+	Value = "Default",
+	Callback = function(value)
+		Window:SetSidebarType(value)
+	end,
+})
+
+ControlsTab:Slider({
+	Title = "Sidebar width",
+	Desc = "Pins an explicit rail width.",
+	Value = { Min = 120, Max = 320, Default = 230 },
+	Callback = function(value)
+		Window:SetSidebarWidth(value)
+	end,
 })
 
 local StylesTab = Window:Tab({
@@ -198,3 +235,8 @@ AboutTab:Paragraph({
 -- The divider can also be controlled directly from any callback:
 -- Window:SetSidebarDivider(false)
 -- Window:SetSidebarDivider(true)
+--
+-- And the rail itself can be reconfigured at any time:
+-- Window:SetSidebarPosition("Top")
+-- Window:SetSidebarType("Icon")
+-- Window:SetSidebarWidth(240)

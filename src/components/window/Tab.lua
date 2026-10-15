@@ -73,6 +73,16 @@ function TabModule.New(Config, UIScale)
 		TitlePaddingY = 0,
 	}
 
+	-- Rail geometry flags. IconOnly drops the label so the rail can be a narrow
+	-- icon column; Segmented butts tabs together into one connected control; a Top
+	-- rail lays tabs horizontally and hugs each label instead of filling the width.
+	-- The pre-rail values are kept so a runtime Type change can restore them.
+	Tab.BaseUICorner = Tab.UICorner
+	local IsTopRail = Window.SidebarIsTop == true
+	local IconOnly = Window.SidebarIconOnly == true and not Tab.IconShape and Tab.Icon ~= nil
+	Tab.IconOnly = IconOnly
+	Tab.IsTopRail = IsTopRail
+
 	-- if Tab.TabTitleAlign == "Left" then
 	-- 	Tab.TabTitleAlign = "Top"
 	-- elseif Tab.TabTitleAlign == "Right" then
@@ -86,49 +96,52 @@ function TabModule.New(Config, UIScale)
 		Tab.TabPaddingY = 2 + (Window.UIPadding / 4)
 		Tab.TitlePaddingY = 2 + (Window.UIPadding / 4)
 	end
+	Tab.BaseTabPaddingX = Tab.TabPaddingX
 
 	TabModule.TabCount = TabModule.TabCount + 1
 
 	local TabIndex = TabModule.TabCount
 	Tab.Index = TabIndex
 
-	Tab.UIElements.Main = Creator.NewRoundFrame(Tab.UICorner, "Squircle", {
+	local OutlineInstance, OutlineShape = Creator.NewRoundFrame(Tab.UICorner - 1, "Glass-1.4", {
+		Size = UDim2.new(1, 1, 1, 1),
+		ThemeTag = {
+			ImageColor3 = "TabBorder",
+		},
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		ImageTransparency = 1, -- .7
+		Name = "Outline",
+	}, {
+		-- New("UIGradient", {
+		--     Rotation = 80,
+		--     Color = ColorSequence.new({
+		--         ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 255, 255)),
+		--         ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
+		--         ColorSequenceKeypoint.new(1.0, Color3.fromRGB(255, 255, 255)),
+		--     }),
+		--     Transparency = NumberSequence.new({
+		--         NumberSequenceKeypoint.new(0.0, 0.1),
+		--         NumberSequenceKeypoint.new(0.5, 1),
+		--         NumberSequenceKeypoint.new(1.0, 0.1),
+		--     })
+		-- }),
+	})
+
+	local MainInstance, MainShape = Creator.NewRoundFrame(Tab.UICorner, "Squircle", {
 		BackgroundTransparency = 1,
-		Size = UDim2.new(1, -7, 0, Window.SidebarTabHeight or 0),
-		AutomaticSize = Window.SidebarTabHeight and "None" or "Y",
 		Parent = Config.Parent,
 		ThemeTag = {
 			ImageColor3 = "TabBackground",
 		},
 		ImageTransparency = 1,
 	}, {
-		Creator.NewRoundFrame(Tab.UICorner - 1, "Glass-1.4", {
-			Size = UDim2.new(1, 1, 1, 1),
-			ThemeTag = {
-				ImageColor3 = "TabBorder",
-			},
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			Position = UDim2.new(0.5, 0, 0.5, 0),
-			ImageTransparency = 1, -- .7
-			Name = "Outline",
-		}, {
-			-- New("UIGradient", {
-			--     Rotation = 80,
-			--     Color = ColorSequence.new({
-			--         ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 255, 255)),
-			--         ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)),
-			--         ColorSequenceKeypoint.new(1.0, Color3.fromRGB(255, 255, 255)),
-			--     }),
-			--     Transparency = NumberSequence.new({
-			--         NumberSequenceKeypoint.new(0.0, 0.1),
-			--         NumberSequenceKeypoint.new(0.5, 1),
-			--         NumberSequenceKeypoint.new(1.0, 0.1),
-			--     })
-			-- }),
-		}),
+		OutlineInstance,
 		Creator.NewRoundFrame(Tab.UICorner, "Squircle", {
-			Size = UDim2.new(1, 0, Window.SidebarTabHeight and 1 or 0, 0),
-			AutomaticSize = Window.SidebarTabHeight and "None" or "Y",
+			-- A Top rail sizes the whole tab from its content, so the label frame must take
+			-- its width from the text rather than scale-1 of the tab (which is circular).
+			Size = IsTopRail and UDim2.new(0, 0, 1, 0) or UDim2.new(1, 0, Window.SidebarTabHeight and 1 or 0, 0),
+			AutomaticSize = IsTopRail and "X" or (Window.SidebarTabHeight and "None" or "Y"),
 			ThemeTag = {
 				ImageColor3 = "Text",
 			},
@@ -137,9 +150,10 @@ function TabModule.New(Config, UIScale)
 		}, {
 			New("UIListLayout", {
 				SortOrder = "LayoutOrder",
-				Padding = UDim.new(0, 2 + (Window.UIPadding / 2)),
+				Padding = UDim.new(0, IconOnly and 0 or 2 + (Window.UIPadding / 2)),
 				FillDirection = "Horizontal",
 				VerticalAlignment = "Center",
+				HorizontalAlignment = IconOnly and "Center" or "Left",
 			}),
 			New("TextLabel", {
 				Text = Tab.Title,
@@ -148,11 +162,12 @@ function TabModule.New(Config, UIScale)
 				},
 				TextTransparency = not Tab.Locked and 0.4 or 0.7,
 				TextSize = 15,
-				Size = UDim2.new(1, 0, 0, 0),
+				Size = IsTopRail and UDim2.new(0, 0, 1, 0) or UDim2.new(1, 0, 0, 0),
+				Visible = not IconOnly,
 				FontFace = Font.new(Creator.Font, Enum.FontWeight.Medium),
-				TextWrapped = true,
+				TextWrapped = not IsTopRail,
 				RichText = true,
-				AutomaticSize = "Y",
+				AutomaticSize = IsTopRail and "X" or "Y",
 				LayoutOrder = 2,
 				TextXAlignment = "Left",
 				BackgroundTransparency = 1,
@@ -166,12 +181,15 @@ function TabModule.New(Config, UIScale)
 			}),
 			New("UIPadding", {
 				PaddingTop = UDim.new(0, Tab.TabPaddingY),
-				PaddingLeft = UDim.new(0, Tab.TabPaddingX),
-				PaddingRight = UDim.new(0, Tab.TabPaddingX),
+				PaddingLeft = UDim.new(0, IsTopRail and 12 or Tab.TabPaddingX),
+				PaddingRight = UDim.new(0, IsTopRail and 12 or Tab.TabPaddingX),
 				PaddingBottom = UDim.new(0, Tab.TabPaddingY),
 			}),
 		}),
 	}, true)
+	Tab.UIElements.Main = MainInstance
+	Tab.UIElements.MainShape = MainShape
+	Tab.UIElements.OutlineShape = OutlineShape
 
 	local TextOffset = 0
 	local Icon
@@ -461,29 +479,40 @@ function TabModule.New(Config, UIScale)
 	local MouseConn
 	local IsHovering = false
 
-	-- ToolTip
-	if Tab.Desc then
-		Creator.AddSignal(Tab.UIElements.Main.InputBegan, function()
-			IsHovering = true
-			hoverTimer = task.spawn(function()
-				task.wait(0.35)
-				if IsHovering and not ToolTip then
-					ToolTip = CreateToolTip(Tab.Desc, TabModule.ToolTipParent, true)
-					ToolTip.Container.AnchorPoint = Vector2.new(0.5, 0.5)
-
-					local function updatePosition()
-						if ToolTip then
-							ToolTip.Container.Position = UDim2.new(0, Mouse.X, 0, Mouse.Y - 4)
-						end
-					end
-
-					updatePosition()
-					MouseConn = Mouse.Move:Connect(updatePosition)
-					ToolTip:Open()
-				end
-			end)
-		end)
+	-- ToolTip. An icon-only rail hides the label, so fall back to the tab title to
+	-- keep the tab identifiable on hover. The text is resolved per hover because the
+	-- rail Type can change after the tab is created.
+	local function GetTooltipText()
+		if Tab.IconOnly then
+			return Tab.Desc or Tab.Title
+		end
+		return Tab.Desc
 	end
+
+	Creator.AddSignal(Tab.UIElements.Main.InputBegan, function()
+		if not GetTooltipText() then
+			return
+		end
+		IsHovering = true
+		hoverTimer = task.spawn(function()
+			task.wait(0.35)
+			local TooltipText = GetTooltipText()
+			if IsHovering and not ToolTip and TooltipText then
+				ToolTip = CreateToolTip(TooltipText, TabModule.ToolTipParent, true)
+				ToolTip.Container.AnchorPoint = Vector2.new(0.5, 0.5)
+
+				local function updatePosition()
+					if ToolTip then
+						ToolTip.Container.Position = UDim2.new(0, Mouse.X, 0, Mouse.Y - 4)
+					end
+				end
+
+				updatePosition()
+				MouseConn = Mouse.Move:Connect(updatePosition)
+				ToolTip:Open()
+			end
+		end)
+	end)
 
 	-- Tabs share one state machine (idle/hover/pressed, selected or not) so the
 	-- background, label and icon always agree. Driving them from a single place
@@ -570,9 +599,6 @@ function TabModule.New(Config, UIScale)
 	Tab.RefreshState = ApplyTabState
 
 	local function ClearTooltip()
-		if not Tab.Desc then
-			return
-		end
 		IsHovering = false
 		if hoverTimer then
 			task.cancel(hoverTimer)
@@ -611,6 +637,101 @@ function TabModule.New(Config, UIScale)
 		ApplyTabState()
 		ClearTooltip()
 	end)
+
+	-- The icon branches reserve label width by shrinking the label. Remember the inset
+	-- they applied so a rail relayout re-applies it instead of letting the label run
+	-- under the icon.
+	Tab.TextOffset = Tab.UIElements.Main.Frame.TextLabel.Size.X.Offset
+
+	-- Recompute every rail-dependent measurement. Runs at build time and again
+	-- whenever the window changes Sidebar.Position or Sidebar.Type.
+	function Tab:ApplyRailLayout()
+		local IsTop = Window.SidebarIsTop == true
+		local Segmented = Window.SidebarType == "Segmented"
+		-- An icon-only rail needs an icon to stay usable, so fall back to a labelled
+		-- tab when the config did not supply one.
+		local IconOnlyNow = Window.SidebarIconOnly == true and not Tab.IconShape and Tab.Icon ~= nil
+		Tab.IconOnly = IconOnlyNow
+		Tab.IsTopRail = IsTop
+
+		local Main = Tab.UIElements.Main
+		local LabelFrame = Main and Main:FindFirstChild("Frame")
+		local TextLabel = LabelFrame and LabelFrame:FindFirstChild("TextLabel")
+		local List = LabelFrame and LabelFrame:FindFirstChild("UIListLayout")
+		local LabelPadding = LabelFrame and LabelFrame:FindFirstChild("UIPadding")
+		local TabList = Window.UIElements.SideBar.Frame
+		local TabListLayout = TabList and TabList:FindFirstChild("UIListLayout")
+		local TabListPadding = TabList and TabList:FindFirstChild("UIPadding")
+
+		if TabListLayout then
+			TabListLayout.FillDirection = IsTop and "Horizontal" or "Vertical"
+		end
+		if TabListPadding then
+			TabListPadding.PaddingRight = UDim.new(0, IsTop and Window.SidebarGap or Window.SidebarPadding)
+			TabListPadding.PaddingBottom = UDim.new(0, IsTop and 0 or Window.UIPadding / 2)
+		end
+
+		-- The rail Type owns the corner radius: Segmented softens it, otherwise the
+		-- base radius applies. Re-apply it to the live shapes because they cache the
+		-- value they were built with.
+		local RailCorner = Segmented and math.min(Tab.BaseUICorner, 8) or Tab.BaseUICorner
+		Tab.UICorner = RailCorner
+		if Tab.UIElements.MainShape then
+			Tab.UIElements.MainShape:SetRadius(RailCorner)
+		end
+		if Tab.UIElements.OutlineShape then
+			Tab.UIElements.OutlineShape:SetRadius(RailCorner - 1)
+		end
+
+		local SidebarTabHeight = Window.SidebarTabHeight
+
+		if not Main then
+			return
+		end
+
+		if IsTop then
+			Main.Size = UDim2.new(0, 0, 1, 0)
+			Main.AutomaticSize = "X"
+		elseif IconOnlyNow then
+			local IconButtonSize = SidebarTabHeight or 38
+			Main.Size = UDim2.new(0, IconButtonSize, 0, IconButtonSize)
+			Main.AutomaticSize = "None"
+		elseif SidebarTabHeight then
+			Main.Size = UDim2.new(1, Segmented and -4 or -7, 0, SidebarTabHeight)
+			Main.AutomaticSize = "None"
+		else
+			Main.Size = UDim2.new(1, Segmented and -4 or -7, 0, 0)
+			Main.AutomaticSize = "Y"
+		end
+
+		if LabelFrame then
+			LabelFrame.Size = IsTop and UDim2.new(0, 0, 1, 0)
+				or UDim2.new(1, 0, SidebarTabHeight and 1 or 0, 0)
+			LabelFrame.AutomaticSize = IsTop and "X" or (SidebarTabHeight and "None" or "Y")
+		end
+		if List then
+			List.Padding = UDim.new(0, IconOnlyNow and 0 or 2 + (Window.UIPadding / 2))
+			List.HorizontalAlignment = IconOnlyNow and "Center" or "Left"
+		end
+		if LabelPadding then
+			-- An icon-only rail has no label, so the only inset is the icon centering.
+			local LabelInset = IconOnlyNow and 0 or (IsTop and 12 or Tab.BaseTabPaddingX)
+			LabelPadding.PaddingLeft = UDim.new(0, LabelInset)
+			LabelPadding.PaddingRight = UDim.new(0, LabelInset)
+		end
+		if TextLabel then
+			-- A Top rail lets automatic sizing place the label after the icon inside the
+			-- horizontal list; a vertical tab keeps the inset the icon reserved.
+			TextLabel.Size = IsTop and UDim2.new(0, 0, 1, 0) or UDim2.new(1, Tab.TextOffset or 0, 0, 0)
+			TextLabel.AutomaticSize = IsTop and "X" or "Y"
+			TextLabel.TextWrapped = not IsTop
+			TextLabel.Visible = not IconOnlyNow
+		end
+	end
+
+	-- Run once at build time so a tab created before any rail change still matches
+	-- the current Sidebar.Position / Sidebar.Type.
+	Tab:ApplyRailLayout()
 
 	-- Render the initial (idle) look through the same path so a freshly created
 	-- tab already matches the theme instead of the hardcoded starting values.
@@ -784,6 +905,24 @@ end
 
 function TabModule:OnChange(func)
 	TabModule.OnChangeFunc = func
+end
+
+-- Rebuild every tab for the current rail axis. The window calls this after it
+-- changes Sidebar.Position or Sidebar.Type at runtime.
+function TabModule:ApplyRailLayout()
+	for _, TabObject in next, TabModule.Tabs do
+		if TabObject.ApplyRailLayout then
+			local ok, err = pcall(function()
+				TabObject:ApplyRailLayout()
+			end)
+			if not ok then
+				warn("[ NevaUI.Tab ] Failed to relayout tab: " .. tostring(err))
+			end
+		end
+	end
+	if TabModule.SelectedTab and TabModule.Tabs[TabModule.SelectedTab] then
+		TabModule.OnSelectorTargetFunc(TabModule.Tabs[TabModule.SelectedTab])
+	end
 end
 
 function TabModule:SelectTab(TabIndex)

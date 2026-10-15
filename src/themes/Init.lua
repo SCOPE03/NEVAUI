@@ -376,5 +376,112 @@ return function(NevaUI, Creator)
 
 			Icon = Color3.fromHex("#ffffff"),
 		},
+
+			Luna = {
+				Name = "Luna",
+
+				Accent = Color3.fromHex("#201e26"),
+				Dialog = Color3.fromHex("#1e2128"),
+				Text = Color3.fromHex("#f2f2f5"),
+				Placeholder = Color3.fromHex("#8d8899"),
+				Background = Color3.fromHex("#18171d"),
+				Button = Color3.fromHex("#575468"),
+				Icon = Color3.fromHex("#ddd9e6"),
+				Toggle = Color3.fromHex("#7bc9c9"),
+				Slider = Color3.fromHex("#75a4ce"),
+				Checkbox = Color3.fromHex("#75a4ce"),
+
+				Primary = Color3.fromHex("#75a4ce"),
+				SliderIcon = Color3.fromHex("#8d8899"),
+
+				PanelBackground = Color3.fromHex("#1e2128"),
+				PanelBackgroundTransparency = 0.2,
+
+				LabelBackground = Color3.fromHex("#201e26"),
+				LabelBackgroundTransparency = 0.35,
+
+				ElementBackground = Color3.fromHex("#201e26"),
+				ElementBackgroundTransparency = 0.35,
+				ElementBackgroundHover = Color3.fromHex("#2a2833"),
+				ElementTitle = Color3.fromHex("#f2f2f5"),
+				ElementDesc = Color3.fromHex("#8d8899"),
+				ElementIcon = Color3.fromHex("#ddd9e6"),
+
+				SidebarBackground = Color3.fromHex("#16151a"),
+				SidebarBackgroundTransparency = 0.25,
+				SidebarSelector = Color3.fromHex("#575468"),
+
+				TabBackground = Color3.fromHex("#2a2833"),
+				TabBackgroundTransparency = 1,
+				TabBackgroundHover = Color3.fromHex("#2a2833"),
+				TabBackgroundHoverTransparency = 0.45,
+				TabBackgroundPressed = Color3.fromHex("#2a2833"),
+				TabBackgroundPressedTransparency = 0.35,
+				TabBackgroundActive = Color3.fromHex("#2a2833"),
+				TabBackgroundActiveTransparency = 0.15,
+				TabBackgroundActiveHover = Color3.fromHex("#332f3f"),
+				TabBackgroundActiveHoverTransparency = 0.05,
+				TabBackgroundActivePressed = Color3.fromHex("#332f3f"),
+				TabBackgroundActivePressedTransparency = 0.1,
+				TabTextTransparency = 0.35,
+				TabTextTransparencyHover = 0.15,
+				TabTextTransparencyActive = 0,
+				TabIconTransparency = 0.35,
+				TabIconTransparencyHover = 0.2,
+				TabIconTransparencyActive = 0,
+				TabBorderTransparency = 1,
+				TabBorderTransparencyHover = 0.8,
+				TabBorderTransparencyActive = 0.6,
+				TabBorder = Color3.fromHex("#575468"),
+
+				WindowTopbarTitle = Color3.fromHex("#f2f2f5"),
+				WindowTopbarAuthor = Color3.fromHex("#8d8899"),
+				WindowTopbarIcon = Color3.fromHex("#ddd9e6"),
+				WindowTopbarButtonIcon = Color3.fromHex("#ddd9e6"),
+				WindowSearchBarBackground = Color3.fromHex("#201e26"),
+
+				ToggleBar = Color3.fromHex("#575468"),
+				SliderThumb = Color3.fromHex("#ffffff"),
+
+				ProgressBar = Color3.fromHex("#75a4ce"),
+				ProgressBarTrack = Color3.fromHex("#f2f2f5"),
+				ProgressBarTrackTransparency = 0.88,
+				ProgressBarText = Color3.fromHex("#f2f2f5"),
+
+				SectionBox = Color3.fromHex("#f2f2f5"),
+				SectionBoxTransparency = 0.92,
+				SectionBoxBackground = Color3.fromHex("#f2f2f5"),
+				SectionBoxBackgroundTransparency = 0.95,
+
+				SearchBarBorder = Color3.fromHex("#575468"),
+				SearchBarBorderTransparency = 0.55,
+
+				Notification = Color3.fromHex("#1e2128"),
+				Notification2 = Color3.fromHex("#2a2833"),
+				Notification2Transparency = 0.35,
+				NotificationTitle = Color3.fromHex("#f2f2f5"),
+				NotificationContent = Color3.fromHex("#f2f2f5"),
+				NotificationContentTransparency = 0.35,
+				NotificationDuration = Color3.fromHex("#75a4ce"),
+				NotificationDurationTransparency = 0.2,
+				NotificationBorder = Color3.fromHex("#575468"),
+				NotificationBorderTransparency = 0.55,
+
+				DropdownBackground = Color3.fromHex("#1e2128"),
+				DropdownTabBackground = Color3.fromHex("#201e26"),
+				DropdownTabBorder = Color3.fromHex("#575468"),
+
+				CheckboxBorder = Color3.fromHex("#ffffff"),
+				CheckboxBorderTransparency = 0.6,
+
+				Tooltip = Color3.fromHex("#201e26"),
+				TooltipText = Color3.fromHex("#ffffff"),
+				TooltipSecondary = Color3.fromHex("#75a4ce"),
+				TooltipSecondaryText = Color3.fromHex("#ffffff"),
+
+				SectionIcon = Color3.fromHex("#ddd9e6"),
+				SectionExpandIcon = Color3.fromHex("#ddd9e6"),
+				TabSectionIcon = Color3.fromHex("#ddd9e6"),
+			},
 	}
 end

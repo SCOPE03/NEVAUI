@@ -77,7 +77,9 @@ end)
 local LocalPlayer = Players.LocalPlayer or nil
 
 local Package = HttpService:JSONDecode(require("../build/package"))
-if Package then
+-- Keep the placeholder version when the package metadata is missing or
+-- malformed, otherwise NevaUI.Version would become nil.
+if type(Package) == "table" and Package.version then
 	NevaUI.Version = Package.version
 end
 
@@ -194,25 +196,51 @@ function NevaUI:AddTheme(LTheme)
 	return LTheme
 end
 
-function NevaUI:SetTheme(Value)
-	if NevaUI.Themes[Value] then
-		NevaUI.Theme = NevaUI.Themes[Value]
-		Creator.SetTheme(NevaUI.Themes[Value], NevaUI.ThemeColors)
-
-		if NevaUI.OnThemeChangeFunction then
-			NevaUI.OnThemeChangeFunction(Value)
-		end
-
-		return NevaUI.Themes[Value]
+local function ResolveThemeKey(Value)
+	if type(Value) == "table" and Value.Name then
+		Value = Value.Name
 	end
+
+	if NevaUI.Themes[Value] then
+		return Value
+	end
+
+	-- Themes may be registered under a compact key while exposing a spaced
+	-- display name ("CottonCandy" / "Cotton Candy"), so accept either form.
+	for Key, Theme in next, NevaUI.Themes do
+		if Theme.Name == Value then
+			return Key
+		end
+	end
+
 	return nil
+end
+
+function NevaUI:SetTheme(Value)
+	local Key = ResolveThemeKey(Value)
+
+	if not Key then
+		error('Unknown theme "' .. tostring(Value) .. '". Use a theme name from NevaUI:GetThemes().', 2)
+	end
+
+	NevaUI.ThemeKey = Key
+	NevaUI.Theme = NevaUI.Themes[Key]
+	Creator.SetTheme(NevaUI.Theme, NevaUI.ThemeColors)
+
+	if NevaUI.OnThemeChangeFunction then
+		NevaUI.OnThemeChangeFunction(NevaUI.Theme.Name)
+	end
+
+	return NevaUI.Theme
 end
 
 function NevaUI:GetThemes()
 	return NevaUI.Themes
 end
+
+-- Returns the registry key, which is what GetThemes() is indexed by.
 function NevaUI:GetCurrentTheme()
-	return NevaUI.Theme.Name
+	return NevaUI.ThemeKey or (NevaUI.Theme and NevaUI.Theme.Name)
 end
 function NevaUI:GetTransparency()
 	return NevaUI.Transparent or false
@@ -327,15 +355,18 @@ function NevaUI:CreateWindow(Config)
 
 	local CanLoadWindow = true
 
-	local Theme = NevaUI.Themes[Config.Theme or "Dark"]
-	if not Theme then
+	local ThemeKey = ResolveThemeKey(Config.Theme or "Dark")
+	if not ThemeKey then
 		error('Unknown Theme "' .. tostring(Config.Theme) .. '". Use a theme name from NevaUI:GetThemes().', 2)
 	end
+
+	local Theme = NevaUI.Themes[ThemeKey]
 	if Config.ThemeColors ~= nil and type(Config.ThemeColors) ~= "table" then
 		error("ThemeColors must be a table of theme-token overrides.", 2)
 	end
 
-	--NevaUI.Theme = Theme
+	NevaUI.ThemeKey = ThemeKey
+	NevaUI.Theme = Theme
 	NevaUI.ThemeColors = Config.ThemeColors
 	Creator.SetTheme(Theme, NevaUI.ThemeColors)
 

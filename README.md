@@ -210,6 +210,47 @@ The active and pressed states always win over hover, so a selected tab keeps
 its accent while the pointer is over it. Set `TabBackgroundTransparency`
 below `1` to give every idle tab a visible pill.
 
+### Built-in themes
+
+`NevaUI:GetThemes()` returns every registered theme. Set one by name with
+`Theme` when creating the window, or switch at runtime with `NevaUI:SetTheme`.
+Theme names are matched case-sensitively and both the registry key and the
+display name are accepted, so `"CottonCandy"` and `"Cotton Candy"` both work.
+
+| Theme | Look |
+|---|---|
+| `Dark` | Neutral near-black surfaces with a blue primary. |
+| `Light` | White surfaces with dark text. |
+| `Rose` | Pink accent on deep maroon. |
+| `Plant` | Green accent on a dark forest surface. |
+| `Red` | Saturated red accent. |
+| `Indigo` | Indigo accent on a cool dark surface. |
+| `Sky` | Light blue accent. |
+| `Violet` | Purple accent. |
+| `Amber` | Warm amber accent. |
+| `Emerald` | Emerald green accent. |
+| `Midnight` | Deep navy background with a `#2563eb` accent. |
+| `Crimson` | Dark red background with a `#dc2626` icon accent. |
+| `MonokaiPro` | Monokai palette with an orange accent. |
+| `CottonCandy` | Pink and cyan accents on a violet background. |
+| `Mellowsi` | Muted coffee and gold tones. |
+| `Rainbow` | Animated gradient surfaces across the whole window. |
+| `Luna` | Glassmorphic dark violet surfaces with a soft `#75a4ce` primary, mint toggles and pill-shaped rail tabs. Pair it with a `SidebarSelector` gradient for the full effect. |
+
+Switch theme at runtime:
+
+```lua
+for Name in next, NevaUI:GetThemes() do
+    print(Name)
+end
+
+NevaUI:SetTheme("Luna")
+```
+
+`examples/luna_example.lua` builds a complete interface with the `Luna` theme,
+a right-side icon rail, a gradient sidebar selector, and working theme and
+config tabs.
+
 ### Size and behavior options
 
 | Option | Type | Default | Description |
@@ -288,6 +329,8 @@ The preferred sidebar configuration is the nested `Sidebar` table:
 
 ```lua
 Sidebar = {
+    Position = "Left", -- "Left" (default), "Right" or "Top"
+    Type = "Default", -- "Default", "Icon", "Compact" or "Segmented"
     Width = 230,
     Padding = 10,
     Gap = 8,
@@ -327,7 +370,9 @@ Sidebar = {
 
 | Option | Type | Default | Description |
 |---|---|---:|---|
-| `Width` | number | Standard: `200`; Dashboard: `190` | Sidebar width in pixels. |
+| `Position` | string | `"Left"` | Where the navigation rail sits: `"Left"`, `"Right"` or `"Top"`. A `"Top"` rail becomes a horizontal tab strip under the top bar. |
+| `Type` | string | `"Default"` | Rail presentation: `"Default"` (labelled rows), `"Icon"` (labels hidden, narrow icon column), `"Compact"` (labelled rows on tighter height) or `"Segmented"` (tabs butted together into one connected control). |
+| `Width` | number | Standard: `200`; Dashboard: `190`; Icon: `56`; Compact: `74` | Sidebar width in pixels. An explicit value always wins, so a compact rail can still be widened. |
 | `Colors` | table | `nil` | Sidebar-scoped theme-token overrides (for example `SidebarBackground`, `SidebarSelector`, `TabBackgroundActive`). Merged onto the active theme so `ThemeColors` are preserved. |
 | `Padding` | number | automatic | Inner sidebar padding. |
 | `Gap` | number | automatic | Vertical gap between sidebar items. |
@@ -340,6 +385,7 @@ Sidebar = {
 | `Brand.LogoBackground` | `Color3` | `nil` | Optional background swatch behind the brand logo. When unset, the logo is drawn with no background. |
 | `Brand.LogoBackgroundTransparency` | number | `0` | Transparency of `Brand.LogoBackground`. |
 | `Brand.Height` | number | Horizontal: `56`; Stacked: `96` | Height reserved above sidebar search and tabs (clamped to at least `40`). |
+| `Brand.Width` | number | `180` | Width reserved for the brand block on a `"Top"` rail. Ignored by vertical rails, which use the full sidebar width. |
 | `Brand.LogoRadius` | number | `0` | Corner radius of the brand image. |
 | `Brand.LogoThemed` | boolean | `false` | Applies theme coloring to the logo where supported. |
 | `Brand.TitleSize` | number | `16` | Brand title font size. |
@@ -352,11 +398,13 @@ Sidebar = {
 | `SelectorRadius` | number | `999` | Sliding selector corner radius. `999` makes it fully rounded. |
 | `SelectorColor` | `Color3` | theme accent | Sliding selector color. Defaults to the `SidebarSelector` theme token. |
 | `TabHeight` | number | automatic | Fixed sidebar tab height in pixels. When omitted, tabs size to their content. |
+| `IconOnly` | boolean | `false` | Hides tab labels and centers the icons. `Type = "Icon"` enables this automatically. Tabs without an icon always keep their label so they stay readable. |
 | `TabRadius` | number | window radius | Corner radius of sidebar tabs. |
 | `IconSize` | number | `20` | Sidebar tab icon size in pixels. |
 | `ScrollBarThickness` | number | `0` | Sidebar scrollbar width. `0` hides the scrollbar. |
 | `ScrollBarTransparency` | number | `0.5` | Sidebar scrollbar transparency. |
 | `ScrollBarColor` | `Color3` | theme default | Sidebar scrollbar color. |
+| `SearchWidth` | number | `132` | Width reserved for the search button on a `"Top"` rail. Ignored by vertical rails. |
 
 The sliding selector can also be recolored or toggled at runtime:
 
@@ -365,6 +413,30 @@ Window:SetSidebarSelector(false)
 Window:SetSidebarSelector(true)
 Window:SetSidebarSelectorColor(Color3.fromRGB(80, 170, 255))
 ```
+
+### Moving the rail at runtime
+
+Position and type can be changed after the window is created. The rail, the
+content panel and every tab are measured again, and the sliding selector
+follows the new axis (a vertical accent bar for `"Left"` / `"Right"`, an
+underline for `"Top"`).
+
+```lua
+Window:SetSidebarPosition("Right")
+Window:SetSidebarPosition("Top")   -- horizontal tab strip
+Window:SetSidebarPosition("Left")
+
+Window:SetSidebarType("Icon")      -- narrow icon-only rail
+Window:SetSidebarType("Compact")   -- tighter labelled rows
+Window:SetSidebarType("Segmented") -- tabs butt together
+Window:SetSidebarType("Default")
+
+Window:SetSidebarWidth(240)        -- pins the width from now on
+```
+
+An invalid position or type raises an error, so typos surface immediately
+instead of silently falling back. Changing the type only retunes the width
+when no explicit `Width` was configured.
 
 The brand logo and sidebar colors can also be changed at runtime:
 

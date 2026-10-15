@@ -47,6 +47,28 @@ return function(Config)
 		and math.max(40, SidebarBrandConfig.Height or (SidebarBrandConfig.Layout == "Stacked" and 96 or 56))
 		or 0
 
+	-- Navigation rail variants. Position moves the rail to any edge; Type changes how
+	-- tabs are drawn inside it. "Top" turns the rail into a horizontal tab bar and
+	-- ignores Type, since the rail no longer has a vertical axis to lay tabs along.
+	local SidebarPositions = { Left = true, Right = true, Top = true }
+	local SidebarTypes = { Default = true, Icon = true, Compact = true, Segmented = true }
+	if SidebarConfig.Position ~= nil and not SidebarPositions[SidebarConfig.Position] then
+		error(
+			'Invalid Sidebar.Position "'
+				.. tostring(SidebarConfig.Position)
+				.. '". Expected "Left", "Right" or "Top".',
+			2
+		)
+	end
+	if SidebarConfig.Type ~= nil and not SidebarTypes[SidebarConfig.Type] then
+		error(
+			'Invalid Sidebar.Type "'
+				.. tostring(SidebarConfig.Type)
+				.. '". Expected "Default", "Icon", "Compact" or "Segmented".',
+			2
+		)
+	end
+
 	local Window = {
 		Title = Config.Title or "UI Library",
 		Author = Config.Author,
@@ -81,12 +103,20 @@ return function(Config)
 		Transparent = Config.Transparent or false,
 		HideSearchBar = Config.HideSearchBar ~= false,
 		ScrollBarEnabled = Config.ScrollBarEnabled or false,
+		SidebarPosition = SidebarConfig.Position or "Left",
+		SidebarType = SidebarConfig.Type or "Default",
+		SidebarIconOnly = SidebarConfig.IconOnly,
+		SidebarIconOnlyConfig = SidebarConfig.IconOnly == true,
+		SidebarCollapsible = SidebarConfig.Collapsible,
+		SidebarCollapsed = SidebarConfig.StartCollapsed or false,
 		SideBarWidth = SidebarConfig.Width
 			or Config.SideBarWidth
 			or (Config.Layout == "Dashboard" and 190 or 200),
 		Sidebar = SidebarConfig,
 		SidebarBrand = SidebarBrandConfig,
 		SidebarBrandHeight = SidebarBrandHeight,
+		SidebarBrandWidth = SidebarBrandConfig.Width,
+		SidebarTopSearchWidth = SidebarConfig.SearchWidth,
 		SidebarBrandLogoBackground = SidebarBrandConfig.LogoBackground,
 		SidebarBrandLogoBackgroundTransparency = SidebarBrandConfig.LogoBackgroundTransparency,
 		SidebarBrandLogoPadding = SidebarBrandConfig.LogoPadding,
@@ -158,6 +188,36 @@ return function(Config)
 	Window.UICorner = Window.Radius
 	Window.SidebarPadding = Window.SidebarPadding or Window.UIPadding / 2
 	Window.SidebarGap = Window.SidebarGap or Window.Gap
+
+	-- Rail geometry is derived from Position/Type up front so every downstream
+	-- measurement (reserved header space, tab padding, content inset) can read one
+	-- source of truth instead of re-deriving it.
+	Window.SidebarIsTop = Window.SidebarPosition == "Top"
+	Window.SidebarIsRight = Window.SidebarPosition == "Right"
+	Window.SidebarWidthAuto = SidebarConfig.Width == nil and Config.SideBarWidth == nil
+	Window.SidebarTabHeightAuto = SidebarConfig.TabHeight == nil
+	-- Only the Icon rail drops tab labels; Compact keeps them on tighter rows.
+	Window.SidebarIconOnly = Window.SidebarIconOnlyConfig or Window.SidebarType == "Icon"
+	if Window.SidebarIsTop then
+		Window.SidebarIconOnly = false
+	end
+	if Window.SidebarType == "Icon" or Window.SidebarType == "Compact" then
+		-- Explicit widths still win so a developer can widen a compact rail.
+		if SidebarConfig.Width == nil and Config.SideBarWidth == nil then
+			Window.SideBarWidth = Window.SidebarType == "Icon" and 56 or 74
+		end
+	end
+	if Window.SidebarIsTop and SidebarConfig.Width == nil and Config.SideBarWidth == nil then
+		Window.SideBarWidth = 0
+	end
+	-- Compact rails keep the tab label but tighten the row; Icon rails drop it.
+	if Window.SidebarTabHeightAuto then
+		Window.SidebarTabHeight = Window.SidebarIsTop and 34 or (Window.SidebarType == "Compact" and 32 or nil)
+	end
+	if Window.SidebarType == "Segmented" then
+		-- Segmented rails read as one connected control, so tabs butt together.
+		Window.SidebarGap = SidebarConfig.Gap or 0
+	end
 
 	if Window.SidebarColors ~= nil then
 		if type(Window.SidebarColors) ~= "table" then
@@ -270,7 +330,9 @@ return function(Config)
 	-- })
 
 	local SidebarSearchHeight = not Window.HideSearchBar and (39 + 6) or 0
-	local SidebarReservedHeight = Window.SidebarBrandHeight + SidebarSearchHeight
+	-- A Top rail is a horizontal tab strip, so the brand and search stack above the
+	-- tab row instead of sitting in a fixed-height header beside it.
+	local SidebarReservedHeight = Window.SidebarIsTop and 0 or (Window.SidebarBrandHeight + SidebarSearchHeight)
 	local SidebarScrollThickness = Window.SidebarScrollBarThickness or 0
 	local SideBarFrameChildren = {
 		New("Frame", {
@@ -280,30 +342,25 @@ return function(Config)
 			Name = "Frame",
 		}, {
 			New("UIPadding", {
-				--PaddingTop = UDim.new(0,Window.UIPadding/2),
-				--PaddingLeft = UDim.new(0,4+(Window.UIPadding/2)),
-				--PaddingRight = UDim.new(0,4+(Window.UIPadding/2)),
 				PaddingBottom = UDim.new(0, Window.UIPadding / 2),
+				Name = "UIPadding",
 			}),
 			New("UIListLayout", {
 				SortOrder = "LayoutOrder",
+				FillDirection = "Vertical",
+				VerticalAlignment = "Center",
 				Padding = UDim.new(0, Window.SidebarGap),
+				Name = "UIListLayout",
 			}),
 		}),
 		New("UIPadding", {
-			--PaddingTop = UDim.new(0,4),
 			PaddingLeft = UDim.new(0, Window.SidebarPadding),
 			PaddingRight = UDim.new(0, Window.SidebarPadding),
 			PaddingBottom = UDim.new(0, Window.SidebarPadding),
 		}),
 	}
 	Window.UIElements.SideBar = New("ScrollingFrame", {
-		Size = UDim2.new(
-			1,
-			Window.ScrollBarEnabled and -3 - (Window.UIPadding / 2) or 0,
-			1,
-			-SidebarReservedHeight
-		),
+		Size = UDim2.new(1, 0, 1, -SidebarReservedHeight),
 		Position = UDim2.new(0, 0, 0, SidebarReservedHeight),
 		AnchorPoint = Vector2.new(0, 0),
 		BackgroundTransparency = 1,
@@ -469,46 +526,28 @@ return function(Config)
 		Window.UIElements.SidebarBrand = SidebarBrandFrame
 	end
 
-	local SideBarContainerChildren = {
-		New("Frame", {
-			Name = "Content",
-			BackgroundTransparency = 1,
-			Size = UDim2.new(
-				1,
-				0,
-			1,
-			not Window.HideSearchBar
-					and -39 - 6 - Window.UIPadding - Window.SidebarBrandHeight
-					or -Window.UIPadding / 2 - Window.SidebarBrandHeight
-			),
-			Position = UDim2.new(0, 0, 1, -Window.UIPadding / 2),
-			AnchorPoint = Vector2.new(0, 1),
-		}),
-		Window.UIElements.SideBar,
-	}
-	if SidebarBrandFrame then
-		table.insert(SideBarContainerChildren, SidebarBrandFrame)
-	end
+	-- The rail is laid out by a single function so Position and Type can also be
+	-- changed at runtime. Everything geometric about the rail, the content panel and
+	-- the divider is derived here from Window.SidebarPosition / SidebarType.
+	local SideBarContentFrame = New("Frame", {
+		Name = "Content",
+		BackgroundTransparency = 1,
+	})
+
 	Window.UIElements.SideBarContainer = New("Frame", {
-		Size = UDim2.new(
-			0,
-			Window.SideBarWidth,
-			1,
-			Window.User.Enabled and -Window.Topbar.Height - 42 - (Window.UIPadding * 2) or -Window.Topbar.Height
-		),
-		Position = UDim2.new(0, 0, 0, Window.Topbar.Height),
+		Name = "SideBarContainer",
 		BackgroundTransparency = 1,
 		ThemeTag = {
 			BackgroundColor3 = "SidebarBackground",
 			BackgroundTransparency = "SidebarBackgroundTransparency",
 		},
 		Visible = true,
-	}, SideBarContainerChildren)
+	}, { SideBarContentFrame, Window.UIElements.SideBar, SidebarBrandFrame })
 
 	if Window.ScrollBarEnabled then
 		CreateScrollSlider(
 			Window.UIElements.SideBar,
-			Window.UIElements.SideBarContainer.Content,
+			SideBarContentFrame,
 			Window,
 			3,
 			Config.NevaUI
@@ -516,9 +555,7 @@ return function(Config)
 	end
 
 	Window.UIElements.MainBar = New("Frame", {
-		Size = UDim2.new(1, -Window.UIElements.SideBarContainer.AbsoluteSize.X, 1, -Window.Topbar.Height),
-		Position = UDim2.new(1, 0, 1, 0),
-		AnchorPoint = Vector2.new(1, 1),
+		Name = "MainBar",
 		BackgroundTransparency = 1,
 	}, {
 		Creator.NewRoundFrame(Window.UICorner - (Window.UIPadding / 2), "Squircle", {
@@ -527,14 +564,11 @@ return function(Config)
 				ImageColor3 = "PanelBackground",
 				ImageTransparency = "PanelBackgroundTransparency",
 			},
-			-- ImageColor3 = Color3.new(1,1,1),
-			-- ImageTransparency = .95,
 			ZIndex = 3,
 			Name = "Background",
 			Visible = not Window.HidePanelBackground,
 		}),
 		New("UIPadding", {
-			--PaddingTop = UDim.new(0,Window.UIPadding/2),
 			PaddingLeft = UDim.new(0, Window.UIPadding / 2),
 			PaddingRight = UDim.new(0, Window.UIPadding / 2),
 			PaddingBottom = UDim.new(0, Window.UIPadding / 2),
@@ -542,11 +576,9 @@ return function(Config)
 	})
 
 	local SidebarDividerProperties = {
-		Size = UDim2.new(0, Window.SidebarDividerThickness, 1, -Window.Topbar.Height - Window.UIPadding),
-		Position = UDim2.new(0, Window.SideBarWidth, 0, Window.Topbar.Height + Window.UIPadding / 2),
+		Name = "SidebarDivider",
 		BackgroundTransparency = Window.SidebarDividerTransparency,
 		Visible = Window.SidebarDivider,
-		Name = "SidebarDivider",
 	}
 	if Window.SidebarDividerColor then
 		SidebarDividerProperties.BackgroundColor3 = Window.SidebarDividerColor
@@ -556,6 +588,153 @@ return function(Config)
 		}
 	end
 	Window.UIElements.SidebarDivider = New("Frame", SidebarDividerProperties)
+
+	-- Listeners run after every rail relayout so tabs can rebuild themselves for the
+	-- new axis (horizontal vs vertical, icon-only vs labelled).
+	Window.SidebarLayoutListeners = {}
+	function Window:OnSidebarLayoutChanged(func)
+		table.insert(Window.SidebarLayoutListeners, func)
+	end
+
+	-- Container size for the current rail. The User panel shortens a vertical rail, but
+	-- a Top rail spans the window width and ignores both the width and that inset.
+	function Window:GetSidebarContainerSize()
+		if Window.SidebarIsTop then
+			return UDim2.new(1, 0, 0, (Window.SidebarTabHeight or 34) + (Window.SidebarPadding * 2))
+		end
+		local Height = Window.User.Enabled and -Window.Topbar.Height - 42 - (Window.UIPadding * 2)
+			or -Window.Topbar.Height
+		return UDim2.new(0, Window.SideBarWidth, 1, Height)
+	end
+
+	function Window:ApplySidebarLayout(Instant)
+		local SideBar = Window.UIElements.SideBar
+		local Container = Window.UIElements.SideBarContainer
+		local MainBar = Window.UIElements.MainBar
+		local Divider = Window.UIElements.SidebarDivider
+		local IsTop = Window.SidebarIsTop
+		local IsRight = Window.SidebarIsRight
+
+		local TopRailHeight = (Window.SidebarTabHeight or 34) + (Window.SidebarPadding * 2)
+		local BrandInlineWidth = 0
+		if IsTop and SidebarBrandFrame then
+			BrandInlineWidth = Window.SidebarBrandWidth or 180
+		end
+		local SearchWidth = IsTop and (Window.SidebarTopSearchWidth or 132) or 0
+
+		-- Tab strip container: horizontal list for a Top rail, vertical otherwise.
+		local TabList = SideBar.Frame
+		local TabListLayout = TabList.UIListLayout
+		local TabListPadding = TabList.UIPadding
+		local SideBarPadding = SideBar.UIPadding
+		TabList.AutomaticSize = IsTop and "X" or "Y"
+		-- A Top rail grows horizontally, so its height must fill the strip instead of
+		-- collapsing to zero as an AutomaticSize "Y" frame would.
+		TabList.Size = IsTop and UDim2.new(0, 0, 1, 0) or UDim2.new(1, 0, 0, 0)
+		TabListLayout.FillDirection = IsTop and "Horizontal" or "Vertical"
+		TabListLayout.VerticalAlignment = "Center"
+		TabListPadding.PaddingRight = UDim.new(0, IsTop and Window.SidebarGap or Window.SidebarPadding)
+		TabListPadding.PaddingBottom = UDim.new(0, IsTop and 0 or Window.UIPadding / 2)
+		-- Vertical inset comes from centering the tabs in the strip, so only the
+		-- horizontal inset applies to a Top rail.
+		SideBarPadding.PaddingBottom = UDim.new(0, IsTop and 0 or Window.SidebarPadding)
+
+		SideBar.AutomaticCanvasSize = IsTop and "X" or "Y"
+		SideBar.ScrollingDirection = IsTop and "X" or "Y"
+		SideBar.VerticalScrollBarPosition = IsRight and "Right" or "Left"
+
+		if IsTop then
+			Container.Size = Window:GetSidebarContainerSize()
+			Container.Position = UDim2.new(0, 0, 0, Window.Topbar.Height)
+			Container.AnchorPoint = Vector2.new(0, 0)
+			SideBar.Position = UDim2.new(0, BrandInlineWidth, 0, 0)
+			SideBar.Size = UDim2.new(
+				1,
+				-(BrandInlineWidth + SearchWidth + Window.SidebarGap),
+				1,
+				0
+			)
+			MainBar.Size = UDim2.new(1, 0, 1, -Window.Topbar.Height - TopRailHeight)
+			MainBar.Position = UDim2.new(0, 0, 1, 0)
+			MainBar.AnchorPoint = Vector2.new(0, 1)
+			Divider.Size = UDim2.new(1, -Window.UIPadding, 0, Window.SidebarDividerThickness)
+			Divider.Position = UDim2.new(0, Window.UIPadding / 2, 0, Window.Topbar.Height + TopRailHeight)
+		else
+			Container.Size = Window:GetSidebarContainerSize()
+			if IsRight then
+				Container.Position = UDim2.new(1, -Window.SideBarWidth, 0, Window.Topbar.Height)
+				Container.AnchorPoint = Vector2.new(1, 0)
+				MainBar.Size = UDim2.new(1, -Window.SideBarWidth, 1, -Window.Topbar.Height)
+				MainBar.Position = UDim2.new(0, 0, 1, 0)
+				MainBar.AnchorPoint = Vector2.new(0, 1)
+				Divider.Position = UDim2.new(1, -Window.SideBarWidth, 0, Window.Topbar.Height + Window.UIPadding / 2)
+			else
+				Container.Position = UDim2.new(0, 0, 0, Window.Topbar.Height)
+				Container.AnchorPoint = Vector2.new(0, 0)
+				MainBar.Size = UDim2.new(1, -Window.SideBarWidth, 1, -Window.Topbar.Height)
+				MainBar.Position = UDim2.new(1, 0, 1, 0)
+				MainBar.AnchorPoint = Vector2.new(1, 1)
+				Divider.Position = UDim2.new(0, Window.SideBarWidth, 0, Window.Topbar.Height + Window.UIPadding / 2)
+			end
+			-- Reserve the brand header and search row above the tab list.
+			local Reserved = Window.SidebarBrandHeight + (Window.HideSearchBar and 0 or 45)
+			SideBar.Position = UDim2.new(0, 0, 0, Reserved)
+			SideBar.Size = UDim2.new(
+				1,
+				Window.ScrollBarEnabled and -3 - (Window.UIPadding / 2) or 0,
+				1,
+				-Reserved
+			)
+			Divider.Size = UDim2.new(0, Window.SidebarDividerThickness, 1, -Window.Topbar.Height - Window.UIPadding)
+		end
+
+		if SideBarContentFrame then
+			SideBarContentFrame.Size = UDim2.new(
+				1,
+				0,
+				1,
+				Window.HideSearchBar and -(Window.UIPadding / 2 + Window.SidebarBrandHeight)
+					or -45 - Window.UIPadding - Window.SidebarBrandHeight
+			)
+			SideBarContentFrame.Position = UDim2.new(0, 0, 1, -Window.UIPadding / 2)
+			SideBarContentFrame.AnchorPoint = Vector2.new(0, 1)
+		end
+
+		if SidebarBrandFrame then
+			if IsTop then
+				SidebarBrandFrame.Size = UDim2.new(0, BrandInlineWidth, 1, 0)
+				SidebarBrandFrame.Position = UDim2.new(0, 0, 0, 0)
+				SidebarBrandFrame.AnchorPoint = Vector2.new(0, 0)
+				SidebarBrandFrame.ZIndex = 8
+			else
+				SidebarBrandFrame.Size = UDim2.new(1, 0, 0, Window.SidebarBrandHeight)
+				SidebarBrandFrame.Position = UDim2.new(0, 0, 0, 0)
+				SidebarBrandFrame.AnchorPoint = Vector2.new(0, 0)
+			end
+		end
+
+		if Window.UIElements.SidebarSearchLabel then
+			local SearchLabel = Window.UIElements.SidebarSearchLabel
+			if IsTop then
+				SearchLabel.Size = UDim2.new(0, SearchWidth, 1, -Window.SidebarPadding * 2)
+				SearchLabel.Position = UDim2.new(1, -Window.SidebarPadding, 0.5, 0)
+				SearchLabel.AnchorPoint = Vector2.new(1, 0.5)
+			else
+				SearchLabel.Size = UDim2.new(1, -Window.UIPadding / 2, 0, 39)
+				SearchLabel.Position = UDim2.new(0, Window.UIPadding / 2, 0, Window.SidebarBrandHeight)
+				SearchLabel.AnchorPoint = Vector2.new(0, 0)
+			end
+		end
+
+		for _, listener in ipairs(Window.SidebarLayoutListeners) do
+			local ok, err = pcall(listener, Instant)
+			if not ok then
+				warn("[ NevaUI.Sidebar ] Layout listener failed: " .. tostring(err))
+			end
+		end
+	end
+
+	Window:ApplySidebarLayout(true)
 
 	local Blur = New("ImageLabel", { -- Shadow
 		Image = "rbxassetid://8992230677",
@@ -599,12 +778,9 @@ return function(Config)
 		end
 
 		UserIcon = New("TextButton", {
-			Size = UDim2.new(
-				0,
-				Window.UIElements.SideBarContainer.AbsoluteSize.X - (Window.UIPadding / 2),
-				0,
-				42 + Window.UIPadding
-			),
+			-- Fill the rail width minus the inset instead of the build-time pixel width,
+			-- which on a Top rail would be the whole window.
+			Size = UDim2.new(1, -(Window.UIPadding / 2), 0, 42 + Window.UIPadding),
 			Position = UDim2.new(0, Window.UIPadding / 2, 1, -(Window.UIPadding / 2)),
 			AnchorPoint = Vector2.new(0, 1),
 			BackgroundTransparency = 1,
@@ -703,27 +879,35 @@ return function(Config)
 			}),
 		})
 
+		-- Visibility is owned by one function so the toggles and the rail relayout
+		-- cannot disagree about a Top rail, which has no room for the panel.
+		function Window.User:ApplyLayout()
+			if not UserIcon then
+				return
+			end
+			UserIcon.Visible = Window.User.Enabled and not Window.SidebarIsTop
+		end
 		function Window.User:Enable()
 			Window.User.Enabled = true
 			Tween(
 				Window.UIElements.SideBarContainer,
 				0.25,
-				{ Size = UDim2.new(0, Window.SideBarWidth, 1, -Window.Topbar.Height - 42 - (Window.UIPadding * 2)) },
+				{ Size = Window:GetSidebarContainerSize() },
 				Enum.EasingStyle.Quint,
 				Enum.EasingDirection.Out
 			):Play()
-			UserIcon.Visible = true
+			Window.User:ApplyLayout()
 		end
 		function Window.User:Disable()
 			Window.User.Enabled = false
 			Tween(
 				Window.UIElements.SideBarContainer,
 				0.25,
-				{ Size = UDim2.new(0, Window.SideBarWidth, 1, -Window.Topbar.Height) },
+				{ Size = Window:GetSidebarContainerSize() },
 				Enum.EasingStyle.Quint,
 				Enum.EasingDirection.Out
 			):Play()
-			UserIcon.Visible = false
+			Window.User:ApplyLayout()
 		end
 		function Window.User:SetAnonymous(v)
 			if v ~= false then
@@ -740,6 +924,10 @@ return function(Config)
 		else
 			Window.User:Disable()
 		end
+		Window:OnSidebarLayoutChanged(function()
+			Window.User:ApplyLayout()
+		end)
+		Window.User:ApplyLayout()
 
 		if Window.User.Callback then
 			Creator.AddSignal(UserIcon.MouseButton1Click, function()
@@ -2004,6 +2192,7 @@ return function(Config)
 		local Tween = Creator.Tween
 		local ActiveTabFrame = nil
 		local LastSelectorY = nil
+		local LastSelectorX = nil
 
 		local function UpdateSelector(Instant)
 			local SideBar = Window.UIElements.SideBar
@@ -2018,23 +2207,52 @@ return function(Config)
 			-- from the active tab. Absolute positions are scaled by the live UIScale,
 			-- so divide it out to get the offset in the sidebar's own units.
 			local Scale = Config.NevaUI.UIScale or 1
+			local TargetX = (ActiveTabFrame.AbsolutePosition.X - Content.AbsolutePosition.X) / Scale
 			local TargetY = (ActiveTabFrame.AbsolutePosition.Y - Content.AbsolutePosition.Y) / Scale
+			local TargetWidth = ActiveTabFrame.AbsoluteSize.X / Scale
 			local TargetHeight = ActiveTabFrame.AbsoluteSize.Y / Scale
+			SelectorFrame.Visible = true
+
+			if Window.SidebarIsTop then
+				-- Horizontal rail: the indicator becomes an underline that tracks the
+				-- tab's horizontal span instead of a vertical bar.
+				if TargetWidth <= 0 then
+					SelectorFrame.Visible = false
+					return
+				end
+				SelectorFrame.Size = UDim2.new(0, TargetWidth, 0, Window.SidebarSelectorWidth)
+				local Position = UDim2.new(0, TargetX, 0, TargetY + TargetHeight - Window.SidebarSelectorWidth)
+				if Instant or LastSelectorX == nil then
+					SelectorFrame.Position = Position
+				elseif TargetX ~= LastSelectorX then
+					Tween(SelectorFrame, 0.16, { Position = Position }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+				end
+				LastSelectorX = TargetX
+				return
+			end
+
 			if TargetHeight <= 0 then
 				SelectorFrame.Visible = false
 				return
 			end
-			-- The scrollbar sits on the left, over the content, so keep the selector
-			-- to its right instead of hidden underneath it.
-			local TargetX = math.max(Window.SidebarSelectorX, SideBar.ScrollBarThickness or 0)
-			SelectorFrame.Visible = true
+			-- The scrollbar sits over the content, so keep the selector clear of it.
+			-- On a right-hand rail the scrollbar flips to the right edge too.
+			local ScrollThickness = SideBar.ScrollBarThickness or 0
+			local SelectorX
+			if Window.SidebarIsRight then
+				SelectorX = math.max(
+					Window.SideBarWidth - Window.SidebarPadding + 2,
+					Window.SideBarWidth - ScrollThickness - Window.SidebarSelectorWidth
+				)
+			else
+				SelectorX = math.max(Window.SidebarSelectorX, ScrollThickness)
+			end
 			SelectorFrame.Size = UDim2.new(0, Window.SidebarSelectorWidth, 0, TargetHeight)
+			local Position = UDim2.new(0, SelectorX, 0, TargetY)
 			if Instant or LastSelectorY == nil then
-				SelectorFrame.Position = UDim2.new(0, TargetX, 0, TargetY)
+				SelectorFrame.Position = Position
 			elseif TargetY ~= LastSelectorY then
-				Tween(SelectorFrame, 0.16, {
-					Position = UDim2.new(0, TargetX, 0, TargetY),
-				}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
+				Tween(SelectorFrame, 0.16, { Position = Position }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
 			end
 			LastSelectorY = TargetY
 		end
@@ -2141,6 +2359,72 @@ return function(Config)
 		Holder.BackgroundTransparency = Transparency or 0
 		Window.SidebarBrandLogoBackground = Color
 		Window.SidebarBrandLogoBackgroundTransparency = Transparency or 0
+	end
+
+	-- Rebuild the rail axis for the new position/type, then relayout the tabs.
+	local function RefreshRail()
+		Window.SidebarIsTop = Window.SidebarPosition == "Top"
+		Window.SidebarIsRight = Window.SidebarPosition == "Right"
+		Window.SidebarIconOnly = Window.SidebarIconOnlyConfig or Window.SidebarType == "Icon"
+		if Window.SidebarIsTop then
+			Window.SidebarIconOnly = false
+		end
+		-- Only retune the width when the developer never pinned one.
+		if Window.SidebarWidthAuto then
+			if Window.SidebarType == "Icon" then
+				Window.SideBarWidth = 56
+			elseif Window.SidebarType == "Compact" then
+				Window.SideBarWidth = 74
+			else
+				Window.SideBarWidth = Window.Layout == "Dashboard" and 190 or 200
+			end
+		end
+		if Window.SidebarTabHeightAuto then
+			Window.SidebarTabHeight = Window.SidebarIsTop and 34 or (Window.SidebarType == "Compact" and 32 or nil)
+		end
+		Window:ApplySidebarLayout(false)
+		if Window.TabModule and Window.TabModule.ApplyRailLayout then
+			Window.TabModule:ApplyRailLayout()
+		end
+	end
+
+	function Window:SetSidebarPosition(Position)
+		if Position ~= "Left" and Position ~= "Right" and Position ~= "Top" then
+			error('Invalid sidebar position "' .. tostring(Position) .. '". Expected "Left", "Right" or "Top".', 2)
+		end
+		if Window.SidebarPosition == Position then
+			return Window
+		end
+		Window.SidebarPosition = Position
+		RefreshRail()
+		return Window
+	end
+
+	function Window:SetSidebarType(Type)
+		if Type ~= "Default" and Type ~= "Icon" and Type ~= "Compact" and Type ~= "Segmented" then
+			error(
+				'Invalid sidebar type "'
+					.. tostring(Type)
+					.. '". Expected "Default", "Icon", "Compact" or "Segmented".',
+				2
+			)
+		end
+		Window.SidebarType = Type
+		RefreshRail()
+		return Window
+	end
+
+	function Window:SetSidebarWidth(Width)
+		if typeof(Width) ~= "number" or Width <= 0 then
+			return Window
+		end
+		Window.SideBarWidth = Width
+		Window.SidebarWidthAuto = false
+		Window:ApplySidebarLayout(false)
+		if Window.TabModule and Window.TabModule.ApplyRailLayout then
+			Window.TabModule:ApplyRailLayout()
+		end
+		return Window
 	end
 
 	function Window:SetSidebarSelector(v)
@@ -2615,13 +2899,9 @@ return function(Config)
 		-- end, 996)
 
 		local SearchLabel = CreateLabel("Search", "search", Window.UIElements.SideBarContainer, true)
-		SearchLabel.Size = UDim2.new(1, -Window.UIPadding / 2, 0, 39)
-		SearchLabel.Position = UDim2.new(
-			0,
-			Window.UIPadding / 2,
-			0,
-			Window.SidebarBrandHeight
-		)
+		Window.SidebarTopSearchWidth = Window.SidebarTopSearchWidth or 132
+		Window.UIElements.SidebarSearchLabel = SearchLabel
+		Window:ApplySidebarLayout(true)
 
 		Creator.AddSignal(SearchLabel.MouseButton1Click, function()
 			if IsOpen then
