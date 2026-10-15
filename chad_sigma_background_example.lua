@@ -26,9 +26,9 @@ local Window = NevaUI:CreateWindow({
         Logo = LogoAsset,
         IconSize = 38,
         Background = BackgroundImage,
-        -- Slightly translucent window: the background image and the window
-        -- surface both let the game show through a little.
-        BackgroundImageTransparency = 0.3,
+        -- See-through window: the background image is mostly transparent and
+        -- the window surface is dimmed further below so the game shows through.
+        BackgroundImageTransparency = 0.55,
         Transparent = true,
         HidePanelBackground = true,
         Size = UDim2.fromOffset(850, 500),
@@ -70,13 +70,13 @@ local Window = NevaUI:CreateWindow({
                         Logo = LogoAsset,
                         -- Explicit logo sizing: the image is drawn background-free and
                         -- only gets a background when LogoBackground is set.
-                        LogoSize = 68,
+                        LogoSize = 88,
                         LogoScaleType = "Fit",
                         LogoRadius = 12,
                         LogoPadding = 0,
                         Title = "NevaUI",
                         TitleSize = 21,
-                        Height = 92,
+                        Height = 112,
                 },
                 Divider = true,
                 DividerThickness = 2,
@@ -200,7 +200,7 @@ local BrandPanel = CustomizeTab:Section({
 BrandPanel:Slider({
         Title = "Logo size",
         Step = 1,
-        Value = { Min = 32, Max = 88, Default = 68 },
+        Value = { Min = 32, Max = 112, Default = 88 },
         Callback = function(value)
                 Window:SetSidebarBrandLogoSize(value)
         end,
@@ -356,5 +356,9 @@ SettingsPanel:Button({
                 print("Save configuration pressed.")
         end,
 })
+
+-- Make the window surface itself see-through (the config value only
+-- reaches 0.15, so push it higher for this example).
+Window:SetBackgroundTransparency(0.5)
 
 Window:SelectTab(1)
